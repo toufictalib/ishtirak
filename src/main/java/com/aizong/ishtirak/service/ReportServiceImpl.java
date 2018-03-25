@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aizong.ishtirak.engine.Engine;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.table.ReportTableModel;
 
@@ -32,6 +33,27 @@ public class ReportServiceImpl implements ReportService {
 	}
 	
 	Class<?>[] clazzes = { Long.class, String.class, String.class, String.class, String.class };
+
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+
+    @Override
+    public ReportTableModel getEngines() {
+	List<Engine> list = subscriberService.getEngines();
+
+	String[] cols = { "الرقم","الاسم", "KVA", "مصروف المازوت/بالساعة" };
+
+	List<Object[]> rows = new ArrayList<>();
+	for (Engine object : list) {
+	    
+	   // Information information = subscriber.getInformation();
+	    Object[] row = { object.getId(),object.getName(), object.getKva(), object.getDieselConsumption()
+		    /*,information.getVillage(),information.getRegion(),information.getLandLine(),information.getMainPhone(),information.getAlternativePhone(),information.getEmail()*/ };
+
+	    rows.add(row);
+	}
+	
+	Class<?>[] clazzes = { Long.class, String.class, String.class, Integer.class, Double.class };
 
 	return new ReportTableModel(cols, rows, clazzes);
     }

@@ -18,6 +18,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.WindowUtils;
+import com.aizong.ishtirak.engine.EngineFitlerTable;
 import com.aizong.ishtirak.subscriber.form.SubscriberForm;
 import com.aizong.ishtirak.subscriber.form.VillageForm;
 import com.aizong.ishtirak.table.SubscriberFilterTable;
@@ -70,6 +71,19 @@ public class IshtirakApplication extends JFrame {
 		WindowUtils.createDialog(IshtirakApplication.this, "المشتركون", subscriberFilterTable);
 	    }
 	});
+	
+	JButton btnEngine = new JButton("Show Engine");
+	btnEngine.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+
+		// WindowUtils.createDialog(null, "قرية
+		// جديدة",reportFilterTableFrame );
+		EngineFitlerTable subscriberFilterTable = new EngineFitlerTable("المولدات");
+		WindowUtils.createDialog(IshtirakApplication.this, "المولدات", subscriberFilterTable);
+	    }
+	});
 
 	JTextArea textArea = new JTextArea();
 
@@ -78,6 +92,7 @@ public class IshtirakApplication extends JFrame {
 	jPanel.add(btn);
 	jPanel.add(btnVillage);
 	jPanel.add(btnShow);
+	jPanel.add(btnEngine);
 	setTitle("Simple example");
 	setContentPane(jPanel);
 	setSize(300, 200);

@@ -19,13 +19,14 @@ public class Engine extends BaseEntity {
     private String name;
 
     @Embedded
-    private Address address;
+    private Address address = new Address();
 
     @Column(name = "kva")
-    private String kva;
+    private Integer kva;
     
     @Column(name = "diesel_consumption")
-    private double dieselConsumption;
+    //in hour
+    private Double dieselConsumption;
 
     public String getName() {
         return name;
@@ -43,19 +44,19 @@ public class Engine extends BaseEntity {
         this.address = address;
     }
 
-    public String getKva() {
+    public Integer getKva() {
         return kva;
     }
 
-    public void setKva(String kva) {
+    public void setKva(Integer kva) {
         this.kva = kva;
     }
 
-    public double getDieselConsumption() {
+    public Double getDieselConsumption() {
         return dieselConsumption;
     }
 
-    public void setDieselConsumption(double dieselConsumption) {
+    public void setDieselConsumption(Double dieselConsumption) {
         this.dieselConsumption = dieselConsumption;
     }
     

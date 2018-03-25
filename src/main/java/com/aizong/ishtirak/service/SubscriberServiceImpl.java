@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.dao.SubscriberDao;
+import com.aizong.ishtirak.engine.Engine;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.subscriber.model.Village;
 
@@ -57,6 +58,34 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void deleteSubscribers(List<Long> subscriberIds) {
 	subscriberDao.deleteContents(subscriberIds);
+    }
+
+    @Override
+    public void saveEngine(Engine engine) {
+	if(engine.getId()!=null) {
+	    subscriberDao.update(engine);
+
+	}else {
+	    
+	    subscriberDao.save(Arrays.asList(engine));
+	}
+	
+    }
+
+    @Override
+    public Engine getEngineById(Long id) {
+	return subscriberDao.find(Engine.class, id);
+    }
+
+    @Override
+    public void deleteEngines(List<Long> engineIds) {
+	subscriberDao.deleteEngines(engineIds);
+	
+    }
+
+    @Override
+    public List<Engine> getEngines() {
+	return subscriberDao.findAll(Engine.class);
     }
 
 }
