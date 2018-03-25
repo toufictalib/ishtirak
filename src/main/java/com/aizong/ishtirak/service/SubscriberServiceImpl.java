@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.dao.SubscriberDao;
-import com.aizong.ishtirak.subscriber.Subscriber;
-import com.aizong.ishtirak.subscriber.Village;
+import com.aizong.ishtirak.subscriber.model.Subscriber;
+import com.aizong.ishtirak.subscriber.model.Village;
 
 @Service
 @Transactional

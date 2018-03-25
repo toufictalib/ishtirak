@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.subscriber;
+package com.aizong.ishtirak.subscriber.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

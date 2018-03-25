@@ -33,7 +33,10 @@ public class BasicPanel extends JPanel {
     }
 
     protected String message(String code, Object... params) {
-	return message.getMessage(code, params);
+	if(message!=null) {
+	    return message.getMessage(code, params);
+	}
+	return code;
     }
 }
 

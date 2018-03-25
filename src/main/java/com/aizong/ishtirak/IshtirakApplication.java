@@ -16,8 +16,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.WindowUtils;
-import com.aizong.ishtirak.subscriber.Mode;
 import com.aizong.ishtirak.subscriber.form.SubscriberFormSwing;
 import com.aizong.ishtirak.subscriber.form.VillageForm;
 import com.aizong.ishtirak.table.SubscriberFilterTable;
@@ -36,6 +36,7 @@ public class IshtirakApplication extends JFrame {
 
     }
 
+    
     public IshtirakApplication() {
 	JPanel jPanel = new JPanel();
 
@@ -100,7 +101,7 @@ public class IshtirakApplication extends JFrame {
 
     public static void main(String[] args) {
 	SpringApplication.run(IshtirakApplication.class, args);
-
+	
 	// new Example().setVisible(true);
     }
 

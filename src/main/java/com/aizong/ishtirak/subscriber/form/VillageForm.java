@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import com.aizong.ishtirak.common.BasicPanel;
 import com.aizong.ishtirak.common.ButtonFactory;
 import com.aizong.ishtirak.common.ServiceProvider;
-import com.aizong.ishtirak.subscriber.Village;
+import com.aizong.ishtirak.subscriber.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;

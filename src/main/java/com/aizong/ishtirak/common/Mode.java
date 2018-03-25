@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.subscriber;
+package com.aizong.ishtirak.common;
 
 public enum Mode {
 

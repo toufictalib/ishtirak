@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.aizong.ishtirak.subscriber.Subscriber;
+import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.table.ReportTableModel;
 
 @Service

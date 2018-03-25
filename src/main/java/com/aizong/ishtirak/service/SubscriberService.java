@@ -2,8 +2,8 @@ package com.aizong.ishtirak.service;
 
 import java.util.List;
 
-import com.aizong.ishtirak.subscriber.Subscriber;
-import com.aizong.ishtirak.subscriber.Village;
+import com.aizong.ishtirak.subscriber.model.Subscriber;
+import com.aizong.ishtirak.subscriber.model.Village;
 
 public interface SubscriberService {
 
