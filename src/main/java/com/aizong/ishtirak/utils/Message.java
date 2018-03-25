@@ -21,7 +21,7 @@ public class Message {
 	}
 
 	public String getEnumLabel(String code, Class<?> enumClazz) {
-		return message.getMessage(enumClazz.getSimpleName() + "." + code, null, locale);
+		return message.getMessage(enumClazz.getSimpleName().toLowerCase() + "." + code.toLowerCase(), null, locale);
 	}
 
 }

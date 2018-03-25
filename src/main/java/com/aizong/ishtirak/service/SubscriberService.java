@@ -2,10 +2,13 @@ package com.aizong.ishtirak.service;
 
 import java.util.List;
 
+import com.aizong.ishtirak.CounterHistory;
 import com.aizong.ishtirak.bundle.Bundle;
+import com.aizong.ishtirak.bundle.Contract;
 import com.aizong.ishtirak.bundle.MonthlyBundle;
 import com.aizong.ishtirak.bundle.SubscriptionBundle;
 import com.aizong.ishtirak.engine.Engine;
+import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.subscriber.model.Village;
 
@@ -33,13 +36,25 @@ public interface SubscriberService {
     
     void saveBundle(Bundle bundle);
     
-    Bundle getBundleById(long id);
+    Bundle getBundleById(Long id);
     
     List<MonthlyBundle> getMonthlyBundles();
     
     void deleteBundles(List<Long> bundleIds);
 
     List<SubscriptionBundle> getSubscriptionBundles();
+
+    List<Bundle> getAllBundles();
     
+    List<Subscriber> searchSubscribers(SearchCustomerCriteria criteria);
     
+    void saveContract(Contract contract);
+    
+    Contract getContractById(Long id);
+    
+    void deleteContracts(List<Long> ids);
+
+    void saveConsumptionHistory(CounterHistory history);
+    
+    List<Contract> getContractBySubscriberId(Long subscriberId);
 }

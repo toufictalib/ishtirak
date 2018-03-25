@@ -22,6 +22,8 @@ import com.aizong.ishtirak.bundle.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.WindowUtils;
 import com.aizong.ishtirak.engine.EngineFitlerTable;
+import com.aizong.ishtirak.subscriber.form.ContractorSearchPanel;
+import com.aizong.ishtirak.subscriber.form.CustomerSearchPanel;
 import com.aizong.ishtirak.subscriber.form.SubscriberForm;
 import com.aizong.ishtirak.subscriber.form.VillageForm;
 import com.aizong.ishtirak.table.SubscriberFilterTable;
@@ -110,9 +112,28 @@ public class IshtirakApplication extends JFrame {
 		// WindowUtils.createDialog(null, "قرية
 		// جديدة",reportFilterTableFrame );
 		BundleFilterTable subscriberFilterTable = new SubscriptionBundleFilterTable("نوع الإشتراك");
-		WindowUtils.createDialog(IshtirakApplication.this, "نوع الإشتراك", subscriberFilterTable);
+		WindowUtils.createDialog(IshtirakApplication.this, "بحث المشتركين", subscriberFilterTable);
 	    }
 	});
+	
+	JButton btnSearchCustomer = new JButton("Show Customer");
+	btnSearchCustomer.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		WindowUtils.createDialog(IshtirakApplication.this, "بحث المشتركين", new CustomerSearchPanel());
+	    }
+	});
+	
+	JButton btnShowCounterHistory = new JButton("Show Counter History");
+	btnShowCounterHistory.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		WindowUtils.createDialog(IshtirakApplication.this, "العداد", new ContractorSearchPanel());
+	    }
+	});
+	
 
 	JTextArea textArea = new JTextArea();
 
@@ -124,6 +145,8 @@ public class IshtirakApplication extends JFrame {
 	panel.add(btnEngine);
 	panel.add(btnBundle);
 	panel.add(btnBundleSub);
+	panel.add(btnSearchCustomer);
+	panel.add(btnShowCounterHistory);
 	setTitle("Simple example");
 	setContentPane(panel);
 	setSize(300, 200);

@@ -73,5 +73,10 @@ public class Subscriber extends BaseEntity {
     public void setInformation(Information information) {
 	this.information = information;
     }
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }

@@ -20,7 +20,7 @@ public class ButtonFactory {
     }
     
     public static JButton createBtnDelete() {
-        return new JButton("Delete", ImageUtils.getDeleteIcon());
+        return new JButton("حذف", ImageUtils.getDeleteIcon());
     }
     
     public static JButton createBtnAdd() {
@@ -48,7 +48,7 @@ public class ButtonFactory {
     }
     
      public static JButton createBtnPrint() {
-        return new JButton("Print", ImageUtils.getInfoIcon());
+        return new JButton("طباعة", ImageUtils.getInfoIcon());
     }
      
       public static JButton createBtnCheckup() {
@@ -56,7 +56,7 @@ public class ButtonFactory {
     }
       
        public static JButton createBtnSearch() {
-        return new JButton("Search", ImageUtils.getSearchIcon());
+        return new JButton("بحث", ImageUtils.getSearchIcon());
     }
        
           public static JButton createBtnRefresh() {

@@ -60,5 +60,8 @@ public class Engine extends BaseEntity {
         this.dieselConsumption = dieselConsumption;
     }
     
-    
+    @Override
+    public String toString() {
+        return name;
+    }
 }

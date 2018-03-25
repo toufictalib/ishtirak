@@ -8,11 +8,14 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aizong.ishtirak.CounterHistory;
 import com.aizong.ishtirak.bundle.Bundle;
+import com.aizong.ishtirak.bundle.Contract;
 import com.aizong.ishtirak.bundle.MonthlyBundle;
 import com.aizong.ishtirak.bundle.SubscriptionBundle;
 import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.engine.Engine;
+import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.subscriber.model.Village;
 
@@ -102,7 +105,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public Bundle getBundleById(long id) {
+    public Bundle getBundleById(Long id) {
 	return subscriberDao.find(Bundle.class, id);
     }
 
@@ -121,6 +124,53 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void deleteBundles(List<Long> bundleIds) {
 	subscriberDao.deleteBundles(bundleIds);
 	
+    }
+
+    @Override
+    public List<Bundle> getAllBundles() {
+	return subscriberDao.findAll(Bundle.class);
+    }
+
+    @Override
+    public List<Subscriber> searchSubscribers(SearchCustomerCriteria criteria) {
+	return subscriberDao.searchSubscribers(criteria);
+    }
+
+    @Override
+    public void saveContract(Contract contract) {
+	if(contract.getId()!=null) {
+	    subscriberDao.update(contract);
+	}else {
+	    subscriberDao.save(Arrays.asList(contract));
+	}
+	
+    }
+
+    @Override
+    public Contract getContractById(Long id) {
+	return subscriberDao.find(Contract.class, id);
+    }
+
+    @Override
+    public void deleteContracts(List<Long> ids) {
+	subscriberDao.deleteContracts(ids);
+	
+    }
+
+    @Override
+    public void saveConsumptionHistory(CounterHistory history) {
+	if(history.getId()!=null) {
+	    subscriberDao.update(history);
+	}else {
+	    
+	    subscriberDao.save(Arrays.asList(history));
+	}
+	
+    }
+
+    @Override
+    public List<Contract> getContractBySubscriberId(Long subscriberId) {
+	return subscriberDao.getContractBySubscriberId(subscriberId);
     }
 
 }
