@@ -36,7 +36,7 @@ import com.aizong.ishtirak.common.ServiceProvider;
 import com.aizong.ishtirak.common.WindowUtils;
 import com.aizong.ishtirak.subscriber.form.OrientationUtils;
 import com.aizong.ishtirak.subscriber.form.SavingCallback;
-import com.aizong.ishtirak.subscriber.form.SubscriberFormSwing;
+import com.aizong.ishtirak.subscriber.form.SubscriberForm;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.utils.MessageUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -104,7 +104,7 @@ public class SubscriberFilterTable extends BasicPanel {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		WindowUtils.createDialog(getOwner(), "مشترك جديد",
-			new SubscriberFormSwing(Mode.NEW, new SavingCallback() {
+			new SubscriberForm(Mode.NEW, new SavingCallback() {
 
 			    @Override
 			    public void onSuccess(Object o) {
@@ -209,7 +209,7 @@ public class SubscriberFilterTable extends BasicPanel {
 				.getSubscriberById((Long) selectedValue);
 			if (subscriber != null) {
 			    WindowUtils.createDialog(getOwner(), "عرض المشترك",
-				    new SubscriberFormSwing(Mode.VIEW, subscriber));
+				    new SubscriberForm(Mode.VIEW, subscriber));
 			}
 		    }
 
@@ -228,7 +228,7 @@ public class SubscriberFilterTable extends BasicPanel {
 				.getSubscriberById((Long) selectedValue);
 			if (subscriber != null) {
 			    WindowUtils.createDialog(getOwner(), " تعديل المشترك " + subscriber.getName(),
-				    new SubscriberFormSwing(Mode.UPDATE, subscriber));
+				    new SubscriberForm(Mode.UPDATE, subscriber));
 			}
 		    }
 

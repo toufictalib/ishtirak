@@ -18,7 +18,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Autowired
     SubscriberDao subscriberDao;
-    
+
     @Override
     public List<Subscriber> getSubscribers() {
 	return subscriberDao.findAll(Subscriber.class);
@@ -32,25 +32,28 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void saveVillage(Village village) {
 	subscriberDao.save(Arrays.asList(village));
-	
+
     }
 
     @Override
     public void saveSubscriber(Subscriber subscriber) {
-	if(subscriber.getId()!=null) {
+	if (subscriber.getId() != null) {
+	    subscriberDao.update(subscriber.getInformation());
 	    subscriberDao.update(subscriber);
-	}else {
+	} else {
 	    subscriberDao.save(Arrays.asList(subscriber));
+	    subscriber.getInformation().setId(subscriber.getId());
+	    subscriberDao.save(Arrays.asList(subscriber.getInformation()));
+
 	}
-	
-	
+
     }
 
     @Override
     public Subscriber getSubscriberById(Long id) {
 	return subscriberDao.find(Subscriber.class, id);
     }
-    
+
     @Override
     public void deleteSubscribers(List<Long> subscriberIds) {
 	subscriberDao.deleteContents(subscriberIds);

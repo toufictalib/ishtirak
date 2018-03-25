@@ -22,7 +22,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class SubscriberFormSwing extends BasicPanel {
+public class SubscriberForm extends BasicPanel {
 
     /**
      * 
@@ -44,18 +44,18 @@ public class SubscriberFormSwing extends BasicPanel {
     private Mode mode;
     private Subscriber subscriber;
 
-    public SubscriberFormSwing(Mode mode) {
+    public SubscriberForm(Mode mode) {
 	this.mode = mode;
 	initComponetns();
 	initUI();
     }
 
-    public SubscriberFormSwing(Mode mode, SavingCallback callback) {
+    public SubscriberForm(Mode mode, SavingCallback callback) {
 	this(mode);
 	this.callback = callback;
     }
 
-    public SubscriberFormSwing(Mode mode, Subscriber subscriber) {
+    public SubscriberForm(Mode mode, Subscriber subscriber) {
 	this(mode);
 	this.subscriber = subscriber;
 	fillData();
@@ -75,7 +75,7 @@ public class SubscriberFormSwing extends BasicPanel {
 	    comboVillages.setSelectedItem(new Village(subscriber.getInformation().getVillageId()));
 
 	    txtRegion.setText(subscriber.getInformation().getRegion());
-	    txtAddress.setText(subscriber.getInformation().getAddress());
+	    txtAddress.setText(subscriber.getInformation().getDetailedAddress());
 	    txtAddress.setLineWrap(true);
 
 	    txtAddress.setBorder(UIManager.getBorder("TextField.border"));
@@ -158,9 +158,9 @@ public class SubscriberFormSwing extends BasicPanel {
 		if (subscriber != null && subscriber.getInformation() != null) {
 		    information.setId(subscriber.getInformation().getId());
 		}
-		information.setVillage(comboVillages.getValue().getId());
+		information.setVillageId(comboVillages.getValue().getId());
 		information.setRegion(txtRegion.getText());
-		information.setAddress(txtAddress.getText());
+		information.setDetailedAddress(txtAddress.getText());
 		information.setLandLine(txtLandLine.getText());
 		information.setMainPhone(txtPhone1.getText());
 		information.setAlternativePhone(txtPhone2.getText());

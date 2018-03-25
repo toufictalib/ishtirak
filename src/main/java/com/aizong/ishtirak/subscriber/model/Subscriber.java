@@ -24,7 +24,7 @@ public class Subscriber extends BaseEntity {
     @Column(name = "identifier")
     private String identifier;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "subscriber", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "subscriber")
     private Information information;
 
     public Subscriber() {

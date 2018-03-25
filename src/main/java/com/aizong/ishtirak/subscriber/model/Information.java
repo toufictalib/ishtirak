@@ -1,29 +1,39 @@
 package com.aizong.ishtirak.subscriber.model;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import com.aizong.ishtirak.common.BaseEntity;
-
 @Entity(name = "information")
-public class Information extends BaseEntity {
+public class Information implements Serializable {
 
     /**
      * 
      */
     private static final long serialVersionUID = 3466709784752671004L;
 
-    @Column(name = "id_village")
-    private Long VillageId;
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    protected Long id;
 
-    @Column(name = "region")
-    private String region;
+    @Column(name = "insert_date")
+    private Date insertDate;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "update_date")
+    private Date updateDate;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Embedded
+    private Address address = new Address();
 
     @Column(name = "main_phone")
     private String mainPhone;
@@ -36,41 +46,25 @@ public class Information extends BaseEntity {
 
     @Column(name = "email")
     private String email;
-    
+
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private Subscriber subscriber;
+
+    public Long getId() {
+	return id;
+    }
+
+    public void setId(Long id) {
+	this.id = id;
+    }
 
     public Information() {
 	super();
     }
 
     public Information(Long id) {
-	super(id);
-    }
-
-    public Long getVillage() {
-	return VillageId;
-    }
-
-    public void setVillage(Long village) {
-	this.VillageId = village;
-    }
-
-    public String getRegion() {
-	return region;
-    }
-
-    public void setRegion(String region) {
-	this.region = region;
-    }
-
-    public String getAddress() {
-	return address;
-    }
-
-    public void setAddress(String address) {
-	this.address = address;
+	this.id = id;
     }
 
     public String getMainPhone() {
@@ -87,14 +81,6 @@ public class Information extends BaseEntity {
 
     public void setAlternativePhone(String alternativePhone) {
 	this.alternativePhone = alternativePhone;
-    }
-
-    public Long getVillageId() {
-	return VillageId;
-    }
-
-    public void setVillageId(Long villageId) {
-	VillageId = villageId;
     }
 
     public String getLandLine() {
@@ -114,12 +100,69 @@ public class Information extends BaseEntity {
     }
 
     public Subscriber getSubscriber() {
-        return subscriber;
+	return subscriber;
     }
 
     public void setSubscriber(Subscriber subscriber) {
-        this.subscriber = subscriber;
+	this.subscriber = subscriber;
     }
 
+    public Long getVillageId() {
+	return address.getVillageId();
+    }
+
+    public void setVillageId(Long villageId) {
+	address.setVillageId(villageId);
+    }
+
+    public String getRegion() {
+	return address.getRegion();
+    }
+
+    public void setRegion(String region) {
+	address.setRegion(region);
+    }
+
+    public String getDetailedAddress() {
+	return address.getDetailedAddress();
+    }
+
+    public void setDetailedAddress(String detailedAddress) {
+	address.setDetailedAddress(detailedAddress);
+    }
+
+    public Address getAddress() {
+	return address;
+    }
+
+    public void setAddress(Address address) {
+	this.address = address;
+    }
+
+    public Date getInsertDate() {
+        return insertDate;
+    }
+
+    public void setInsertDate(Date insertDate) {
+        this.insertDate = insertDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
     
+    
+
 }

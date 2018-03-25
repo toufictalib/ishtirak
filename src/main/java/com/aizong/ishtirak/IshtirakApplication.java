@@ -18,7 +18,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.WindowUtils;
-import com.aizong.ishtirak.subscriber.form.SubscriberFormSwing;
+import com.aizong.ishtirak.subscriber.form.SubscriberForm;
 import com.aizong.ishtirak.subscriber.form.VillageForm;
 import com.aizong.ishtirak.table.SubscriberFilterTable;
 import com.aizong.ishtirak.utils.Message;
@@ -45,7 +45,7 @@ public class IshtirakApplication extends JFrame {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		WindowUtils.createDialog(null, "مشترك جديد", new SubscriberFormSwing(Mode.NEW));
+		WindowUtils.createDialog(null, "مشترك جديد", new SubscriberForm(Mode.NEW));
 	    }
 	});
 
