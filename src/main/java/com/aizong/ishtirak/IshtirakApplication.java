@@ -16,6 +16,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.aizong.ishtirak.bundle.BundleFilterTable;
+import com.aizong.ishtirak.bundle.MonthlyBundleFilterTable;
+import com.aizong.ishtirak.bundle.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.WindowUtils;
 import com.aizong.ishtirak.engine.EngineFitlerTable;
@@ -39,7 +42,7 @@ public class IshtirakApplication extends JFrame {
 
     
     public IshtirakApplication() {
-	JPanel jPanel = new JPanel();
+	JPanel panel = new JPanel();
 
 	JButton btn = new JButton("Add");
 	btn.addActionListener(new ActionListener() {
@@ -84,17 +87,45 @@ public class IshtirakApplication extends JFrame {
 		WindowUtils.createDialog(IshtirakApplication.this, "المولدات", subscriberFilterTable);
 	    }
 	});
+	
+	JButton btnBundle = new JButton("Show Bundle");
+	btnBundle.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+
+		// WindowUtils.createDialog(null, "قرية
+		// جديدة",reportFilterTableFrame );
+		BundleFilterTable subscriberFilterTable = new MonthlyBundleFilterTable("نوع الإشتراك");
+		WindowUtils.createDialog(IshtirakApplication.this, "نوع الإشتراك", subscriberFilterTable);
+	    }
+	});
+	
+	JButton btnBundleSub = new JButton("Show Sub Bundle");
+	btnBundleSub.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+
+		// WindowUtils.createDialog(null, "قرية
+		// جديدة",reportFilterTableFrame );
+		BundleFilterTable subscriberFilterTable = new SubscriptionBundleFilterTable("نوع الإشتراك");
+		WindowUtils.createDialog(IshtirakApplication.this, "نوع الإشتراك", subscriberFilterTable);
+	    }
+	});
 
 	JTextArea textArea = new JTextArea();
 
 	textArea.setText("Toufic Talib");
-	jPanel.add(textArea);
-	jPanel.add(btn);
-	jPanel.add(btnVillage);
-	jPanel.add(btnShow);
-	jPanel.add(btnEngine);
+	panel.add(textArea);
+	panel.add(btn);
+	panel.add(btnVillage);
+	panel.add(btnShow);
+	panel.add(btnEngine);
+	panel.add(btnBundle);
+	panel.add(btnBundleSub);
 	setTitle("Simple example");
-	setContentPane(jPanel);
+	setContentPane(panel);
 	setSize(300, 200);
 	setLocationRelativeTo(null);
 	setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -30,4 +30,15 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 
     }
 
+    @Override
+    public void deleteBundles(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from bundle where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids",ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
+
 }
