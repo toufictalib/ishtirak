@@ -8,10 +8,10 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
-import com.aizong.ishtirak.bundle.Contract;
-import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
-import com.aizong.ishtirak.subscriber.form.Enums.SearchCustomerType;
-import com.aizong.ishtirak.subscriber.model.Subscriber;
+import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
+import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.Subscriber;
 
 @Repository
 public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements SubscriberDao {

@@ -2,15 +2,15 @@ package com.aizong.ishtirak.service;
 
 import java.util.List;
 
-import com.aizong.ishtirak.bundle.Bundle;
-import com.aizong.ishtirak.bundle.Contract;
-import com.aizong.ishtirak.bundle.MonthlyBundle;
-import com.aizong.ishtirak.bundle.SubscriptionBundle;
-import com.aizong.ishtirak.engine.Engine;
-import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
-import com.aizong.ishtirak.subscriber.model.Subscriber;
-import com.aizong.ishtirak.subscriber.model.Village;
-import com.aizong.ishtirak.transaction.CounterHistory;
+import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.model.Bundle;
+import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.CounterHistory;
+import com.aizong.ishtirak.model.Engine;
+import com.aizong.ishtirak.model.MonthlyBundle;
+import com.aizong.ishtirak.model.Subscriber;
+import com.aizong.ishtirak.model.SubscriptionBundle;
+import com.aizong.ishtirak.model.Village;
 
 public interface SubscriberService {
 

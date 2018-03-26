@@ -2,9 +2,9 @@ package com.aizong.ishtirak.dao;
 
 import java.util.List;
 
-import com.aizong.ishtirak.bundle.Contract;
-import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
-import com.aizong.ishtirak.subscriber.model.Subscriber;
+import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.Subscriber;
 
 public interface SubscriberDao extends GenericDao<Object> {
 
