@@ -6,8 +6,6 @@ import java.awt.Window;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.aizong.ishtirak.utils.Message;
-
 public class BasicPanel extends JPanel {
     /**
      * 

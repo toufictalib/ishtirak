@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.aizong.ishtirak.utils;
+package com.aizong.ishtirak.common;
 
 import java.beans.*;
 
@@ -15,7 +15,7 @@ public class HintTextFieldBeanInfo extends SimpleBeanInfo {
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
     private static BeanDescriptor getBdescriptor(){
-        BeanDescriptor beanDescriptor = new BeanDescriptor  ( com.aizong.ishtirak.utils.HintTextField.class , null ); // NOI18N//GEN-HEADEREND:BeanDescriptor
+        BeanDescriptor beanDescriptor = new BeanDescriptor  ( com.aizong.ishtirak.common.HintTextField.class , null ); // NOI18N//GEN-HEADEREND:BeanDescriptor
 
         // Here you can add code for customizing the BeanDescriptor.
 
@@ -162,140 +162,140 @@ public class HintTextFieldBeanInfo extends SimpleBeanInfo {
         PropertyDescriptor[] properties = new PropertyDescriptor[134];
     
         try {
-            properties[PROPERTY_accessibleContext] = new PropertyDescriptor ( "accessibleContext", com.aizong.ishtirak.utils.HintTextField.class, "getAccessibleContext", null ); // NOI18N
-            properties[PROPERTY_action] = new PropertyDescriptor ( "action", com.aizong.ishtirak.utils.HintTextField.class, "getAction", "setAction" ); // NOI18N
-            properties[PROPERTY_actionCommand] = new PropertyDescriptor ( "actionCommand", com.aizong.ishtirak.utils.HintTextField.class, null, "setActionCommand" ); // NOI18N
-            properties[PROPERTY_actionListeners] = new PropertyDescriptor ( "actionListeners", com.aizong.ishtirak.utils.HintTextField.class, "getActionListeners", null ); // NOI18N
-            properties[PROPERTY_actionMap] = new PropertyDescriptor ( "actionMap", com.aizong.ishtirak.utils.HintTextField.class, "getActionMap", "setActionMap" ); // NOI18N
-            properties[PROPERTY_actions] = new PropertyDescriptor ( "actions", com.aizong.ishtirak.utils.HintTextField.class, "getActions", null ); // NOI18N
-            properties[PROPERTY_alignmentX] = new PropertyDescriptor ( "alignmentX", com.aizong.ishtirak.utils.HintTextField.class, "getAlignmentX", "setAlignmentX" ); // NOI18N
-            properties[PROPERTY_alignmentY] = new PropertyDescriptor ( "alignmentY", com.aizong.ishtirak.utils.HintTextField.class, "getAlignmentY", "setAlignmentY" ); // NOI18N
-            properties[PROPERTY_ancestorListeners] = new PropertyDescriptor ( "ancestorListeners", com.aizong.ishtirak.utils.HintTextField.class, "getAncestorListeners", null ); // NOI18N
-            properties[PROPERTY_autoscrolls] = new PropertyDescriptor ( "autoscrolls", com.aizong.ishtirak.utils.HintTextField.class, "getAutoscrolls", "setAutoscrolls" ); // NOI18N
-            properties[PROPERTY_background] = new PropertyDescriptor ( "background", com.aizong.ishtirak.utils.HintTextField.class, "getBackground", "setBackground" ); // NOI18N
-            properties[PROPERTY_backgroundSet] = new PropertyDescriptor ( "backgroundSet", com.aizong.ishtirak.utils.HintTextField.class, "isBackgroundSet", null ); // NOI18N
-            properties[PROPERTY_baselineResizeBehavior] = new PropertyDescriptor ( "baselineResizeBehavior", com.aizong.ishtirak.utils.HintTextField.class, "getBaselineResizeBehavior", null ); // NOI18N
-            properties[PROPERTY_border] = new PropertyDescriptor ( "border", com.aizong.ishtirak.utils.HintTextField.class, "getBorder", "setBorder" ); // NOI18N
-            properties[PROPERTY_bounds] = new PropertyDescriptor ( "bounds", com.aizong.ishtirak.utils.HintTextField.class, "getBounds", "setBounds" ); // NOI18N
-            properties[PROPERTY_caret] = new PropertyDescriptor ( "caret", com.aizong.ishtirak.utils.HintTextField.class, "getCaret", "setCaret" ); // NOI18N
-            properties[PROPERTY_caretColor] = new PropertyDescriptor ( "caretColor", com.aizong.ishtirak.utils.HintTextField.class, "getCaretColor", "setCaretColor" ); // NOI18N
-            properties[PROPERTY_caretListeners] = new PropertyDescriptor ( "caretListeners", com.aizong.ishtirak.utils.HintTextField.class, "getCaretListeners", null ); // NOI18N
-            properties[PROPERTY_caretPosition] = new PropertyDescriptor ( "caretPosition", com.aizong.ishtirak.utils.HintTextField.class, "getCaretPosition", "setCaretPosition" ); // NOI18N
-            properties[PROPERTY_colorModel] = new PropertyDescriptor ( "colorModel", com.aizong.ishtirak.utils.HintTextField.class, "getColorModel", null ); // NOI18N
-            properties[PROPERTY_columns] = new PropertyDescriptor ( "columns", com.aizong.ishtirak.utils.HintTextField.class, "getColumns", "setColumns" ); // NOI18N
-            properties[PROPERTY_component] = new IndexedPropertyDescriptor ( "component", com.aizong.ishtirak.utils.HintTextField.class, null, null, "getComponent", null ); // NOI18N
-            properties[PROPERTY_componentCount] = new PropertyDescriptor ( "componentCount", com.aizong.ishtirak.utils.HintTextField.class, "getComponentCount", null ); // NOI18N
-            properties[PROPERTY_componentListeners] = new PropertyDescriptor ( "componentListeners", com.aizong.ishtirak.utils.HintTextField.class, "getComponentListeners", null ); // NOI18N
-            properties[PROPERTY_componentOrientation] = new PropertyDescriptor ( "componentOrientation", com.aizong.ishtirak.utils.HintTextField.class, "getComponentOrientation", "setComponentOrientation" ); // NOI18N
-            properties[PROPERTY_componentPopupMenu] = new PropertyDescriptor ( "componentPopupMenu", com.aizong.ishtirak.utils.HintTextField.class, "getComponentPopupMenu", "setComponentPopupMenu" ); // NOI18N
-            properties[PROPERTY_components] = new PropertyDescriptor ( "components", com.aizong.ishtirak.utils.HintTextField.class, "getComponents", null ); // NOI18N
-            properties[PROPERTY_containerListeners] = new PropertyDescriptor ( "containerListeners", com.aizong.ishtirak.utils.HintTextField.class, "getContainerListeners", null ); // NOI18N
-            properties[PROPERTY_cursor] = new PropertyDescriptor ( "cursor", com.aizong.ishtirak.utils.HintTextField.class, "getCursor", "setCursor" ); // NOI18N
-            properties[PROPERTY_cursorSet] = new PropertyDescriptor ( "cursorSet", com.aizong.ishtirak.utils.HintTextField.class, "isCursorSet", null ); // NOI18N
-            properties[PROPERTY_debugGraphicsOptions] = new PropertyDescriptor ( "debugGraphicsOptions", com.aizong.ishtirak.utils.HintTextField.class, "getDebugGraphicsOptions", "setDebugGraphicsOptions" ); // NOI18N
-            properties[PROPERTY_disabledTextColor] = new PropertyDescriptor ( "disabledTextColor", com.aizong.ishtirak.utils.HintTextField.class, "getDisabledTextColor", "setDisabledTextColor" ); // NOI18N
-            properties[PROPERTY_displayable] = new PropertyDescriptor ( "displayable", com.aizong.ishtirak.utils.HintTextField.class, "isDisplayable", null ); // NOI18N
-            properties[PROPERTY_document] = new PropertyDescriptor ( "document", com.aizong.ishtirak.utils.HintTextField.class, "getDocument", "setDocument" ); // NOI18N
-            properties[PROPERTY_doubleBuffered] = new PropertyDescriptor ( "doubleBuffered", com.aizong.ishtirak.utils.HintTextField.class, "isDoubleBuffered", "setDoubleBuffered" ); // NOI18N
-            properties[PROPERTY_dragEnabled] = new PropertyDescriptor ( "dragEnabled", com.aizong.ishtirak.utils.HintTextField.class, "getDragEnabled", "setDragEnabled" ); // NOI18N
-            properties[PROPERTY_dropLocation] = new PropertyDescriptor ( "dropLocation", com.aizong.ishtirak.utils.HintTextField.class, "getDropLocation", null ); // NOI18N
-            properties[PROPERTY_dropMode] = new PropertyDescriptor ( "dropMode", com.aizong.ishtirak.utils.HintTextField.class, "getDropMode", "setDropMode" ); // NOI18N
-            properties[PROPERTY_dropTarget] = new PropertyDescriptor ( "dropTarget", com.aizong.ishtirak.utils.HintTextField.class, "getDropTarget", "setDropTarget" ); // NOI18N
-            properties[PROPERTY_editable] = new PropertyDescriptor ( "editable", com.aizong.ishtirak.utils.HintTextField.class, "isEditable", "setEditable" ); // NOI18N
-            properties[PROPERTY_enabled] = new PropertyDescriptor ( "enabled", com.aizong.ishtirak.utils.HintTextField.class, "isEnabled", "setEnabled" ); // NOI18N
-            properties[PROPERTY_focusable] = new PropertyDescriptor ( "focusable", com.aizong.ishtirak.utils.HintTextField.class, "isFocusable", "setFocusable" ); // NOI18N
-            properties[PROPERTY_focusAccelerator] = new PropertyDescriptor ( "focusAccelerator", com.aizong.ishtirak.utils.HintTextField.class, "getFocusAccelerator", "setFocusAccelerator" ); // NOI18N
-            properties[PROPERTY_focusCycleRoot] = new PropertyDescriptor ( "focusCycleRoot", com.aizong.ishtirak.utils.HintTextField.class, "isFocusCycleRoot", "setFocusCycleRoot" ); // NOI18N
-            properties[PROPERTY_focusCycleRootAncestor] = new PropertyDescriptor ( "focusCycleRootAncestor", com.aizong.ishtirak.utils.HintTextField.class, "getFocusCycleRootAncestor", null ); // NOI18N
-            properties[PROPERTY_focusListeners] = new PropertyDescriptor ( "focusListeners", com.aizong.ishtirak.utils.HintTextField.class, "getFocusListeners", null ); // NOI18N
-            properties[PROPERTY_focusOwner] = new PropertyDescriptor ( "focusOwner", com.aizong.ishtirak.utils.HintTextField.class, "isFocusOwner", null ); // NOI18N
-            properties[PROPERTY_focusTraversable] = new PropertyDescriptor ( "focusTraversable", com.aizong.ishtirak.utils.HintTextField.class, "isFocusTraversable", null ); // NOI18N
-            properties[PROPERTY_focusTraversalKeys] = new IndexedPropertyDescriptor ( "focusTraversalKeys", com.aizong.ishtirak.utils.HintTextField.class, null, null, null, "setFocusTraversalKeys" ); // NOI18N
-            properties[PROPERTY_focusTraversalKeysEnabled] = new PropertyDescriptor ( "focusTraversalKeysEnabled", com.aizong.ishtirak.utils.HintTextField.class, "getFocusTraversalKeysEnabled", "setFocusTraversalKeysEnabled" ); // NOI18N
-            properties[PROPERTY_focusTraversalPolicy] = new PropertyDescriptor ( "focusTraversalPolicy", com.aizong.ishtirak.utils.HintTextField.class, "getFocusTraversalPolicy", "setFocusTraversalPolicy" ); // NOI18N
-            properties[PROPERTY_focusTraversalPolicyProvider] = new PropertyDescriptor ( "focusTraversalPolicyProvider", com.aizong.ishtirak.utils.HintTextField.class, "isFocusTraversalPolicyProvider", "setFocusTraversalPolicyProvider" ); // NOI18N
-            properties[PROPERTY_focusTraversalPolicySet] = new PropertyDescriptor ( "focusTraversalPolicySet", com.aizong.ishtirak.utils.HintTextField.class, "isFocusTraversalPolicySet", null ); // NOI18N
-            properties[PROPERTY_font] = new PropertyDescriptor ( "font", com.aizong.ishtirak.utils.HintTextField.class, "getFont", "setFont" ); // NOI18N
-            properties[PROPERTY_fontSet] = new PropertyDescriptor ( "fontSet", com.aizong.ishtirak.utils.HintTextField.class, "isFontSet", null ); // NOI18N
-            properties[PROPERTY_foreground] = new PropertyDescriptor ( "foreground", com.aizong.ishtirak.utils.HintTextField.class, "getForeground", "setForeground" ); // NOI18N
-            properties[PROPERTY_foregroundSet] = new PropertyDescriptor ( "foregroundSet", com.aizong.ishtirak.utils.HintTextField.class, "isForegroundSet", null ); // NOI18N
-            properties[PROPERTY_graphics] = new PropertyDescriptor ( "graphics", com.aizong.ishtirak.utils.HintTextField.class, "getGraphics", null ); // NOI18N
-            properties[PROPERTY_graphicsConfiguration] = new PropertyDescriptor ( "graphicsConfiguration", com.aizong.ishtirak.utils.HintTextField.class, "getGraphicsConfiguration", null ); // NOI18N
-            properties[PROPERTY_height] = new PropertyDescriptor ( "height", com.aizong.ishtirak.utils.HintTextField.class, "getHeight", null ); // NOI18N
-            properties[PROPERTY_hierarchyBoundsListeners] = new PropertyDescriptor ( "hierarchyBoundsListeners", com.aizong.ishtirak.utils.HintTextField.class, "getHierarchyBoundsListeners", null ); // NOI18N
-            properties[PROPERTY_hierarchyListeners] = new PropertyDescriptor ( "hierarchyListeners", com.aizong.ishtirak.utils.HintTextField.class, "getHierarchyListeners", null ); // NOI18N
-            properties[PROPERTY_highlighter] = new PropertyDescriptor ( "highlighter", com.aizong.ishtirak.utils.HintTextField.class, "getHighlighter", "setHighlighter" ); // NOI18N
-            properties[PROPERTY_hint] = new PropertyDescriptor ( "hint", com.aizong.ishtirak.utils.HintTextField.class, "getHint", "setHint" ); // NOI18N
-            properties[PROPERTY_horizontalAlignment] = new PropertyDescriptor ( "horizontalAlignment", com.aizong.ishtirak.utils.HintTextField.class, "getHorizontalAlignment", "setHorizontalAlignment" ); // NOI18N
-            properties[PROPERTY_horizontalVisibility] = new PropertyDescriptor ( "horizontalVisibility", com.aizong.ishtirak.utils.HintTextField.class, "getHorizontalVisibility", null ); // NOI18N
-            properties[PROPERTY_ignoreRepaint] = new PropertyDescriptor ( "ignoreRepaint", com.aizong.ishtirak.utils.HintTextField.class, "getIgnoreRepaint", "setIgnoreRepaint" ); // NOI18N
-            properties[PROPERTY_inheritsPopupMenu] = new PropertyDescriptor ( "inheritsPopupMenu", com.aizong.ishtirak.utils.HintTextField.class, "getInheritsPopupMenu", "setInheritsPopupMenu" ); // NOI18N
-            properties[PROPERTY_inputContext] = new PropertyDescriptor ( "inputContext", com.aizong.ishtirak.utils.HintTextField.class, "getInputContext", null ); // NOI18N
-            properties[PROPERTY_inputMap] = new PropertyDescriptor ( "inputMap", com.aizong.ishtirak.utils.HintTextField.class, "getInputMap", null ); // NOI18N
-            properties[PROPERTY_inputMethodListeners] = new PropertyDescriptor ( "inputMethodListeners", com.aizong.ishtirak.utils.HintTextField.class, "getInputMethodListeners", null ); // NOI18N
-            properties[PROPERTY_inputMethodRequests] = new PropertyDescriptor ( "inputMethodRequests", com.aizong.ishtirak.utils.HintTextField.class, "getInputMethodRequests", null ); // NOI18N
-            properties[PROPERTY_inputVerifier] = new PropertyDescriptor ( "inputVerifier", com.aizong.ishtirak.utils.HintTextField.class, "getInputVerifier", "setInputVerifier" ); // NOI18N
-            properties[PROPERTY_insets] = new PropertyDescriptor ( "insets", com.aizong.ishtirak.utils.HintTextField.class, "getInsets", null ); // NOI18N
-            properties[PROPERTY_keyListeners] = new PropertyDescriptor ( "keyListeners", com.aizong.ishtirak.utils.HintTextField.class, "getKeyListeners", null ); // NOI18N
-            properties[PROPERTY_keymap] = new PropertyDescriptor ( "keymap", com.aizong.ishtirak.utils.HintTextField.class, "getKeymap", "setKeymap" ); // NOI18N
-            properties[PROPERTY_layout] = new PropertyDescriptor ( "layout", com.aizong.ishtirak.utils.HintTextField.class, "getLayout", "setLayout" ); // NOI18N
-            properties[PROPERTY_lightweight] = new PropertyDescriptor ( "lightweight", com.aizong.ishtirak.utils.HintTextField.class, "isLightweight", null ); // NOI18N
-            properties[PROPERTY_locale] = new PropertyDescriptor ( "locale", com.aizong.ishtirak.utils.HintTextField.class, "getLocale", "setLocale" ); // NOI18N
-            properties[PROPERTY_location] = new PropertyDescriptor ( "location", com.aizong.ishtirak.utils.HintTextField.class, "getLocation", "setLocation" ); // NOI18N
-            properties[PROPERTY_locationOnScreen] = new PropertyDescriptor ( "locationOnScreen", com.aizong.ishtirak.utils.HintTextField.class, "getLocationOnScreen", null ); // NOI18N
-            properties[PROPERTY_managingFocus] = new PropertyDescriptor ( "managingFocus", com.aizong.ishtirak.utils.HintTextField.class, "isManagingFocus", null ); // NOI18N
-            properties[PROPERTY_margin] = new PropertyDescriptor ( "margin", com.aizong.ishtirak.utils.HintTextField.class, "getMargin", "setMargin" ); // NOI18N
-            properties[PROPERTY_maximumSize] = new PropertyDescriptor ( "maximumSize", com.aizong.ishtirak.utils.HintTextField.class, "getMaximumSize", "setMaximumSize" ); // NOI18N
-            properties[PROPERTY_maximumSizeSet] = new PropertyDescriptor ( "maximumSizeSet", com.aizong.ishtirak.utils.HintTextField.class, "isMaximumSizeSet", null ); // NOI18N
-            properties[PROPERTY_minimumSize] = new PropertyDescriptor ( "minimumSize", com.aizong.ishtirak.utils.HintTextField.class, "getMinimumSize", "setMinimumSize" ); // NOI18N
-            properties[PROPERTY_minimumSizeSet] = new PropertyDescriptor ( "minimumSizeSet", com.aizong.ishtirak.utils.HintTextField.class, "isMinimumSizeSet", null ); // NOI18N
-            properties[PROPERTY_mouseListeners] = new PropertyDescriptor ( "mouseListeners", com.aizong.ishtirak.utils.HintTextField.class, "getMouseListeners", null ); // NOI18N
-            properties[PROPERTY_mouseMotionListeners] = new PropertyDescriptor ( "mouseMotionListeners", com.aizong.ishtirak.utils.HintTextField.class, "getMouseMotionListeners", null ); // NOI18N
-            properties[PROPERTY_mousePosition] = new PropertyDescriptor ( "mousePosition", com.aizong.ishtirak.utils.HintTextField.class, "getMousePosition", null ); // NOI18N
-            properties[PROPERTY_mouseWheelListeners] = new PropertyDescriptor ( "mouseWheelListeners", com.aizong.ishtirak.utils.HintTextField.class, "getMouseWheelListeners", null ); // NOI18N
-            properties[PROPERTY_name] = new PropertyDescriptor ( "name", com.aizong.ishtirak.utils.HintTextField.class, "getName", "setName" ); // NOI18N
-            properties[PROPERTY_navigationFilter] = new PropertyDescriptor ( "navigationFilter", com.aizong.ishtirak.utils.HintTextField.class, "getNavigationFilter", "setNavigationFilter" ); // NOI18N
-            properties[PROPERTY_nextFocusableComponent] = new PropertyDescriptor ( "nextFocusableComponent", com.aizong.ishtirak.utils.HintTextField.class, "getNextFocusableComponent", "setNextFocusableComponent" ); // NOI18N
-            properties[PROPERTY_opaque] = new PropertyDescriptor ( "opaque", com.aizong.ishtirak.utils.HintTextField.class, "isOpaque", "setOpaque" ); // NOI18N
-            properties[PROPERTY_optimizedDrawingEnabled] = new PropertyDescriptor ( "optimizedDrawingEnabled", com.aizong.ishtirak.utils.HintTextField.class, "isOptimizedDrawingEnabled", null ); // NOI18N
-            properties[PROPERTY_paintingForPrint] = new PropertyDescriptor ( "paintingForPrint", com.aizong.ishtirak.utils.HintTextField.class, "isPaintingForPrint", null ); // NOI18N
-            properties[PROPERTY_paintingTile] = new PropertyDescriptor ( "paintingTile", com.aizong.ishtirak.utils.HintTextField.class, "isPaintingTile", null ); // NOI18N
-            properties[PROPERTY_parent] = new PropertyDescriptor ( "parent", com.aizong.ishtirak.utils.HintTextField.class, "getParent", null ); // NOI18N
-            properties[PROPERTY_peer] = new PropertyDescriptor ( "peer", com.aizong.ishtirak.utils.HintTextField.class, "getPeer", null ); // NOI18N
-            properties[PROPERTY_preferredScrollableViewportSize] = new PropertyDescriptor ( "preferredScrollableViewportSize", com.aizong.ishtirak.utils.HintTextField.class, "getPreferredScrollableViewportSize", null ); // NOI18N
-            properties[PROPERTY_preferredSize] = new PropertyDescriptor ( "preferredSize", com.aizong.ishtirak.utils.HintTextField.class, "getPreferredSize", "setPreferredSize" ); // NOI18N
-            properties[PROPERTY_preferredSizeSet] = new PropertyDescriptor ( "preferredSizeSet", com.aizong.ishtirak.utils.HintTextField.class, "isPreferredSizeSet", null ); // NOI18N
-            properties[PROPERTY_propertyChangeListeners] = new PropertyDescriptor ( "propertyChangeListeners", com.aizong.ishtirak.utils.HintTextField.class, "getPropertyChangeListeners", null ); // NOI18N
-            properties[PROPERTY_registeredKeyStrokes] = new PropertyDescriptor ( "registeredKeyStrokes", com.aizong.ishtirak.utils.HintTextField.class, "getRegisteredKeyStrokes", null ); // NOI18N
-            properties[PROPERTY_requestFocusEnabled] = new PropertyDescriptor ( "requestFocusEnabled", com.aizong.ishtirak.utils.HintTextField.class, "isRequestFocusEnabled", "setRequestFocusEnabled" ); // NOI18N
-            properties[PROPERTY_rootPane] = new PropertyDescriptor ( "rootPane", com.aizong.ishtirak.utils.HintTextField.class, "getRootPane", null ); // NOI18N
-            properties[PROPERTY_scrollableTracksViewportHeight] = new PropertyDescriptor ( "scrollableTracksViewportHeight", com.aizong.ishtirak.utils.HintTextField.class, "getScrollableTracksViewportHeight", null ); // NOI18N
-            properties[PROPERTY_scrollableTracksViewportWidth] = new PropertyDescriptor ( "scrollableTracksViewportWidth", com.aizong.ishtirak.utils.HintTextField.class, "getScrollableTracksViewportWidth", null ); // NOI18N
-            properties[PROPERTY_scrollOffset] = new PropertyDescriptor ( "scrollOffset", com.aizong.ishtirak.utils.HintTextField.class, "getScrollOffset", "setScrollOffset" ); // NOI18N
-            properties[PROPERTY_selectedText] = new PropertyDescriptor ( "selectedText", com.aizong.ishtirak.utils.HintTextField.class, "getSelectedText", null ); // NOI18N
-            properties[PROPERTY_selectedTextColor] = new PropertyDescriptor ( "selectedTextColor", com.aizong.ishtirak.utils.HintTextField.class, "getSelectedTextColor", "setSelectedTextColor" ); // NOI18N
-            properties[PROPERTY_selectionColor] = new PropertyDescriptor ( "selectionColor", com.aizong.ishtirak.utils.HintTextField.class, "getSelectionColor", "setSelectionColor" ); // NOI18N
-            properties[PROPERTY_selectionEnd] = new PropertyDescriptor ( "selectionEnd", com.aizong.ishtirak.utils.HintTextField.class, "getSelectionEnd", "setSelectionEnd" ); // NOI18N
-            properties[PROPERTY_selectionStart] = new PropertyDescriptor ( "selectionStart", com.aizong.ishtirak.utils.HintTextField.class, "getSelectionStart", "setSelectionStart" ); // NOI18N
-            properties[PROPERTY_showing] = new PropertyDescriptor ( "showing", com.aizong.ishtirak.utils.HintTextField.class, "isShowing", null ); // NOI18N
-            properties[PROPERTY_size] = new PropertyDescriptor ( "size", com.aizong.ishtirak.utils.HintTextField.class, "getSize", "setSize" ); // NOI18N
-            properties[PROPERTY_text] = new PropertyDescriptor ( "text", com.aizong.ishtirak.utils.HintTextField.class, "getText", "setText" ); // NOI18N
-            properties[PROPERTY_toolkit] = new PropertyDescriptor ( "toolkit", com.aizong.ishtirak.utils.HintTextField.class, "getToolkit", null ); // NOI18N
-            properties[PROPERTY_toolTipText] = new PropertyDescriptor ( "toolTipText", com.aizong.ishtirak.utils.HintTextField.class, "getToolTipText", "setToolTipText" ); // NOI18N
-            properties[PROPERTY_topLevelAncestor] = new PropertyDescriptor ( "topLevelAncestor", com.aizong.ishtirak.utils.HintTextField.class, "getTopLevelAncestor", null ); // NOI18N
-            properties[PROPERTY_transferHandler] = new PropertyDescriptor ( "transferHandler", com.aizong.ishtirak.utils.HintTextField.class, "getTransferHandler", "setTransferHandler" ); // NOI18N
-            properties[PROPERTY_treeLock] = new PropertyDescriptor ( "treeLock", com.aizong.ishtirak.utils.HintTextField.class, "getTreeLock", null ); // NOI18N
-            properties[PROPERTY_UI] = new PropertyDescriptor ( "UI", com.aizong.ishtirak.utils.HintTextField.class, "getUI", "setUI" ); // NOI18N
-            properties[PROPERTY_UIClassID] = new PropertyDescriptor ( "UIClassID", com.aizong.ishtirak.utils.HintTextField.class, "getUIClassID", null ); // NOI18N
-            properties[PROPERTY_valid] = new PropertyDescriptor ( "valid", com.aizong.ishtirak.utils.HintTextField.class, "isValid", null ); // NOI18N
-            properties[PROPERTY_validateRoot] = new PropertyDescriptor ( "validateRoot", com.aizong.ishtirak.utils.HintTextField.class, "isValidateRoot", null ); // NOI18N
-            properties[PROPERTY_verifyInputWhenFocusTarget] = new PropertyDescriptor ( "verifyInputWhenFocusTarget", com.aizong.ishtirak.utils.HintTextField.class, "getVerifyInputWhenFocusTarget", "setVerifyInputWhenFocusTarget" ); // NOI18N
-            properties[PROPERTY_vetoableChangeListeners] = new PropertyDescriptor ( "vetoableChangeListeners", com.aizong.ishtirak.utils.HintTextField.class, "getVetoableChangeListeners", null ); // NOI18N
-            properties[PROPERTY_visible] = new PropertyDescriptor ( "visible", com.aizong.ishtirak.utils.HintTextField.class, "isVisible", "setVisible" ); // NOI18N
-            properties[PROPERTY_visibleRect] = new PropertyDescriptor ( "visibleRect", com.aizong.ishtirak.utils.HintTextField.class, "getVisibleRect", null ); // NOI18N
-            properties[PROPERTY_width] = new PropertyDescriptor ( "width", com.aizong.ishtirak.utils.HintTextField.class, "getWidth", null ); // NOI18N
-            properties[PROPERTY_x] = new PropertyDescriptor ( "x", com.aizong.ishtirak.utils.HintTextField.class, "getX", null ); // NOI18N
-            properties[PROPERTY_y] = new PropertyDescriptor ( "y", com.aizong.ishtirak.utils.HintTextField.class, "getY", null ); // NOI18N
+            properties[PROPERTY_accessibleContext] = new PropertyDescriptor ( "accessibleContext", com.aizong.ishtirak.common.HintTextField.class, "getAccessibleContext", null ); // NOI18N
+            properties[PROPERTY_action] = new PropertyDescriptor ( "action", com.aizong.ishtirak.common.HintTextField.class, "getAction", "setAction" ); // NOI18N
+            properties[PROPERTY_actionCommand] = new PropertyDescriptor ( "actionCommand", com.aizong.ishtirak.common.HintTextField.class, null, "setActionCommand" ); // NOI18N
+            properties[PROPERTY_actionListeners] = new PropertyDescriptor ( "actionListeners", com.aizong.ishtirak.common.HintTextField.class, "getActionListeners", null ); // NOI18N
+            properties[PROPERTY_actionMap] = new PropertyDescriptor ( "actionMap", com.aizong.ishtirak.common.HintTextField.class, "getActionMap", "setActionMap" ); // NOI18N
+            properties[PROPERTY_actions] = new PropertyDescriptor ( "actions", com.aizong.ishtirak.common.HintTextField.class, "getActions", null ); // NOI18N
+            properties[PROPERTY_alignmentX] = new PropertyDescriptor ( "alignmentX", com.aizong.ishtirak.common.HintTextField.class, "getAlignmentX", "setAlignmentX" ); // NOI18N
+            properties[PROPERTY_alignmentY] = new PropertyDescriptor ( "alignmentY", com.aizong.ishtirak.common.HintTextField.class, "getAlignmentY", "setAlignmentY" ); // NOI18N
+            properties[PROPERTY_ancestorListeners] = new PropertyDescriptor ( "ancestorListeners", com.aizong.ishtirak.common.HintTextField.class, "getAncestorListeners", null ); // NOI18N
+            properties[PROPERTY_autoscrolls] = new PropertyDescriptor ( "autoscrolls", com.aizong.ishtirak.common.HintTextField.class, "getAutoscrolls", "setAutoscrolls" ); // NOI18N
+            properties[PROPERTY_background] = new PropertyDescriptor ( "background", com.aizong.ishtirak.common.HintTextField.class, "getBackground", "setBackground" ); // NOI18N
+            properties[PROPERTY_backgroundSet] = new PropertyDescriptor ( "backgroundSet", com.aizong.ishtirak.common.HintTextField.class, "isBackgroundSet", null ); // NOI18N
+            properties[PROPERTY_baselineResizeBehavior] = new PropertyDescriptor ( "baselineResizeBehavior", com.aizong.ishtirak.common.HintTextField.class, "getBaselineResizeBehavior", null ); // NOI18N
+            properties[PROPERTY_border] = new PropertyDescriptor ( "border", com.aizong.ishtirak.common.HintTextField.class, "getBorder", "setBorder" ); // NOI18N
+            properties[PROPERTY_bounds] = new PropertyDescriptor ( "bounds", com.aizong.ishtirak.common.HintTextField.class, "getBounds", "setBounds" ); // NOI18N
+            properties[PROPERTY_caret] = new PropertyDescriptor ( "caret", com.aizong.ishtirak.common.HintTextField.class, "getCaret", "setCaret" ); // NOI18N
+            properties[PROPERTY_caretColor] = new PropertyDescriptor ( "caretColor", com.aizong.ishtirak.common.HintTextField.class, "getCaretColor", "setCaretColor" ); // NOI18N
+            properties[PROPERTY_caretListeners] = new PropertyDescriptor ( "caretListeners", com.aizong.ishtirak.common.HintTextField.class, "getCaretListeners", null ); // NOI18N
+            properties[PROPERTY_caretPosition] = new PropertyDescriptor ( "caretPosition", com.aizong.ishtirak.common.HintTextField.class, "getCaretPosition", "setCaretPosition" ); // NOI18N
+            properties[PROPERTY_colorModel] = new PropertyDescriptor ( "colorModel", com.aizong.ishtirak.common.HintTextField.class, "getColorModel", null ); // NOI18N
+            properties[PROPERTY_columns] = new PropertyDescriptor ( "columns", com.aizong.ishtirak.common.HintTextField.class, "getColumns", "setColumns" ); // NOI18N
+            properties[PROPERTY_component] = new IndexedPropertyDescriptor ( "component", com.aizong.ishtirak.common.HintTextField.class, null, null, "getComponent", null ); // NOI18N
+            properties[PROPERTY_componentCount] = new PropertyDescriptor ( "componentCount", com.aizong.ishtirak.common.HintTextField.class, "getComponentCount", null ); // NOI18N
+            properties[PROPERTY_componentListeners] = new PropertyDescriptor ( "componentListeners", com.aizong.ishtirak.common.HintTextField.class, "getComponentListeners", null ); // NOI18N
+            properties[PROPERTY_componentOrientation] = new PropertyDescriptor ( "componentOrientation", com.aizong.ishtirak.common.HintTextField.class, "getComponentOrientation", "setComponentOrientation" ); // NOI18N
+            properties[PROPERTY_componentPopupMenu] = new PropertyDescriptor ( "componentPopupMenu", com.aizong.ishtirak.common.HintTextField.class, "getComponentPopupMenu", "setComponentPopupMenu" ); // NOI18N
+            properties[PROPERTY_components] = new PropertyDescriptor ( "components", com.aizong.ishtirak.common.HintTextField.class, "getComponents", null ); // NOI18N
+            properties[PROPERTY_containerListeners] = new PropertyDescriptor ( "containerListeners", com.aizong.ishtirak.common.HintTextField.class, "getContainerListeners", null ); // NOI18N
+            properties[PROPERTY_cursor] = new PropertyDescriptor ( "cursor", com.aizong.ishtirak.common.HintTextField.class, "getCursor", "setCursor" ); // NOI18N
+            properties[PROPERTY_cursorSet] = new PropertyDescriptor ( "cursorSet", com.aizong.ishtirak.common.HintTextField.class, "isCursorSet", null ); // NOI18N
+            properties[PROPERTY_debugGraphicsOptions] = new PropertyDescriptor ( "debugGraphicsOptions", com.aizong.ishtirak.common.HintTextField.class, "getDebugGraphicsOptions", "setDebugGraphicsOptions" ); // NOI18N
+            properties[PROPERTY_disabledTextColor] = new PropertyDescriptor ( "disabledTextColor", com.aizong.ishtirak.common.HintTextField.class, "getDisabledTextColor", "setDisabledTextColor" ); // NOI18N
+            properties[PROPERTY_displayable] = new PropertyDescriptor ( "displayable", com.aizong.ishtirak.common.HintTextField.class, "isDisplayable", null ); // NOI18N
+            properties[PROPERTY_document] = new PropertyDescriptor ( "document", com.aizong.ishtirak.common.HintTextField.class, "getDocument", "setDocument" ); // NOI18N
+            properties[PROPERTY_doubleBuffered] = new PropertyDescriptor ( "doubleBuffered", com.aizong.ishtirak.common.HintTextField.class, "isDoubleBuffered", "setDoubleBuffered" ); // NOI18N
+            properties[PROPERTY_dragEnabled] = new PropertyDescriptor ( "dragEnabled", com.aizong.ishtirak.common.HintTextField.class, "getDragEnabled", "setDragEnabled" ); // NOI18N
+            properties[PROPERTY_dropLocation] = new PropertyDescriptor ( "dropLocation", com.aizong.ishtirak.common.HintTextField.class, "getDropLocation", null ); // NOI18N
+            properties[PROPERTY_dropMode] = new PropertyDescriptor ( "dropMode", com.aizong.ishtirak.common.HintTextField.class, "getDropMode", "setDropMode" ); // NOI18N
+            properties[PROPERTY_dropTarget] = new PropertyDescriptor ( "dropTarget", com.aizong.ishtirak.common.HintTextField.class, "getDropTarget", "setDropTarget" ); // NOI18N
+            properties[PROPERTY_editable] = new PropertyDescriptor ( "editable", com.aizong.ishtirak.common.HintTextField.class, "isEditable", "setEditable" ); // NOI18N
+            properties[PROPERTY_enabled] = new PropertyDescriptor ( "enabled", com.aizong.ishtirak.common.HintTextField.class, "isEnabled", "setEnabled" ); // NOI18N
+            properties[PROPERTY_focusable] = new PropertyDescriptor ( "focusable", com.aizong.ishtirak.common.HintTextField.class, "isFocusable", "setFocusable" ); // NOI18N
+            properties[PROPERTY_focusAccelerator] = new PropertyDescriptor ( "focusAccelerator", com.aizong.ishtirak.common.HintTextField.class, "getFocusAccelerator", "setFocusAccelerator" ); // NOI18N
+            properties[PROPERTY_focusCycleRoot] = new PropertyDescriptor ( "focusCycleRoot", com.aizong.ishtirak.common.HintTextField.class, "isFocusCycleRoot", "setFocusCycleRoot" ); // NOI18N
+            properties[PROPERTY_focusCycleRootAncestor] = new PropertyDescriptor ( "focusCycleRootAncestor", com.aizong.ishtirak.common.HintTextField.class, "getFocusCycleRootAncestor", null ); // NOI18N
+            properties[PROPERTY_focusListeners] = new PropertyDescriptor ( "focusListeners", com.aizong.ishtirak.common.HintTextField.class, "getFocusListeners", null ); // NOI18N
+            properties[PROPERTY_focusOwner] = new PropertyDescriptor ( "focusOwner", com.aizong.ishtirak.common.HintTextField.class, "isFocusOwner", null ); // NOI18N
+            properties[PROPERTY_focusTraversable] = new PropertyDescriptor ( "focusTraversable", com.aizong.ishtirak.common.HintTextField.class, "isFocusTraversable", null ); // NOI18N
+            properties[PROPERTY_focusTraversalKeys] = new IndexedPropertyDescriptor ( "focusTraversalKeys", com.aizong.ishtirak.common.HintTextField.class, null, null, null, "setFocusTraversalKeys" ); // NOI18N
+            properties[PROPERTY_focusTraversalKeysEnabled] = new PropertyDescriptor ( "focusTraversalKeysEnabled", com.aizong.ishtirak.common.HintTextField.class, "getFocusTraversalKeysEnabled", "setFocusTraversalKeysEnabled" ); // NOI18N
+            properties[PROPERTY_focusTraversalPolicy] = new PropertyDescriptor ( "focusTraversalPolicy", com.aizong.ishtirak.common.HintTextField.class, "getFocusTraversalPolicy", "setFocusTraversalPolicy" ); // NOI18N
+            properties[PROPERTY_focusTraversalPolicyProvider] = new PropertyDescriptor ( "focusTraversalPolicyProvider", com.aizong.ishtirak.common.HintTextField.class, "isFocusTraversalPolicyProvider", "setFocusTraversalPolicyProvider" ); // NOI18N
+            properties[PROPERTY_focusTraversalPolicySet] = new PropertyDescriptor ( "focusTraversalPolicySet", com.aizong.ishtirak.common.HintTextField.class, "isFocusTraversalPolicySet", null ); // NOI18N
+            properties[PROPERTY_font] = new PropertyDescriptor ( "font", com.aizong.ishtirak.common.HintTextField.class, "getFont", "setFont" ); // NOI18N
+            properties[PROPERTY_fontSet] = new PropertyDescriptor ( "fontSet", com.aizong.ishtirak.common.HintTextField.class, "isFontSet", null ); // NOI18N
+            properties[PROPERTY_foreground] = new PropertyDescriptor ( "foreground", com.aizong.ishtirak.common.HintTextField.class, "getForeground", "setForeground" ); // NOI18N
+            properties[PROPERTY_foregroundSet] = new PropertyDescriptor ( "foregroundSet", com.aizong.ishtirak.common.HintTextField.class, "isForegroundSet", null ); // NOI18N
+            properties[PROPERTY_graphics] = new PropertyDescriptor ( "graphics", com.aizong.ishtirak.common.HintTextField.class, "getGraphics", null ); // NOI18N
+            properties[PROPERTY_graphicsConfiguration] = new PropertyDescriptor ( "graphicsConfiguration", com.aizong.ishtirak.common.HintTextField.class, "getGraphicsConfiguration", null ); // NOI18N
+            properties[PROPERTY_height] = new PropertyDescriptor ( "height", com.aizong.ishtirak.common.HintTextField.class, "getHeight", null ); // NOI18N
+            properties[PROPERTY_hierarchyBoundsListeners] = new PropertyDescriptor ( "hierarchyBoundsListeners", com.aizong.ishtirak.common.HintTextField.class, "getHierarchyBoundsListeners", null ); // NOI18N
+            properties[PROPERTY_hierarchyListeners] = new PropertyDescriptor ( "hierarchyListeners", com.aizong.ishtirak.common.HintTextField.class, "getHierarchyListeners", null ); // NOI18N
+            properties[PROPERTY_highlighter] = new PropertyDescriptor ( "highlighter", com.aizong.ishtirak.common.HintTextField.class, "getHighlighter", "setHighlighter" ); // NOI18N
+            properties[PROPERTY_hint] = new PropertyDescriptor ( "hint", com.aizong.ishtirak.common.HintTextField.class, "getHint", "setHint" ); // NOI18N
+            properties[PROPERTY_horizontalAlignment] = new PropertyDescriptor ( "horizontalAlignment", com.aizong.ishtirak.common.HintTextField.class, "getHorizontalAlignment", "setHorizontalAlignment" ); // NOI18N
+            properties[PROPERTY_horizontalVisibility] = new PropertyDescriptor ( "horizontalVisibility", com.aizong.ishtirak.common.HintTextField.class, "getHorizontalVisibility", null ); // NOI18N
+            properties[PROPERTY_ignoreRepaint] = new PropertyDescriptor ( "ignoreRepaint", com.aizong.ishtirak.common.HintTextField.class, "getIgnoreRepaint", "setIgnoreRepaint" ); // NOI18N
+            properties[PROPERTY_inheritsPopupMenu] = new PropertyDescriptor ( "inheritsPopupMenu", com.aizong.ishtirak.common.HintTextField.class, "getInheritsPopupMenu", "setInheritsPopupMenu" ); // NOI18N
+            properties[PROPERTY_inputContext] = new PropertyDescriptor ( "inputContext", com.aizong.ishtirak.common.HintTextField.class, "getInputContext", null ); // NOI18N
+            properties[PROPERTY_inputMap] = new PropertyDescriptor ( "inputMap", com.aizong.ishtirak.common.HintTextField.class, "getInputMap", null ); // NOI18N
+            properties[PROPERTY_inputMethodListeners] = new PropertyDescriptor ( "inputMethodListeners", com.aizong.ishtirak.common.HintTextField.class, "getInputMethodListeners", null ); // NOI18N
+            properties[PROPERTY_inputMethodRequests] = new PropertyDescriptor ( "inputMethodRequests", com.aizong.ishtirak.common.HintTextField.class, "getInputMethodRequests", null ); // NOI18N
+            properties[PROPERTY_inputVerifier] = new PropertyDescriptor ( "inputVerifier", com.aizong.ishtirak.common.HintTextField.class, "getInputVerifier", "setInputVerifier" ); // NOI18N
+            properties[PROPERTY_insets] = new PropertyDescriptor ( "insets", com.aizong.ishtirak.common.HintTextField.class, "getInsets", null ); // NOI18N
+            properties[PROPERTY_keyListeners] = new PropertyDescriptor ( "keyListeners", com.aizong.ishtirak.common.HintTextField.class, "getKeyListeners", null ); // NOI18N
+            properties[PROPERTY_keymap] = new PropertyDescriptor ( "keymap", com.aizong.ishtirak.common.HintTextField.class, "getKeymap", "setKeymap" ); // NOI18N
+            properties[PROPERTY_layout] = new PropertyDescriptor ( "layout", com.aizong.ishtirak.common.HintTextField.class, "getLayout", "setLayout" ); // NOI18N
+            properties[PROPERTY_lightweight] = new PropertyDescriptor ( "lightweight", com.aizong.ishtirak.common.HintTextField.class, "isLightweight", null ); // NOI18N
+            properties[PROPERTY_locale] = new PropertyDescriptor ( "locale", com.aizong.ishtirak.common.HintTextField.class, "getLocale", "setLocale" ); // NOI18N
+            properties[PROPERTY_location] = new PropertyDescriptor ( "location", com.aizong.ishtirak.common.HintTextField.class, "getLocation", "setLocation" ); // NOI18N
+            properties[PROPERTY_locationOnScreen] = new PropertyDescriptor ( "locationOnScreen", com.aizong.ishtirak.common.HintTextField.class, "getLocationOnScreen", null ); // NOI18N
+            properties[PROPERTY_managingFocus] = new PropertyDescriptor ( "managingFocus", com.aizong.ishtirak.common.HintTextField.class, "isManagingFocus", null ); // NOI18N
+            properties[PROPERTY_margin] = new PropertyDescriptor ( "margin", com.aizong.ishtirak.common.HintTextField.class, "getMargin", "setMargin" ); // NOI18N
+            properties[PROPERTY_maximumSize] = new PropertyDescriptor ( "maximumSize", com.aizong.ishtirak.common.HintTextField.class, "getMaximumSize", "setMaximumSize" ); // NOI18N
+            properties[PROPERTY_maximumSizeSet] = new PropertyDescriptor ( "maximumSizeSet", com.aizong.ishtirak.common.HintTextField.class, "isMaximumSizeSet", null ); // NOI18N
+            properties[PROPERTY_minimumSize] = new PropertyDescriptor ( "minimumSize", com.aizong.ishtirak.common.HintTextField.class, "getMinimumSize", "setMinimumSize" ); // NOI18N
+            properties[PROPERTY_minimumSizeSet] = new PropertyDescriptor ( "minimumSizeSet", com.aizong.ishtirak.common.HintTextField.class, "isMinimumSizeSet", null ); // NOI18N
+            properties[PROPERTY_mouseListeners] = new PropertyDescriptor ( "mouseListeners", com.aizong.ishtirak.common.HintTextField.class, "getMouseListeners", null ); // NOI18N
+            properties[PROPERTY_mouseMotionListeners] = new PropertyDescriptor ( "mouseMotionListeners", com.aizong.ishtirak.common.HintTextField.class, "getMouseMotionListeners", null ); // NOI18N
+            properties[PROPERTY_mousePosition] = new PropertyDescriptor ( "mousePosition", com.aizong.ishtirak.common.HintTextField.class, "getMousePosition", null ); // NOI18N
+            properties[PROPERTY_mouseWheelListeners] = new PropertyDescriptor ( "mouseWheelListeners", com.aizong.ishtirak.common.HintTextField.class, "getMouseWheelListeners", null ); // NOI18N
+            properties[PROPERTY_name] = new PropertyDescriptor ( "name", com.aizong.ishtirak.common.HintTextField.class, "getName", "setName" ); // NOI18N
+            properties[PROPERTY_navigationFilter] = new PropertyDescriptor ( "navigationFilter", com.aizong.ishtirak.common.HintTextField.class, "getNavigationFilter", "setNavigationFilter" ); // NOI18N
+            properties[PROPERTY_nextFocusableComponent] = new PropertyDescriptor ( "nextFocusableComponent", com.aizong.ishtirak.common.HintTextField.class, "getNextFocusableComponent", "setNextFocusableComponent" ); // NOI18N
+            properties[PROPERTY_opaque] = new PropertyDescriptor ( "opaque", com.aizong.ishtirak.common.HintTextField.class, "isOpaque", "setOpaque" ); // NOI18N
+            properties[PROPERTY_optimizedDrawingEnabled] = new PropertyDescriptor ( "optimizedDrawingEnabled", com.aizong.ishtirak.common.HintTextField.class, "isOptimizedDrawingEnabled", null ); // NOI18N
+            properties[PROPERTY_paintingForPrint] = new PropertyDescriptor ( "paintingForPrint", com.aizong.ishtirak.common.HintTextField.class, "isPaintingForPrint", null ); // NOI18N
+            properties[PROPERTY_paintingTile] = new PropertyDescriptor ( "paintingTile", com.aizong.ishtirak.common.HintTextField.class, "isPaintingTile", null ); // NOI18N
+            properties[PROPERTY_parent] = new PropertyDescriptor ( "parent", com.aizong.ishtirak.common.HintTextField.class, "getParent", null ); // NOI18N
+            properties[PROPERTY_peer] = new PropertyDescriptor ( "peer", com.aizong.ishtirak.common.HintTextField.class, "getPeer", null ); // NOI18N
+            properties[PROPERTY_preferredScrollableViewportSize] = new PropertyDescriptor ( "preferredScrollableViewportSize", com.aizong.ishtirak.common.HintTextField.class, "getPreferredScrollableViewportSize", null ); // NOI18N
+            properties[PROPERTY_preferredSize] = new PropertyDescriptor ( "preferredSize", com.aizong.ishtirak.common.HintTextField.class, "getPreferredSize", "setPreferredSize" ); // NOI18N
+            properties[PROPERTY_preferredSizeSet] = new PropertyDescriptor ( "preferredSizeSet", com.aizong.ishtirak.common.HintTextField.class, "isPreferredSizeSet", null ); // NOI18N
+            properties[PROPERTY_propertyChangeListeners] = new PropertyDescriptor ( "propertyChangeListeners", com.aizong.ishtirak.common.HintTextField.class, "getPropertyChangeListeners", null ); // NOI18N
+            properties[PROPERTY_registeredKeyStrokes] = new PropertyDescriptor ( "registeredKeyStrokes", com.aizong.ishtirak.common.HintTextField.class, "getRegisteredKeyStrokes", null ); // NOI18N
+            properties[PROPERTY_requestFocusEnabled] = new PropertyDescriptor ( "requestFocusEnabled", com.aizong.ishtirak.common.HintTextField.class, "isRequestFocusEnabled", "setRequestFocusEnabled" ); // NOI18N
+            properties[PROPERTY_rootPane] = new PropertyDescriptor ( "rootPane", com.aizong.ishtirak.common.HintTextField.class, "getRootPane", null ); // NOI18N
+            properties[PROPERTY_scrollableTracksViewportHeight] = new PropertyDescriptor ( "scrollableTracksViewportHeight", com.aizong.ishtirak.common.HintTextField.class, "getScrollableTracksViewportHeight", null ); // NOI18N
+            properties[PROPERTY_scrollableTracksViewportWidth] = new PropertyDescriptor ( "scrollableTracksViewportWidth", com.aizong.ishtirak.common.HintTextField.class, "getScrollableTracksViewportWidth", null ); // NOI18N
+            properties[PROPERTY_scrollOffset] = new PropertyDescriptor ( "scrollOffset", com.aizong.ishtirak.common.HintTextField.class, "getScrollOffset", "setScrollOffset" ); // NOI18N
+            properties[PROPERTY_selectedText] = new PropertyDescriptor ( "selectedText", com.aizong.ishtirak.common.HintTextField.class, "getSelectedText", null ); // NOI18N
+            properties[PROPERTY_selectedTextColor] = new PropertyDescriptor ( "selectedTextColor", com.aizong.ishtirak.common.HintTextField.class, "getSelectedTextColor", "setSelectedTextColor" ); // NOI18N
+            properties[PROPERTY_selectionColor] = new PropertyDescriptor ( "selectionColor", com.aizong.ishtirak.common.HintTextField.class, "getSelectionColor", "setSelectionColor" ); // NOI18N
+            properties[PROPERTY_selectionEnd] = new PropertyDescriptor ( "selectionEnd", com.aizong.ishtirak.common.HintTextField.class, "getSelectionEnd", "setSelectionEnd" ); // NOI18N
+            properties[PROPERTY_selectionStart] = new PropertyDescriptor ( "selectionStart", com.aizong.ishtirak.common.HintTextField.class, "getSelectionStart", "setSelectionStart" ); // NOI18N
+            properties[PROPERTY_showing] = new PropertyDescriptor ( "showing", com.aizong.ishtirak.common.HintTextField.class, "isShowing", null ); // NOI18N
+            properties[PROPERTY_size] = new PropertyDescriptor ( "size", com.aizong.ishtirak.common.HintTextField.class, "getSize", "setSize" ); // NOI18N
+            properties[PROPERTY_text] = new PropertyDescriptor ( "text", com.aizong.ishtirak.common.HintTextField.class, "getText", "setText" ); // NOI18N
+            properties[PROPERTY_toolkit] = new PropertyDescriptor ( "toolkit", com.aizong.ishtirak.common.HintTextField.class, "getToolkit", null ); // NOI18N
+            properties[PROPERTY_toolTipText] = new PropertyDescriptor ( "toolTipText", com.aizong.ishtirak.common.HintTextField.class, "getToolTipText", "setToolTipText" ); // NOI18N
+            properties[PROPERTY_topLevelAncestor] = new PropertyDescriptor ( "topLevelAncestor", com.aizong.ishtirak.common.HintTextField.class, "getTopLevelAncestor", null ); // NOI18N
+            properties[PROPERTY_transferHandler] = new PropertyDescriptor ( "transferHandler", com.aizong.ishtirak.common.HintTextField.class, "getTransferHandler", "setTransferHandler" ); // NOI18N
+            properties[PROPERTY_treeLock] = new PropertyDescriptor ( "treeLock", com.aizong.ishtirak.common.HintTextField.class, "getTreeLock", null ); // NOI18N
+            properties[PROPERTY_UI] = new PropertyDescriptor ( "UI", com.aizong.ishtirak.common.HintTextField.class, "getUI", "setUI" ); // NOI18N
+            properties[PROPERTY_UIClassID] = new PropertyDescriptor ( "UIClassID", com.aizong.ishtirak.common.HintTextField.class, "getUIClassID", null ); // NOI18N
+            properties[PROPERTY_valid] = new PropertyDescriptor ( "valid", com.aizong.ishtirak.common.HintTextField.class, "isValid", null ); // NOI18N
+            properties[PROPERTY_validateRoot] = new PropertyDescriptor ( "validateRoot", com.aizong.ishtirak.common.HintTextField.class, "isValidateRoot", null ); // NOI18N
+            properties[PROPERTY_verifyInputWhenFocusTarget] = new PropertyDescriptor ( "verifyInputWhenFocusTarget", com.aizong.ishtirak.common.HintTextField.class, "getVerifyInputWhenFocusTarget", "setVerifyInputWhenFocusTarget" ); // NOI18N
+            properties[PROPERTY_vetoableChangeListeners] = new PropertyDescriptor ( "vetoableChangeListeners", com.aizong.ishtirak.common.HintTextField.class, "getVetoableChangeListeners", null ); // NOI18N
+            properties[PROPERTY_visible] = new PropertyDescriptor ( "visible", com.aizong.ishtirak.common.HintTextField.class, "isVisible", "setVisible" ); // NOI18N
+            properties[PROPERTY_visibleRect] = new PropertyDescriptor ( "visibleRect", com.aizong.ishtirak.common.HintTextField.class, "getVisibleRect", null ); // NOI18N
+            properties[PROPERTY_width] = new PropertyDescriptor ( "width", com.aizong.ishtirak.common.HintTextField.class, "getWidth", null ); // NOI18N
+            properties[PROPERTY_x] = new PropertyDescriptor ( "x", com.aizong.ishtirak.common.HintTextField.class, "getX", null ); // NOI18N
+            properties[PROPERTY_y] = new PropertyDescriptor ( "y", com.aizong.ishtirak.common.HintTextField.class, "getY", null ); // NOI18N
         }
         catch(IntrospectionException e) {
             e.printStackTrace();
@@ -327,21 +327,21 @@ public class HintTextFieldBeanInfo extends SimpleBeanInfo {
         EventSetDescriptor[] eventSets = new EventSetDescriptor[15];
     
         try {
-            eventSets[EVENT_actionListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "actionListener", java.awt.event.ActionListener.class, new String[] {"actionPerformed"}, "addActionListener", "removeActionListener" ); // NOI18N
-            eventSets[EVENT_ancestorListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "ancestorListener", javax.swing.event.AncestorListener.class, new String[] {"ancestorAdded", "ancestorRemoved", "ancestorMoved"}, "addAncestorListener", "removeAncestorListener" ); // NOI18N
-            eventSets[EVENT_caretListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "caretListener", javax.swing.event.CaretListener.class, new String[] {"caretUpdate"}, "addCaretListener", "removeCaretListener" ); // NOI18N
-            eventSets[EVENT_componentListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "componentListener", java.awt.event.ComponentListener.class, new String[] {"componentResized", "componentMoved", "componentShown", "componentHidden"}, "addComponentListener", "removeComponentListener" ); // NOI18N
-            eventSets[EVENT_containerListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "containerListener", java.awt.event.ContainerListener.class, new String[] {"componentAdded", "componentRemoved"}, "addContainerListener", "removeContainerListener" ); // NOI18N
-            eventSets[EVENT_focusListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "focusListener", java.awt.event.FocusListener.class, new String[] {"focusGained", "focusLost"}, "addFocusListener", "removeFocusListener" ); // NOI18N
-            eventSets[EVENT_hierarchyBoundsListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "hierarchyBoundsListener", java.awt.event.HierarchyBoundsListener.class, new String[] {"ancestorMoved", "ancestorResized"}, "addHierarchyBoundsListener", "removeHierarchyBoundsListener" ); // NOI18N
-            eventSets[EVENT_hierarchyListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "hierarchyListener", java.awt.event.HierarchyListener.class, new String[] {"hierarchyChanged"}, "addHierarchyListener", "removeHierarchyListener" ); // NOI18N
-            eventSets[EVENT_inputMethodListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "inputMethodListener", java.awt.event.InputMethodListener.class, new String[] {"inputMethodTextChanged", "caretPositionChanged"}, "addInputMethodListener", "removeInputMethodListener" ); // NOI18N
-            eventSets[EVENT_keyListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "keyListener", java.awt.event.KeyListener.class, new String[] {"keyTyped", "keyPressed", "keyReleased"}, "addKeyListener", "removeKeyListener" ); // NOI18N
-            eventSets[EVENT_mouseListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "mouseListener", java.awt.event.MouseListener.class, new String[] {"mouseClicked", "mousePressed", "mouseReleased", "mouseEntered", "mouseExited"}, "addMouseListener", "removeMouseListener" ); // NOI18N
-            eventSets[EVENT_mouseMotionListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "mouseMotionListener", java.awt.event.MouseMotionListener.class, new String[] {"mouseDragged", "mouseMoved"}, "addMouseMotionListener", "removeMouseMotionListener" ); // NOI18N
-            eventSets[EVENT_mouseWheelListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "mouseWheelListener", java.awt.event.MouseWheelListener.class, new String[] {"mouseWheelMoved"}, "addMouseWheelListener", "removeMouseWheelListener" ); // NOI18N
-            eventSets[EVENT_propertyChangeListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "propertyChangeListener", java.beans.PropertyChangeListener.class, new String[] {"propertyChange"}, "addPropertyChangeListener", "removePropertyChangeListener" ); // NOI18N
-            eventSets[EVENT_vetoableChangeListener] = new EventSetDescriptor ( com.aizong.ishtirak.utils.HintTextField.class, "vetoableChangeListener", java.beans.VetoableChangeListener.class, new String[] {"vetoableChange"}, "addVetoableChangeListener", "removeVetoableChangeListener" ); // NOI18N
+            eventSets[EVENT_actionListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "actionListener", java.awt.event.ActionListener.class, new String[] {"actionPerformed"}, "addActionListener", "removeActionListener" ); // NOI18N
+            eventSets[EVENT_ancestorListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "ancestorListener", javax.swing.event.AncestorListener.class, new String[] {"ancestorAdded", "ancestorRemoved", "ancestorMoved"}, "addAncestorListener", "removeAncestorListener" ); // NOI18N
+            eventSets[EVENT_caretListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "caretListener", javax.swing.event.CaretListener.class, new String[] {"caretUpdate"}, "addCaretListener", "removeCaretListener" ); // NOI18N
+            eventSets[EVENT_componentListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "componentListener", java.awt.event.ComponentListener.class, new String[] {"componentResized", "componentMoved", "componentShown", "componentHidden"}, "addComponentListener", "removeComponentListener" ); // NOI18N
+            eventSets[EVENT_containerListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "containerListener", java.awt.event.ContainerListener.class, new String[] {"componentAdded", "componentRemoved"}, "addContainerListener", "removeContainerListener" ); // NOI18N
+            eventSets[EVENT_focusListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "focusListener", java.awt.event.FocusListener.class, new String[] {"focusGained", "focusLost"}, "addFocusListener", "removeFocusListener" ); // NOI18N
+            eventSets[EVENT_hierarchyBoundsListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "hierarchyBoundsListener", java.awt.event.HierarchyBoundsListener.class, new String[] {"ancestorMoved", "ancestorResized"}, "addHierarchyBoundsListener", "removeHierarchyBoundsListener" ); // NOI18N
+            eventSets[EVENT_hierarchyListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "hierarchyListener", java.awt.event.HierarchyListener.class, new String[] {"hierarchyChanged"}, "addHierarchyListener", "removeHierarchyListener" ); // NOI18N
+            eventSets[EVENT_inputMethodListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "inputMethodListener", java.awt.event.InputMethodListener.class, new String[] {"inputMethodTextChanged", "caretPositionChanged"}, "addInputMethodListener", "removeInputMethodListener" ); // NOI18N
+            eventSets[EVENT_keyListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "keyListener", java.awt.event.KeyListener.class, new String[] {"keyTyped", "keyPressed", "keyReleased"}, "addKeyListener", "removeKeyListener" ); // NOI18N
+            eventSets[EVENT_mouseListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "mouseListener", java.awt.event.MouseListener.class, new String[] {"mouseClicked", "mousePressed", "mouseReleased", "mouseEntered", "mouseExited"}, "addMouseListener", "removeMouseListener" ); // NOI18N
+            eventSets[EVENT_mouseMotionListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "mouseMotionListener", java.awt.event.MouseMotionListener.class, new String[] {"mouseDragged", "mouseMoved"}, "addMouseMotionListener", "removeMouseMotionListener" ); // NOI18N
+            eventSets[EVENT_mouseWheelListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "mouseWheelListener", java.awt.event.MouseWheelListener.class, new String[] {"mouseWheelMoved"}, "addMouseWheelListener", "removeMouseWheelListener" ); // NOI18N
+            eventSets[EVENT_propertyChangeListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "propertyChangeListener", java.beans.PropertyChangeListener.class, new String[] {"propertyChange"}, "addPropertyChangeListener", "removePropertyChangeListener" ); // NOI18N
+            eventSets[EVENT_vetoableChangeListener] = new EventSetDescriptor ( com.aizong.ishtirak.common.HintTextField.class, "vetoableChangeListener", java.beans.VetoableChangeListener.class, new String[] {"vetoableChange"}, "addVetoableChangeListener", "removeVetoableChangeListener" ); // NOI18N
         }
         catch(IntrospectionException e) {
             e.printStackTrace();
@@ -612,9 +612,9 @@ public class HintTextFieldBeanInfo extends SimpleBeanInfo {
             methods[METHOD_firePropertyChange41].setDisplayName ( "" );
             methods[METHOD_firePropertyChange42] = new MethodDescriptor(javax.swing.JComponent.class.getMethod("firePropertyChange", new Class[] {java.lang.String.class, char.class, char.class})); // NOI18N
             methods[METHOD_firePropertyChange42].setDisplayName ( "" );
-            methods[METHOD_focusGained43] = new MethodDescriptor(com.aizong.ishtirak.utils.HintTextField.class.getMethod("focusGained", new Class[] {java.awt.event.FocusEvent.class})); // NOI18N
+            methods[METHOD_focusGained43] = new MethodDescriptor(com.aizong.ishtirak.common.HintTextField.class.getMethod("focusGained", new Class[] {java.awt.event.FocusEvent.class})); // NOI18N
             methods[METHOD_focusGained43].setDisplayName ( "" );
-            methods[METHOD_focusLost44] = new MethodDescriptor(com.aizong.ishtirak.utils.HintTextField.class.getMethod("focusLost", new Class[] {java.awt.event.FocusEvent.class})); // NOI18N
+            methods[METHOD_focusLost44] = new MethodDescriptor(com.aizong.ishtirak.common.HintTextField.class.getMethod("focusLost", new Class[] {java.awt.event.FocusEvent.class})); // NOI18N
             methods[METHOD_focusLost44].setDisplayName ( "" );
             methods[METHOD_getActionForKeyStroke45] = new MethodDescriptor(javax.swing.JComponent.class.getMethod("getActionForKeyStroke", new Class[] {javax.swing.KeyStroke.class})); // NOI18N
             methods[METHOD_getActionForKeyStroke45].setDisplayName ( "" );

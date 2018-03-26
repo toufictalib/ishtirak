@@ -28,8 +28,8 @@ import javax.swing.table.TableRowSorter;
 
 import com.aizong.ishtirak.common.l.MyTableListener;
 import com.aizong.ishtirak.common.l.RefreshTableInterface;
+import com.aizong.ishtirak.common.table.ReportTableModel;
 import com.aizong.ishtirak.subscriber.form.OrientationUtils;
-import com.aizong.ishtirak.table.ReportTableModel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;

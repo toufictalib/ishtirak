@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.bundle.MonthlyBundle;
 import com.aizong.ishtirak.bundle.SubscriptionBundle;
+import com.aizong.ishtirak.common.table.ReportTableModel;
 import com.aizong.ishtirak.engine.Engine;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
-import com.aizong.ishtirak.table.ReportTableModel;
 
 @Service
 public class ReportServiceImpl implements ReportService {

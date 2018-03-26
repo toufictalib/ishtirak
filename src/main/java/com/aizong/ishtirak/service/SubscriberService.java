@@ -2,7 +2,6 @@ package com.aizong.ishtirak.service;
 
 import java.util.List;
 
-import com.aizong.ishtirak.CounterHistory;
 import com.aizong.ishtirak.bundle.Bundle;
 import com.aizong.ishtirak.bundle.Contract;
 import com.aizong.ishtirak.bundle.MonthlyBundle;
@@ -11,6 +10,7 @@ import com.aizong.ishtirak.engine.Engine;
 import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.subscriber.model.Village;
+import com.aizong.ishtirak.transaction.CounterHistory;
 
 public interface SubscriberService {
 

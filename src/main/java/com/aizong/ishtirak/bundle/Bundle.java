@@ -20,7 +20,6 @@ public abstract class Bundle extends BaseEntity {
      * 
      */
     private static final long serialVersionUID = 420270326779212177L;
-
     @Column(name = "name")
     protected String name;
 

@@ -8,9 +8,6 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXDatePicker;
 
-import com.aizong.ishtirak.input.IntergerTextField;
-import com.aizong.ishtirak.utils.ComponentUtils;
-
 public class SearchPanel extends JPanel
 {
 

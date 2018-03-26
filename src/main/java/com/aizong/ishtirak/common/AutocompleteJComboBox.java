@@ -2,12 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.aizong.ishtirak.utils;
+package com.aizong.ishtirak.common;
 
 import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.swing.text.JTextComponent;
  *
  * @author c.simon
  */
+@SuppressWarnings("rawtypes")
 public class AutocompleteJComboBox extends JComboBox{
 
 	
@@ -110,6 +112,7 @@ public class AutocompleteJComboBox extends JComboBox{
 
 
 
+						@SuppressWarnings("unchecked")
 						@Override
 
 						public void run() {
@@ -371,5 +374,23 @@ public class AutocompleteJComboBox extends JComboBox{
 //		}
 //
 //	}
+	private interface Searchable<E, V>{
 
+		
+
+		/**
+
+		 * Searches an underlying inventory of items consisting of type E
+
+		 * @param value A searchable value of type V
+
+		 * @return A Collection of items of type E.
+
+		 */
+
+		public Collection<E> search(V value);
+
+		
+
+	}
 }

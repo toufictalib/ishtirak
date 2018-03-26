@@ -4,13 +4,13 @@ import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aizong.ishtirak.common.MessageUtils;
 import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.ServiceProvider;
 import com.aizong.ishtirak.common.WindowUtils;
 import com.aizong.ishtirak.subscriber.form.SavingCallback;
 import com.aizong.ishtirak.subscriber.form.SubscriberForm;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
-import com.aizong.ishtirak.utils.MessageUtils;
 
 public class SubscriberTableListener implements MyTableListener{
 

@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.table;
+package com.aizong.ishtirak.common.table;
 
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;

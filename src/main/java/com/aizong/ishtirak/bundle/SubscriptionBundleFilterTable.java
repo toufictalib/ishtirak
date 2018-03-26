@@ -1,7 +1,7 @@
 package com.aizong.ishtirak.bundle;
 
 import com.aizong.ishtirak.common.ServiceProvider;
-import com.aizong.ishtirak.table.ReportTableModel;
+import com.aizong.ishtirak.common.table.ReportTableModel;
 
 @SuppressWarnings("serial")
 public class SubscriptionBundleFilterTable extends BundleFilterTable {

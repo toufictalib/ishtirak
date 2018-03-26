@@ -1,7 +1,9 @@
 package com.aizong.ishtirak;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
@@ -22,16 +24,16 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import com.aizong.ishtirak.bundle.BundleFilterTable;
 import com.aizong.ishtirak.bundle.MonthlyBundleFilterTable;
 import com.aizong.ishtirak.bundle.SubscriptionBundleFilterTable;
+import com.aizong.ishtirak.common.Message;
 import com.aizong.ishtirak.common.Mode;
 import com.aizong.ishtirak.common.ServiceProvider;
 import com.aizong.ishtirak.common.WindowUtils;
+import com.aizong.ishtirak.common.table.SubscriberFilterTable;
 import com.aizong.ishtirak.engine.EngineFitlerTable;
 import com.aizong.ishtirak.subscriber.form.ContractorSearchPanel;
 import com.aizong.ishtirak.subscriber.form.CustomerSearchPanel;
 import com.aizong.ishtirak.subscriber.form.SubscriberForm;
 import com.aizong.ishtirak.subscriber.form.VillageForm;
-import com.aizong.ishtirak.table.SubscriberFilterTable;
-import com.aizong.ishtirak.utils.Message;
 
 @SpringBootApplication
 public class IshtirakApplication extends JFrame {
@@ -45,13 +47,23 @@ public class IshtirakApplication extends JFrame {
     private void init() {
 
     }
-
     
     public IshtirakApplication() {
 	 try {
 	     for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
+		           UIManager.setLookAndFeel(info.getClassName());
+		           /*  UIManager.put("nimbusBase", Color.BLUE);
+		            UIManager.put("nimbusBlueGrey", Color.GREEN);
+		            UIManager.put("control", Color.RED); */
+		               Enumeration keys = UIManager.getDefaults().keys();  
+		               while (keys.hasMoreElements() ) {  
+		                   Object key = keys.nextElement();  
+		                   Object value = UIManager.get( key );  
+		                   if ( value instanceof Font ) {  
+		                       UIManager.put( key, new Font(Font.DIALOG,  Font.BOLD, 15) );  
+		                   }  
+		               }  
 		            break;
 		        }
 		    }

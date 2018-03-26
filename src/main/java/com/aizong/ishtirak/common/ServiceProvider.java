@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.aizong.ishtirak.service.ReportServiceImpl;
 import com.aizong.ishtirak.service.SubscriberService;
-import com.aizong.ishtirak.utils.Message;
 
 @Component
 public class ServiceProvider {

@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.table;
+package com.aizong.ishtirak.common.table;
 
 import com.aizong.ishtirak.common.CommonFilterTable;
 import com.aizong.ishtirak.common.ServiceProvider;

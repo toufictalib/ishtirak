@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.input;
+package com.aizong.ishtirak.common;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;

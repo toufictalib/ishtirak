@@ -1,4 +1,4 @@
-package com.aizong.ishtirak;
+package com.aizong.ishtirak.transaction;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.utils;
+package com.aizong.ishtirak.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
