@@ -13,10 +13,9 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
-import com.aizong.ishtirak.common.form.BasicPanel;
-import com.aizong.ishtirak.common.form.OrientationUtils;
+import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.MessageUtils;
@@ -25,10 +24,8 @@ import com.aizong.ishtirak.common.misc.WindowUtils;
 import com.aizong.ishtirak.model.Subscriber;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
-public class CustomerSearchPanel extends BasicPanel {
+public class CustomerSearchPanel extends BasicForm {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,11 +36,11 @@ public class CustomerSearchPanel extends BasicPanel {
     private JList<Subscriber> jList;
 
     public CustomerSearchPanel() {
-	initComponetns();
-	initUI();
+	initializePanel();
     }
 
-    private void initComponetns() {
+    @Override
+    protected void initComponents() {
 
 	txtName = new JTextField();
 	btnSearch = ButtonFactory.createBtnSearch();
@@ -51,7 +48,8 @@ public class CustomerSearchPanel extends BasicPanel {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		List<Subscriber> searchSubscribers = onSearch(txtName.getText(), comboSearchType.getValue().customerType);
+		List<Subscriber> searchSubscribers = onSearch(txtName.getText(),
+			comboSearchType.getValue().customerType);
 		if (searchSubscribers != null) {
 		    DefaultListModel<Subscriber> model = new DefaultListModel<>();
 		    searchSubscribers.forEach(r -> {
@@ -61,7 +59,6 @@ public class CustomerSearchPanel extends BasicPanel {
 		}
 	    }
 
-	    
 	});
 
 	List<SearchResult> values = new ArrayList<>();
@@ -89,23 +86,8 @@ public class CustomerSearchPanel extends BasicPanel {
 	}
     }
 
-    private void initUI() {
-
-	FormLayout layouts = new FormLayout("pref:grow");
-	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
-	rowBuilder.setDefaultDialogBorder();
-
-	rowBuilder.append(buildPanel());
-
-    }
-
-    private Component buildPanel() {
-	// DefaultFormBuilder builder = new DefaultFormBuilder(new
-	// FormLayout("50dlu,10dlu,fill:p:grow", "p,p,p,p"), this);
-	String leftToRightSpecs = "fill:150dlu:grow";
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
-	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-	builder.setLeftToRight(false);
+    @Override
+    protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.appendSeparator(message("customerSearch.form.seperator"));
 	builder.setDefaultDialogBorder();
 	builder.append(txtName);
@@ -133,7 +115,7 @@ public class CustomerSearchPanel extends BasicPanel {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
 		Subscriber subscriber = jList.getSelectedValue();
-		if(subscriber==null) {
+		if (subscriber == null) {
 		    MessageUtils.showWarningMessage(getOwner(), "مشترك ناقص", "الرجاء اختيار مشترك");
 		    return;
 		}
@@ -149,18 +131,21 @@ public class CustomerSearchPanel extends BasicPanel {
 	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btn), builder.getColumnCount());
 	return builder.getPanel();
     }
-    
+
     public void onCreate(Subscriber subscriber) {
-	WindowUtils.createDialog(CustomerSearchPanel.this.getOwner(), "إشتراك جديد",
-		new ContractForm(subscriber));
+	WindowUtils.createDialog(CustomerSearchPanel.this.getOwner(), "إشتراك جديد", new ContractForm(subscriber));
     }
-    
+
     public List<Subscriber> onSearch(String text, SearchCustomerType customerType) {
 	SearchCustomerCriteria criteria = new SearchCustomerCriteria(text);
 	criteria.setCustomerType(customerType);
 
-	return ServiceProvider.get().getSubscriberService()
-		.searchSubscribers(criteria);
-	
+	return ServiceProvider.get().getSubscriberService().searchSubscribers(criteria);
+
+    }
+
+    @Override
+    protected String getLayoutSpecs() {
+	return "fill:150dlu:grow";
     }
 }

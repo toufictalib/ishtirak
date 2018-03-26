@@ -10,8 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import com.aizong.ishtirak.common.form.BasicPanel;
-import com.aizong.ishtirak.common.form.OrientationUtils;
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
@@ -23,10 +22,8 @@ import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
-public class ContractForm extends BasicPanel {
+public class ContractForm extends BasicForm {
 
     /**
      * 
@@ -35,22 +32,20 @@ public class ContractForm extends BasicPanel {
 
     private JTextField txtCounterId;
     private JCheckBox cbActive;
-    
+
     private ExCombo<Engine> comboEngines;
     private ExCombo<Bundle> comboBundles;
     private ExCombo<Village> comboVillages;
     private JTextField txtRegion;
     private JTextArea txtAddress;
-    
+
     private Subscriber subscriber;
 
     public ContractForm(Subscriber subscriber) {
 	this.subscriber = subscriber;
-	initComponetns();
-	initUI();
+	initializePanel();
 	fillData();
     }
-
 
     private void fillData() {
 	if (subscriber == null) {
@@ -59,12 +54,13 @@ public class ContractForm extends BasicPanel {
 
     }
 
-    private void initComponetns() {
-	
+    @Override
+    protected void initComponents() {
+
 	txtCounterId = new JTextField();
 	cbActive = new JCheckBox();
 	cbActive.setSelected(true);
-	
+
 	comboEngines = new ExCombo<>(ServiceProvider.get().getSubscriberService().getEngines());
 	comboBundles = new ExCombo<>(ServiceProvider.get().getSubscriberService().getAllBundles());
 	comboVillages = new ExCombo<>(ServiceProvider.get().getSubscriberService().getVillages());
@@ -76,23 +72,7 @@ public class ContractForm extends BasicPanel {
 
     }
 
-    private void initUI() {
-
-	FormLayout layouts = new FormLayout("pref:grow");
-	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
-	rowBuilder.setDefaultDialogBorder();
-
-	rowBuilder.append(buildPanel());
-
-    }
-
-    private Component buildPanel() {
-	// DefaultFormBuilder builder = new DefaultFormBuilder(new
-	// FormLayout("50dlu,10dlu,fill:p:grow", "p,p,p,p"), this);
-	String leftToRightSpecs = "right:pref, 4dlu, fill:100dlu:grow";
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
-	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-	builder.setLeftToRight(false);
+    protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.appendSeparator(message("contract.form.seperator"));
 	builder.setDefaultDialogBorder();
 	builder.append(message("contract.form.counter"), txtCounterId);
@@ -110,22 +90,22 @@ public class ContractForm extends BasicPanel {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		
+
 		Contract contract = new Contract();
 		contract.setActive(cbActive.isSelected());
-		
+
 		Address address = new Address();
 		address.setVillageId(comboVillages.getValue().getId());
 		address.setRegion(txtRegion.getText());
 		address.setDetailedAddress(txtAddress.getText());
-		
+
 		contract.setAddress(address);
-		
+
 		contract.setBundleId(comboBundles.getValue().getId());
 		contract.setCounterId(txtCounterId.getText());
 		contract.setEngineId(comboEngines.getValue().getId());
 		contract.setSubscriberId(subscriber.getId());
-		
+
 		ServiceProvider.get().getSubscriberService().saveContract(contract);
 		closeWindow();
 	    }
@@ -139,8 +119,13 @@ public class ContractForm extends BasicPanel {
 
 	    }
 	});
-	 builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
 	return builder.getPanel();
+    }
+
+    @Override
+    protected String getLayoutSpecs() {
+	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
 }

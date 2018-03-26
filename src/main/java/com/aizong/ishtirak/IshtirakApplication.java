@@ -25,6 +25,7 @@ import com.aizong.ishtirak.common.misc.Message;
 import com.aizong.ishtirak.common.misc.Mode;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
 import com.aizong.ishtirak.common.misc.WindowUtils;
+import com.aizong.ishtirak.gui.form.AddressForm;
 import com.aizong.ishtirak.gui.form.ContractorSearchPanel;
 import com.aizong.ishtirak.gui.form.CustomerSearchPanel;
 import com.aizong.ishtirak.gui.form.SubscriberForm;
@@ -172,6 +173,15 @@ public class IshtirakApplication extends JFrame {
 	    }
 	});
 	
+	JButton btnAddress = new JButton("show address");
+	btnAddress.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		WindowUtils.createDialog(IshtirakApplication.this, "العداد", new AddressForm(null));
+	    }
+	});
+	
 
 	JTextArea textArea = new JTextArea();
 
@@ -186,6 +196,7 @@ public class IshtirakApplication extends JFrame {
 	panel.add(btnSearchCustomer);
 	panel.add(btnShowCounterHistory);
 	panel.add(btnGenerateReceipts);
+	panel.add(btnAddress);
 	setTitle("Simple example");
 	setContentPane(panel);
 	setSize(300, 200);

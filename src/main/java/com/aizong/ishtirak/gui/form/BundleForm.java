@@ -8,8 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 import com.aizong.ishtirak.bean.SavingCallback;
-import com.aizong.ishtirak.common.form.BasicPanel;
-import com.aizong.ishtirak.common.form.OrientationUtils;
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.DoubleTextField;
 import com.aizong.ishtirak.common.misc.Mode;
@@ -19,10 +18,8 @@ import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
-public class BundleForm extends BasicPanel {
+public class BundleForm extends BasicForm {
 
     /**
      * 
@@ -42,8 +39,7 @@ public class BundleForm extends BasicPanel {
     public BundleForm(Mode mode, boolean monthly) {
 	this.mode = mode;
 	this.monthly = monthly;
-	initComponetns();
-	initUI();
+	initializePanel();
     }
 
     public BundleForm(Mode mode, SavingCallback callback, boolean monthly) {
@@ -62,48 +58,34 @@ public class BundleForm extends BasicPanel {
 	if (bundle == null) {
 	    return;
 	}
-	
-	if(bundle instanceof MonthlyBundle) {
+
+	if (bundle instanceof MonthlyBundle) {
 	    MonthlyBundle monthlyBundle = (MonthlyBundle) bundle;
 	    txtName.setText(monthlyBundle.getName());
-	    txtSettelementFees.setText(monthlyBundle.getSettlementFees()+"");
-	    txtFees.setText(monthlyBundle.getFees()+"");
-	}else {
-	    SubscriptionBundle subscriptionBundle  = (SubscriptionBundle) bundle;
+	    txtSettelementFees.setText(monthlyBundle.getSettlementFees() + "");
+	    txtFees.setText(monthlyBundle.getFees() + "");
+	} else {
+	    SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
 	    txtName.setText(subscriptionBundle.getName());
-	    txtSettelementFees.setText(subscriptionBundle.getSettlementFees()+"");
-	    txtCostPerKb.setText(subscriptionBundle.getCostPerKb()+"");
-	    txtSubscriptionFees.setText(subscriptionBundle.getSubscriptionFees()+"");
+	    txtSettelementFees.setText(subscriptionBundle.getSettlementFees() + "");
+	    txtCostPerKb.setText(subscriptionBundle.getCostPerKb() + "");
+	    txtSubscriptionFees.setText(subscriptionBundle.getSubscriptionFees() + "");
 	}
 
     }
 
-    private void initComponetns() {
+    @Override
+    protected void initComponents() {
 	txtName = new JTextField();
 	txtSettelementFees = new DoubleTextField();
 	txtFees = new DoubleTextField();
 	txtCostPerKb = new DoubleTextField();
 	txtSubscriptionFees = new DoubleTextField();
-	
-    }
-
-    private void initUI() {
-
-	FormLayout layouts = new FormLayout("pref:grow");
-	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
-	rowBuilder.setDefaultDialogBorder();
-
-	rowBuilder.append(buildPanel());
 
     }
 
-    private Component buildPanel() {
-	// DefaultFormBuilder builder = new DefaultFormBuilder(new
-	// FormLayout("50dlu,10dlu,fill:p:grow", "p,p,p,p"), this);
-	String leftToRightSpecs = "right:pref, 4dlu, fill:100dlu:grow";
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
-	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-	builder.setLeftToRight(false);
+    @Override
+    protected Component buildPanel(DefaultFormBuilder builder) {
 
 	if (monthly) {
 	    builder.appendSeparator(message("bundle.form.monthly.seperator"));
@@ -166,6 +148,11 @@ public class BundleForm extends BasicPanel {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
 	}
 	return builder.getPanel();
+    }
+
+    @Override
+    protected String getLayoutSpecs() {
+	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
 }

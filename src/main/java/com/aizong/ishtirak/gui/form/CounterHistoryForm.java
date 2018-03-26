@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-import com.aizong.ishtirak.common.form.BasicPanel;
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.OrientationUtils;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
@@ -27,7 +27,7 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class CounterHistoryForm extends BasicPanel {
+public class CounterHistoryForm extends BasicForm {
 
     /**
      * 
@@ -35,18 +35,16 @@ public class CounterHistoryForm extends BasicPanel {
     private static final long serialVersionUID = 1L;
 
     private IntergerTextField txtConsumption;
-    
+
     private ExCombo<Contract> comboContact;
-    
+
     private Subscriber subscriber;
 
     public CounterHistoryForm(Subscriber subscriber) {
 	this.subscriber = subscriber;
-	initComponetns();
-	initUI();
+	initializePanel();
 	fillData();
     }
-
 
     private void fillData() {
 	if (subscriber == null) {
@@ -56,16 +54,19 @@ public class CounterHistoryForm extends BasicPanel {
     }
 
     Map<Long, String> map = new HashMap<>();
+
     @SuppressWarnings("unchecked")
-    private void initComponetns() {
-	
+    @Override
+    protected void initComponents() {
+
 	txtConsumption = new IntergerTextField();
-	
-	List<Contract> contractBySubscriberId = ServiceProvider.get().getSubscriberService().getContractBySubscriberId(subscriber.getId());
-	for(Contract contract:contractBySubscriberId) {
+
+	List<Contract> contractBySubscriberId = ServiceProvider.get().getSubscriberService()
+		.getContractBySubscriberId(subscriber.getId());
+	for (Contract contract : contractBySubscriberId) {
 	    Bundle bundle = ServiceProvider.get().getSubscriberService().getBundleById(contract.getBundleId());
-	    if(bundle!=null) {
-		map.put(contract.getId(), bundle.getName()+":"+contract.getCounterId());
+	    if (bundle != null) {
+		map.put(contract.getId(), bundle.getName() + ":" + contract.getCounterId());
 	    }
 	}
 	comboContact = new ExCombo<>(contractBySubscriberId);
@@ -77,47 +78,32 @@ public class CounterHistoryForm extends BasicPanel {
 
 	    @Override
 	    public Component getListCellRendererComponent(JList<?> arg0, Object arg1, int arg2, boolean arg3,
-	            boolean arg4) {
-	        // TODO Auto-generated method stub
-		Component component =  super.getListCellRendererComponent(arg0, arg1, arg2, arg3, arg4);
-		if(component instanceof JLabel) {
+		    boolean arg4) {
+		// TODO Auto-generated method stub
+		Component component = super.getListCellRendererComponent(arg0, arg1, arg2, arg3, arg4);
+		if (component instanceof JLabel) {
 		    JLabel lbl = (JLabel) component;
-		    Contract contract = (Contract)arg1;
-		    if(contract!=null) {
-			  String string = map.get(contract.getId());
-			    if(string!=null) {
-				lbl.setText(string);
-			    }
+		    Contract contract = (Contract) arg1;
+		    if (contract != null) {
+			String string = map.get(contract.getId());
+			if (string != null) {
+			    lbl.setText(string);
+			}
 		    }
-		  
+
 		}
 		return component;
 	    }
 	});
     }
 
-    private void initUI() {
-
-	FormLayout layouts = new FormLayout("pref:grow");
-	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
-	rowBuilder.setDefaultDialogBorder();
-
-	rowBuilder.append(buildPanel());
-
-    }
-
-    private Component buildPanel() {
-	// DefaultFormBuilder builder = new DefaultFormBuilder(new
-	// FormLayout("50dlu,10dlu,fill:p:grow", "p,p,p,p"), this);
-	String leftToRightSpecs = "right:pref, 4dlu, fill:100dlu:grow";
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
-	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-	builder.setLeftToRight(false);
+    @Override
+    protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.appendSeparator(message("counterHistory.form.seperator"));
 	builder.setDefaultDialogBorder();
-	builder.append(message("counterHistory.form.subscription"),comboContact);
+	builder.append(message("counterHistory.form.subscription"), comboContact);
 	builder.append(message("counterHistory.form.current"), txtConsumption);
-	
+
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
@@ -125,11 +111,11 @@ public class CounterHistoryForm extends BasicPanel {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		
+
 		CounterHistory history = new CounterHistory();
 		history.setContractId(comboContact.getValue().getId());
 		history.setConsumption(Long.valueOf(txtConsumption.getValue()));
-		
+
 		ServiceProvider.get().getSubscriberService().saveConsumptionHistory(history);
 		closeWindow();
 	    }
@@ -143,8 +129,13 @@ public class CounterHistoryForm extends BasicPanel {
 
 	    }
 	});
-	 builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
 	return builder.getPanel();
+    }
+
+    @Override
+    protected String getLayoutSpecs() {
+	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
 }

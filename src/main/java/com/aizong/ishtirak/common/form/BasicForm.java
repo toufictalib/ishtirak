@@ -19,11 +19,11 @@ public abstract class BasicForm extends BasicPanel {
 
     
     protected void initializePanel() {
-	initComponetns();
+	initComponents();
 	initUI();
     }
     
-    protected abstract void initComponetns();
+    protected abstract void initComponents();
     
     private void initUI() {
 

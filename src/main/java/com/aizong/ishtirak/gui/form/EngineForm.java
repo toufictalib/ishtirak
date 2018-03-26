@@ -10,8 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import com.aizong.ishtirak.bean.SavingCallback;
-import com.aizong.ishtirak.common.form.BasicPanel;
-import com.aizong.ishtirak.common.form.OrientationUtils;
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.DoubleTextField;
 import com.aizong.ishtirak.common.misc.ExCombo;
@@ -23,10 +22,8 @@ import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
-public class EngineForm extends BasicPanel {
+public class EngineForm extends BasicForm {
 
     /**
      * 
@@ -45,8 +42,7 @@ public class EngineForm extends BasicPanel {
 
     public EngineForm(Mode mode) {
 	this.mode = mode;
-	initComponetns();
-	initUI();
+	initializePanel();
     }
 
     public EngineForm(Mode mode, SavingCallback callback) {
@@ -82,7 +78,8 @@ public class EngineForm extends BasicPanel {
 	}
     }
 
-    private void initComponetns() {
+    @Override
+    protected void initComponents() {
 	txtName = new JTextField();
 	txtKva = new IntergerTextField();
 	txtDieselPerHour = new DoubleTextField();
@@ -95,23 +92,8 @@ public class EngineForm extends BasicPanel {
 	txtAddress.setBorder(UIManager.getBorder("TextField.border"));
     }
 
-    private void initUI() {
-
-	FormLayout layouts = new FormLayout("pref:grow");
-	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
-	rowBuilder.setDefaultDialogBorder();
-
-	rowBuilder.append(buildPanel());
-
-    }
-
-    private Component buildPanel() {
-	// DefaultFormBuilder builder = new DefaultFormBuilder(new
-	// FormLayout("50dlu,10dlu,fill:p:grow", "p,p,p,p"), this);
-	String leftToRightSpecs = "right:pref, 4dlu, fill:100dlu:grow";
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
-	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-	builder.setLeftToRight(false);
+    @Override
+    protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.appendSeparator(message("engine.form.seperator"));
 	builder.setDefaultDialogBorder();
 	builder.append(message("engine.form.name"), txtName);
@@ -132,7 +114,7 @@ public class EngineForm extends BasicPanel {
 		if (engine == null) {
 		    engine = new Engine();
 		}
-		
+
 		engine.setName(txtName.getText());
 		engine.setKva(txtKva.getValue());
 		engine.setDieselConsumption(txtDieselPerHour.getValue());
@@ -167,6 +149,11 @@ public class EngineForm extends BasicPanel {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
 	}
 	return builder.getPanel();
+    }
+
+    @Override
+    protected String getLayoutSpecs() {
+	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
 }

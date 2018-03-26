@@ -29,7 +29,7 @@ public class VillageForm extends BasicForm {
     }
 
     @Override
-    protected void initComponetns() {
+    protected void initComponents() {
 	txtName = new JTextField();
     }
 
