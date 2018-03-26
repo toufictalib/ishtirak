@@ -57,4 +57,6 @@ public interface SubscriberService {
     void saveConsumptionHistory(CounterHistory history);
     
     List<Contract> getContractBySubscriberId(Long subscriberId);
+
+    void generateReceipts();
 }

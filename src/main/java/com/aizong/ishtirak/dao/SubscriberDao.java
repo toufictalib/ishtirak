@@ -19,4 +19,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     void deleteContracts(List<Long> ids);
 
     List<Contract> getContractBySubscriberId(Long subscriberId);
+
+    List<Contract> getActiveContracts();
 }

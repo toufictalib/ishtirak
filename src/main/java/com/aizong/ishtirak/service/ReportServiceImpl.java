@@ -71,31 +71,31 @@ public class ReportServiceImpl implements ReportService {
 	if (monthly) {
 	    List<MonthlyBundle> list = subscriberService.getMonthlyBundles();
 
-	    String[] cols = { "الرقم", "الاسم", "قيمة الإشتراك" };
+	    String[] cols = { "الرقم", "الاسم","رسم الإشتراك", "قيمة الإشتراك" };
 
 	    List<Object[]> rows = new ArrayList<>();
 	    for (MonthlyBundle object : list) {
 		// Information information = subscriber.getInformation();
-		Object[] row = { object.getId(), object.getName(), object.getFees() };
+		Object[] row = { object.getId(), object.getName(),object.getSettlementFees(), object.getFees() };
 
 		rows.add(row);
 	    }
 
-	    Class<?>[] clazzes = { Long.class, String.class, Double.class };
+	    Class<?>[] clazzes = { Long.class, String.class,Double.class, Double.class };
 
 	    return new ReportTableModel(cols, rows, clazzes);
 	} else {
 	    List<SubscriptionBundle> list = subscriberService.getSubscriptionBundles();
-	    String[] cols = { "الرقم", "الاسم", "سعر الكيلو", "كلفة إشتراك الشهر" };
+	    String[] cols = { "الرقم", "الاسم","رسم الإشتراك", "سعر الكيلو", "كلفة إشتراك الشهر" };
 	    List<Object[]> rows = new ArrayList<>();
 	    for (SubscriptionBundle object : list) {
-		Object[] row = { object.getId(), object.getName(), object.getCostPerKb(),
+		Object[] row = { object.getId(), object.getName(),object.getSettlementFees(), object.getCostPerKb(),
 			object.getSubscriptionFees() };
 
 		rows.add(row);
 	    }
 
-	    Class<?>[] clazzes = { Long.class, String.class, Double.class, Double.class };
+	    Class<?>[] clazzes = { Long.class, String.class, Double.class,Double.class, Double.class };
 
 	    return new ReportTableModel(cols, rows, clazzes);
 	}

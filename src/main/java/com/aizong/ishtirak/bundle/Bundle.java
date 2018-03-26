@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.bundle;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -9,18 +10,22 @@ import javax.persistence.Table;
 
 import com.aizong.ishtirak.common.BaseEntity;
 
-
-@Entity  
-@Table(name = "bundle")  
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)  
-@DiscriminatorColumn(name="type",discriminatorType=DiscriminatorType.STRING)  
+@Entity
+@Table(name = "bundle")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Bundle extends BaseEntity {
 
     /**
      * 
      */
     private static final long serialVersionUID = 420270326779212177L;
+
+    @Column(name = "name")
     protected String name;
+
+    @Column(name = "settelment_fees")
+    protected Double settlementFees;
 
     public Bundle() {
 	super();
@@ -42,10 +47,18 @@ public abstract class Bundle extends BaseEntity {
     public void setName(String name) {
 	this.name = name;
     }
-    
+
+    public Double getSettlementFees() {
+	return settlementFees;
+    }
+
+    public void setSettlementFees(Double settlementFees) {
+	this.settlementFees = settlementFees;
+    }
+
     @Override
     public String toString() {
-        return name;
+	return name;
     }
 
 }

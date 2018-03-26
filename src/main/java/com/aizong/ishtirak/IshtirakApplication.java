@@ -9,6 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +23,7 @@ import com.aizong.ishtirak.bundle.BundleFilterTable;
 import com.aizong.ishtirak.bundle.MonthlyBundleFilterTable;
 import com.aizong.ishtirak.bundle.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.common.Mode;
+import com.aizong.ishtirak.common.ServiceProvider;
 import com.aizong.ishtirak.common.WindowUtils;
 import com.aizong.ishtirak.engine.EngineFitlerTable;
 import com.aizong.ishtirak.subscriber.form.ContractorSearchPanel;
@@ -44,6 +48,19 @@ public class IshtirakApplication extends JFrame {
 
     
     public IshtirakApplication() {
+	 try {
+	     for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+	} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+		| UnsupportedLookAndFeelException e1) {
+	    // TODO Auto-generated catch block
+	    e1.printStackTrace();
+	}
+	 
 	JPanel panel = new JPanel();
 
 	JButton btn = new JButton("Add");
@@ -134,6 +151,15 @@ public class IshtirakApplication extends JFrame {
 	    }
 	});
 	
+	JButton btnGenerateReceipts = new JButton("Generate Receipts");
+	btnGenerateReceipts.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		ServiceProvider.get().getSubscriberService().generateReceipts();
+	    }
+	});
+	
 
 	JTextArea textArea = new JTextArea();
 
@@ -147,6 +173,7 @@ public class IshtirakApplication extends JFrame {
 	panel.add(btnBundleSub);
 	panel.add(btnSearchCustomer);
 	panel.add(btnShowCounterHistory);
+	panel.add(btnGenerateReceipts);
 	setTitle("Simple example");
 	setContentPane(panel);
 	setSize(300, 200);

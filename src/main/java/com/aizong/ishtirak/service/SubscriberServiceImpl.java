@@ -1,7 +1,10 @@
 package com.aizong.ishtirak.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -18,6 +21,9 @@ import com.aizong.ishtirak.engine.Engine;
 import com.aizong.ishtirak.subscriber.SearchCustomerCriteria;
 import com.aizong.ishtirak.subscriber.model.Subscriber;
 import com.aizong.ishtirak.subscriber.model.Village;
+import com.aizong.ishtirak.transaction.SubscriptionHistory;
+import com.aizong.ishtirak.transaction.Transaction;
+import com.aizong.ishtirak.transaction.TransactionType;
 
 @Service
 @Transactional
@@ -68,14 +74,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void saveEngine(Engine engine) {
-	if(engine.getId()!=null) {
+	if (engine.getId() != null) {
 	    subscriberDao.update(engine);
 
-	}else {
-	    
+	} else {
+
 	    subscriberDao.save(Arrays.asList(engine));
 	}
-	
+
     }
 
     @Override
@@ -86,7 +92,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void deleteEngines(List<Long> engineIds) {
 	subscriberDao.deleteEngines(engineIds);
-	
+
     }
 
     @Override
@@ -96,12 +102,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void saveBundle(Bundle bundle) {
-	if(bundle.getId()!=null) {
+	if (bundle.getId() != null) {
 	    subscriberDao.update(bundle);
-	}else {
+	} else {
 	    subscriberDao.save(Arrays.asList(bundle));
 	}
-	
+
     }
 
     @Override
@@ -113,17 +119,16 @@ public class SubscriberServiceImpl implements SubscriberService {
     public List<MonthlyBundle> getMonthlyBundles() {
 	return subscriberDao.findAll(MonthlyBundle.class);
     }
-    
+
     @Override
     public List<SubscriptionBundle> getSubscriptionBundles() {
 	return subscriberDao.findAll(SubscriptionBundle.class);
     }
 
-
     @Override
     public void deleteBundles(List<Long> bundleIds) {
 	subscriberDao.deleteBundles(bundleIds);
-	
+
     }
 
     @Override
@@ -138,12 +143,22 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void saveContract(Contract contract) {
-	if(contract.getId()!=null) {
+	if (contract.getId() != null) {
 	    subscriberDao.update(contract);
-	}else {
+	} else {
 	    subscriberDao.save(Arrays.asList(contract));
+
+	    Bundle bundle = getBundleById(contract.getBundleId());
+
+	    if (bundle != null) {
+		Transaction transaction = new Transaction();
+		transaction.setAmount(bundle.getSettlementFees());
+		transaction.setContractId(contract.getId());
+		transaction.setTransactionType(TransactionType.SETTELMENT_FEES);
+		subscriberDao.save(Arrays.asList(transaction));
+	    }
 	}
-	
+
     }
 
     @Override
@@ -154,23 +169,66 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void deleteContracts(List<Long> ids) {
 	subscriberDao.deleteContracts(ids);
-	
+
     }
 
     @Override
     public void saveConsumptionHistory(CounterHistory history) {
-	if(history.getId()!=null) {
+	if (history.getId() != null) {
 	    subscriberDao.update(history);
-	}else {
-	    
+	} else {
+
 	    subscriberDao.save(Arrays.asList(history));
 	}
-	
+
     }
 
     @Override
     public List<Contract> getContractBySubscriberId(Long subscriberId) {
 	return subscriberDao.getContractBySubscriberId(subscriberId);
+    }
+
+    private List<Contract> getActiveContracts() {
+	return subscriberDao.getActiveContracts();
+    }
+
+    @Override
+    public void generateReceipts() {
+	List<Contract> contracts = getActiveContracts();
+
+	List<Bundle> allBundles = getAllBundles();
+	Map<Long, Bundle> map = allBundles.stream().collect(Collectors.toMap(e -> e.getId(), e -> e));
+	List<Transaction> transactions = new ArrayList<>();
+	List<SubscriptionHistory> subscriptionHistoryList = new ArrayList<>();
+	for (Contract contract : contracts) {
+	    Bundle bundle = map.get(contract.getBundleId());
+	    if (bundle instanceof MonthlyBundle) {
+		Transaction transaction = new Transaction();
+		transaction.setAmount(((MonthlyBundle) bundle).getFees());
+		transaction.setContractId(contract.getId());
+		transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
+
+		transactions.add(transaction);
+	    } else if (bundle instanceof SubscriptionBundle) {
+		SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
+		Transaction transaction = new Transaction();
+		transaction
+			.setAmount(subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * 1000);
+		transaction.setContractId(contract.getId());
+		transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
+		transactions.add(transaction);
+
+		SubscriptionHistory subscriptionHistory = new SubscriptionHistory();
+		subscriptionHistory.setConsumption(1000);
+		subscriptionHistory.setCostPerKb(subscriptionBundle.getCostPerKb());
+		subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
+		subscriptionHistoryList.add(subscriptionHistory);
+
+	    }
+	}
+	
+	subscriberDao.save(new ArrayList<>(transactions));
+	subscriberDao.save(new ArrayList<>(subscriptionHistoryList));
     }
 
 }

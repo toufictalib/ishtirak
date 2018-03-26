@@ -27,6 +27,7 @@ public class BundleForm extends BasicPanel {
     private static final long serialVersionUID = 1L;
 
     private JTextField txtName;
+    private DoubleTextField txtSettelementFees;
     private DoubleTextField txtFees;
     private DoubleTextField txtCostPerKb;
     private DoubleTextField txtSubscriptionFees;
@@ -62,10 +63,12 @@ public class BundleForm extends BasicPanel {
 	if(bundle instanceof MonthlyBundle) {
 	    MonthlyBundle monthlyBundle = (MonthlyBundle) bundle;
 	    txtName.setText(monthlyBundle.getName());
+	    txtSettelementFees.setText(monthlyBundle.getSettlementFees()+"");
 	    txtFees.setText(monthlyBundle.getFees()+"");
 	}else {
 	    SubscriptionBundle subscriptionBundle  = (SubscriptionBundle) bundle;
 	    txtName.setText(subscriptionBundle.getName());
+	    txtSettelementFees.setText(subscriptionBundle.getSettlementFees()+"");
 	    txtCostPerKb.setText(subscriptionBundle.getCostPerKb()+"");
 	    txtSubscriptionFees.setText(subscriptionBundle.getSubscriptionFees()+"");
 	}
@@ -74,9 +77,11 @@ public class BundleForm extends BasicPanel {
 
     private void initComponetns() {
 	txtName = new JTextField();
+	txtSettelementFees = new DoubleTextField();
 	txtFees = new DoubleTextField();
 	txtCostPerKb = new DoubleTextField();
 	txtSubscriptionFees = new DoubleTextField();
+	
     }
 
     private void initUI() {
@@ -101,11 +106,13 @@ public class BundleForm extends BasicPanel {
 	    builder.appendSeparator(message("bundle.form.monthly.seperator"));
 	    builder.setDefaultDialogBorder();
 	    builder.append(message("bundle.form.name"), txtName);
+	    builder.append(message("bundle.form.settelementFees"), txtSettelementFees);
 	    builder.append(message("bundle.form.monthly.value"), txtFees);
 	} else {
 	    builder.appendSeparator(message("bundle.form.subscription.seperator"));
 	    builder.setDefaultDialogBorder();
 	    builder.append(message("bundle.form.name"), txtName);
+	    builder.append(message("bundle.form.settelementFees"), txtSettelementFees);
 	    builder.append(message("bundle.form.subscription.costPerKb"), txtCostPerKb);
 	    builder.append(message("bundle.form.subscription.subscriptionFees"), txtSubscriptionFees);
 	}
@@ -121,12 +128,14 @@ public class BundleForm extends BasicPanel {
 		if (monthly) {
 		    MonthlyBundle monthlyBundle = bundle == null ? new MonthlyBundle() : (MonthlyBundle) bundle;
 		    monthlyBundle.setName(txtName.getText());
+		    monthlyBundle.setSettlementFees(txtSettelementFees.getValue());
 		    monthlyBundle.setFees(txtFees.getValue());
 		    ServiceProvider.get().getSubscriberService().saveBundle(monthlyBundle);
 		} else {
 		    SubscriptionBundle subscriptionBundle = bundle == null ? new SubscriptionBundle()
 			    : (SubscriptionBundle) bundle;
 		    subscriptionBundle.setName(txtName.getText());
+		    subscriptionBundle.setSettlementFees(txtSettelementFees.getValue());
 		    subscriptionBundle.setCostPerKb(txtCostPerKb.getValue());
 		    subscriptionBundle.setSubscriptionFees(txtSubscriptionFees.getValue());
 		    ServiceProvider.get().getSubscriberService().saveBundle(subscriptionBundle);

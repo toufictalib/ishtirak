@@ -93,4 +93,11 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	return criteria.list();
     }
 
+    @Override
+    public List<Contract> getActiveContracts() {
+	Criteria criteria = getsession().createCriteria(Contract.class);
+	criteria.add(Restrictions.eq("active", true));
+	return criteria.list();
+    }
+
 }
