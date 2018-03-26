@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.aizong.ishtirak.common.table.ReportTableModel;
+import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.Subscriber;

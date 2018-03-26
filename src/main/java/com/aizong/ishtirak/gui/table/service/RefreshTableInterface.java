@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.common.l;
+package com.aizong.ishtirak.gui.table.service;
 
 public interface RefreshTableInterface {
     void refreshTable();

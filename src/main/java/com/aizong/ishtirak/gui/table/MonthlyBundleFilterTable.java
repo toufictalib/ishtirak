@@ -1,7 +1,7 @@
 package com.aizong.ishtirak.gui.table;
 
+import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
-import com.aizong.ishtirak.common.table.ReportTableModel;
 
 @SuppressWarnings("serial")
 public class MonthlyBundleFilterTable extends BundleFilterTable {

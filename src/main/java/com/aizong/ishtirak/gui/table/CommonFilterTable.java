@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.common.table;
+package com.aizong.ishtirak.gui.table;
 
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -26,12 +26,13 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.aizong.ishtirak.bean.ReportTableModel;
+import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.form.OrientationUtils;
-import com.aizong.ishtirak.common.l.MyTableListener;
-import com.aizong.ishtirak.common.l.RefreshTableInterface;
-import com.aizong.ishtirak.common.misc.BasicPanel;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ImageUtils;
+import com.aizong.ishtirak.gui.table.service.MyTableListener;
+import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;

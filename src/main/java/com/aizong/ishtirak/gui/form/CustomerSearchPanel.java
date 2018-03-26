@@ -15,8 +15,8 @@ import javax.swing.JTextField;
 
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
+import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.form.OrientationUtils;
-import com.aizong.ishtirak.common.misc.BasicPanel;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.MessageUtils;

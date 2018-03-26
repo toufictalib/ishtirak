@@ -4,16 +4,15 @@ import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SavingCallback;
-import com.aizong.ishtirak.common.l.MyTableListener;
-import com.aizong.ishtirak.common.l.RefreshTableInterface;
 import com.aizong.ishtirak.common.misc.MessageUtils;
 import com.aizong.ishtirak.common.misc.Mode;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
 import com.aizong.ishtirak.common.misc.WindowUtils;
-import com.aizong.ishtirak.common.table.CommonFilterTable;
-import com.aizong.ishtirak.common.table.ReportTableModel;
 import com.aizong.ishtirak.gui.form.EngineForm;
+import com.aizong.ishtirak.gui.table.service.MyTableListener;
+import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.aizong.ishtirak.model.Engine;
 
 @SuppressWarnings("serial")

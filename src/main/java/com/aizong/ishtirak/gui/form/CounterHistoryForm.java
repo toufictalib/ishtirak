@@ -12,8 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.form.OrientationUtils;
-import com.aizong.ishtirak.common.misc.BasicPanel;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.IntergerTextField;

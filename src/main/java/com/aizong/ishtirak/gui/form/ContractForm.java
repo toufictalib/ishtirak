@@ -10,8 +10,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.form.OrientationUtils;
-import com.aizong.ishtirak.common.misc.BasicPanel;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.ServiceProvider;

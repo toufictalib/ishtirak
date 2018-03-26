@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.common.table;
+package com.aizong.ishtirak.bean;
 
 import java.util.List;
 

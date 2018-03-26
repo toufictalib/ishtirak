@@ -1,10 +1,13 @@
-package com.aizong.ishtirak.common.misc;
+package com.aizong.ishtirak.common.form;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import com.aizong.ishtirak.common.misc.Message;
+import com.aizong.ishtirak.common.misc.ServiceProvider;
 
 public class BasicPanel extends JPanel {
     /**

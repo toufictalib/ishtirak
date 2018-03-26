@@ -8,8 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 import com.aizong.ishtirak.bean.SavingCallback;
+import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.form.OrientationUtils;
-import com.aizong.ishtirak.common.misc.BasicPanel;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.DoubleTextField;
 import com.aizong.ishtirak.common.misc.Mode;
