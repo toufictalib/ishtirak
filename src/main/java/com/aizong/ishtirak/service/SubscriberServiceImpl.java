@@ -20,6 +20,7 @@ import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
+import com.aizong.ishtirak.model.DieselLog;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.MaintenaceLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
@@ -298,6 +299,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 	    subscriberDao.save(Arrays.asList(maintenaceLog));
 	}
 
+    }
+
+    @Override
+    public void saveDieselLog(MaintenaceLog maintenaceLog, DieselLog dieselLog) {
+	subscriberDao.save(Arrays.asList(maintenaceLog));
     }
 
 }

@@ -28,6 +28,7 @@ import com.aizong.ishtirak.common.misc.WindowUtils;
 import com.aizong.ishtirak.gui.form.AddressForm;
 import com.aizong.ishtirak.gui.form.ContractorSearchPanel;
 import com.aizong.ishtirak.gui.form.CustomerSearchPanel;
+import com.aizong.ishtirak.gui.form.DieselForm;
 import com.aizong.ishtirak.gui.form.MaintenaceForm;
 import com.aizong.ishtirak.gui.form.SubscriberForm;
 import com.aizong.ishtirak.gui.form.VillageForm;
@@ -189,7 +190,7 @@ public class IshtirakApplication extends JFrame {
 	    
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
-		WindowUtils.createDialog(IshtirakApplication.this, "الصروف", new MaintenaceForm());
+		WindowUtils.createDialog(IshtirakApplication.this, "الصروف", new DieselForm());
 		
 	    }
 	});

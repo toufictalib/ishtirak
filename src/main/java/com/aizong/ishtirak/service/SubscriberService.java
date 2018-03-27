@@ -6,6 +6,7 @@ import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
+import com.aizong.ishtirak.model.DieselLog;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.MaintenaceLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
@@ -62,4 +63,6 @@ public interface SubscriberService {
     void generateReceipts();
 
     void saveMaintenanceLog(MaintenaceLog maintenaceLog);
+
+    void saveDieselLog(MaintenaceLog maintenaceLog, DieselLog dieselLog);
 }

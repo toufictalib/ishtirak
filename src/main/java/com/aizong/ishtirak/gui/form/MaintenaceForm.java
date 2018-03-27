@@ -31,11 +31,11 @@ public class MaintenaceForm extends BasicForm {
      */
     private static final long serialVersionUID = 1L;
 
-    private JTextField txtDesc;
-    private DoubleTextField txtAmount;
-    private ExCombo<SearchResult> comboMaintenaceTypes;
-    private ExCombo<Engine> comboEngines;
-    private JTextArea txtNote;
+    protected JTextField txtDesc;
+    protected DoubleTextField txtAmount;
+    protected ExCombo<SearchResult> comboMaintenaceTypes;
+    protected ExCombo<Engine> comboEngines;
+    protected JTextArea txtNote;
 
     public MaintenaceForm() {
 	super();
@@ -114,13 +114,36 @@ public class MaintenaceForm extends BasicForm {
     }
     
     static class SearchResult {
-	MaintenanceType type;
-	String label;
+  	MaintenanceType type;
+  	String label;
 
-	@Override
-	public String toString() {
-	    return label;
-	}
-    }
+  	@Override
+  	public String toString() {
+  	    return label;
+  	}
+
+  	@Override
+  	public int hashCode() {
+  	    final int prime = 31;
+  	    int result = 1;
+  	    result = prime * result + ((type == null) ? 0 : type.hashCode());
+  	    return result;
+  	}
+
+  	@Override
+  	public boolean equals(Object obj) {
+  	    if (this == obj)
+  		return true;
+  	    if (obj == null)
+  		return false;
+  	    if (getClass() != obj.getClass())
+  		return false;
+  	    SearchResult other = (SearchResult) obj;
+  	    if (type != other.type)
+  		return false;
+  	    return true;
+  	}
+
+      }
 
 }
