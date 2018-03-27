@@ -8,9 +8,10 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
-import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
+import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Subscriber;
 
 @Repository
@@ -97,7 +98,17 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     public List<Contract> getActiveContracts() {
 	Criteria criteria = getsession().createCriteria(Contract.class);
 	criteria.add(Restrictions.eq("active", true));
+	//criteria.add(Restrictions.gt("insert_date", ""));
 	return criteria.list();
+    }
+
+    @Override
+    public List<CounterHistory> getCounterHistory(int month) {
+	
+	String sql = "select * from counter_history";
+	NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
+	createSQLQuery.addEntity(CounterHistory.class);
+	return createSQLQuery.list();
     }
 
 }

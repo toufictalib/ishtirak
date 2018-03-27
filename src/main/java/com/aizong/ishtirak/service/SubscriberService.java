@@ -7,6 +7,7 @@ import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Engine;
+import com.aizong.ishtirak.model.MaintenaceLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
@@ -59,4 +60,6 @@ public interface SubscriberService {
     List<Contract> getContractBySubscriberId(Long subscriberId);
 
     void generateReceipts();
+
+    void saveMaintenanceLog(MaintenaceLog maintenaceLog);
 }

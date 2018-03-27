@@ -1,5 +1,7 @@
 package com.aizong.ishtirak.service;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +13,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.dao.SubscriberDao;
@@ -18,6 +21,7 @@ import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Engine;
+import com.aizong.ishtirak.model.MaintenaceLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
@@ -192,14 +196,60 @@ public class SubscriberServiceImpl implements SubscriberService {
 	return subscriberDao.getActiveContracts();
     }
 
+    private List<CounterHistory> getCounterHistory(int month) {
+	return subscriberDao.getCounterHistory(month);
+    }
+
+    private List<ContractConsumptionBean> getContractConsupmtion() {
+	LocalDateTime currentTime = LocalDateTime.now();
+	Month month = currentTime.getMonth();
+	int currentMonth = month.getValue();
+	// back up nbOfDaysBeforeToday of current date
+	LocalDateTime dateMinusMonths = currentTime.minusMonths(1);
+	int monthBefore = dateMinusMonths.getMonth().getValue();
+
+	List<CounterHistory> currentHistory = getCounterHistory(currentMonth);
+	List<CounterHistory> previousHistory = getCounterHistory(monthBefore);
+	Map<Long, CounterHistory> previousHistoryMap = previousHistory.stream()
+		.collect(Collectors.toMap(e -> e.getContractId(), e -> e));
+
+	List<ContractConsumptionBean> list = new ArrayList<>();
+	for (CounterHistory c : currentHistory) {
+	    CounterHistory counterHistory = previousHistoryMap.get(c.getContractId());
+
+	    Long v = null;
+	    if (counterHistory != null) {
+		v = counterHistory.getConsumption();
+	    }
+
+	    list.add(new ContractConsumptionBean(c.getContractId(), v, c.getConsumption()));
+	}
+
+	return list;
+    }
+
     @Override
     public void generateReceipts() {
+
+	// get active contracts
 	List<Contract> contracts = getActiveContracts();
 
+	// get all bundles monthly and subscription types
 	List<Bundle> allBundles = getAllBundles();
+
+	// group bundle by id
 	Map<Long, Bundle> map = allBundles.stream().collect(Collectors.toMap(e -> e.getId(), e -> e));
 	List<Transaction> transactions = new ArrayList<>();
 	List<SubscriptionHistory> subscriptionHistoryList = new ArrayList<>();
+
+	List<ContractConsumptionBean> counterHistories = getContractConsupmtion();
+	Map<Long, ContractConsumptionBean> counterHistory = counterHistories.stream()
+		.collect(Collectors.toMap(e -> e.getContractId(), e -> e));
+
+	// 1-create the transaction for each bundle type
+	// 2-create the subscription history for each counter subscription
+	// N.B amount for counter subscription is : monthly fees + consumption *
+	// price/kb
 	for (Contract contract : contracts) {
 	    Bundle bundle = map.get(contract.getBundleId());
 	    if (bundle instanceof MonthlyBundle) {
@@ -210,25 +260,44 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		transactions.add(transaction);
 	    } else if (bundle instanceof SubscriptionBundle) {
-		SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
-		Transaction transaction = new Transaction();
-		transaction
-			.setAmount(subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * 1000);
-		transaction.setContractId(contract.getId());
-		transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
-		transactions.add(transaction);
 
-		SubscriptionHistory subscriptionHistory = new SubscriptionHistory();
-		subscriptionHistory.setConsumption(1000);
-		subscriptionHistory.setCostPerKb(subscriptionBundle.getCostPerKb());
-		subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
-		subscriptionHistoryList.add(subscriptionHistory);
+		ContractConsumptionBean contractConsumptionBean = counterHistory.get(contract.getId());
+		if (contractConsumptionBean == null) {
+		    continue;
+		}
+
+		if (contractConsumptionBean.hasOldCounterValue()) {
+		    long consumption = contractConsumptionBean.getConsumption();
+		    SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
+		    Transaction transaction = new Transaction();
+		    transaction.setAmount(
+			    subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * consumption);
+		    transaction.setContractId(contract.getId());
+		    transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
+		    transactions.add(transaction);
+
+		    SubscriptionHistory subscriptionHistory = new SubscriptionHistory();
+		    subscriptionHistory.setConsumption(consumption);
+		    subscriptionHistory.setCostPerKb(subscriptionBundle.getCostPerKb());
+		    subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
+		    subscriptionHistoryList.add(subscriptionHistory);
+		}
 
 	    }
 	}
-	
+
 	subscriberDao.save(new ArrayList<>(transactions));
 	subscriberDao.save(new ArrayList<>(subscriptionHistoryList));
+    }
+
+    @Override
+    public void saveMaintenanceLog(MaintenaceLog maintenaceLog) {
+	if (maintenaceLog.getId() != null) {
+	    subscriberDao.update(maintenaceLog);
+	} else {
+	    subscriberDao.save(Arrays.asList(maintenaceLog));
+	}
+
     }
 
 }

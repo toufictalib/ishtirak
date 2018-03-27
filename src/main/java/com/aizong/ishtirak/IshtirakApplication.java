@@ -28,6 +28,7 @@ import com.aizong.ishtirak.common.misc.WindowUtils;
 import com.aizong.ishtirak.gui.form.AddressForm;
 import com.aizong.ishtirak.gui.form.ContractorSearchPanel;
 import com.aizong.ishtirak.gui.form.CustomerSearchPanel;
+import com.aizong.ishtirak.gui.form.MaintenaceForm;
 import com.aizong.ishtirak.gui.form.SubscriberForm;
 import com.aizong.ishtirak.gui.form.VillageForm;
 import com.aizong.ishtirak.gui.table.BundleFilterTable;
@@ -183,6 +184,15 @@ public class IshtirakApplication extends JFrame {
 	});
 	
 
+	JButton btnAddMaintenance = new JButton("Add maintenance");
+	btnAddMaintenance.addActionListener(new ActionListener() {
+	    
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		WindowUtils.createDialog(IshtirakApplication.this, "الصروف", new MaintenaceForm());
+		
+	    }
+	});
 	JTextArea textArea = new JTextArea();
 
 	textArea.setText("Toufic Talib");
@@ -197,6 +207,7 @@ public class IshtirakApplication extends JFrame {
 	panel.add(btnShowCounterHistory);
 	panel.add(btnGenerateReceipts);
 	panel.add(btnAddress);
+	panel.add(btnAddMaintenance);
 	setTitle("Simple example");
 	setContentPane(panel);
 	setSize(300, 200);

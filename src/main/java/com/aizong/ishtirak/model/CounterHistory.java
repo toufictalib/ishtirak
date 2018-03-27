@@ -16,7 +16,7 @@ public class CounterHistory extends BaseEntity {
 
     @Column(name = "consumption")
     private Long consumption;
-
+    
     public CounterHistory() {
 	super();
     }
