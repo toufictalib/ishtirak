@@ -111,4 +111,37 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	return createSQLQuery.list();
     }
 
+    @Override
+    public void deleteVillages(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from village where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
+
+    @Override
+    public void deleteEmployeeType(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from employee_type where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
+
+    @Override
+    public void deleteEmployees(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from employee where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
+
 }

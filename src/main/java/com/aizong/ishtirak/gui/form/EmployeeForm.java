@@ -15,13 +15,13 @@ import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.Mode;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
-import com.aizong.ishtirak.model.Subscriber;
-import com.aizong.ishtirak.model.SubscriberInformation;
+import com.aizong.ishtirak.model.Employee;
+import com.aizong.ishtirak.model.EmployeeInformation;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
-public class SubscriberForm extends BasicForm {
+public class EmployeeForm extends BasicForm {
 
     /**
      * 
@@ -41,48 +41,48 @@ public class SubscriberForm extends BasicForm {
     private JTextField txtEmail;
     private SavingCallback callback;
     private Mode mode;
-    private Subscriber subscriber;
+    private Employee employee;
 
-    public SubscriberForm(Mode mode) {
+    public EmployeeForm(Mode mode) {
 	this.mode = mode;
 	initializePanel();
     }
 
-    public SubscriberForm(Mode mode, SavingCallback callback) {
+    public EmployeeForm(Mode mode, SavingCallback callback) {
 	this(mode);
 	this.callback = callback;
     }
 
-    public SubscriberForm(Mode mode, Subscriber subscriber, SavingCallback callback) {
+    public EmployeeForm(Mode mode, Employee employee, SavingCallback callback) {
 	this(mode);
-	this.subscriber = subscriber;
+	this.employee = employee;
 	this.callback = callback;
 	fillData();
     }
 
     private void fillData() {
-	if (subscriber == null) {
+	if (employee == null) {
 	    return;
 	}
 
-	txtName.setText(subscriber.getName());
-	txtFatherName.setText(subscriber.getFatherName());
-	txtLastName.setText(subscriber.getLastName());
-	txtIdentifier.setText(subscriber.getIdentifier());
+	txtName.setText(employee.getName());
+	txtFatherName.setText(employee.getFatherName());
+	txtLastName.setText(employee.getLastName());
+	txtIdentifier.setText(employee.getIdentifier());
 
-	if (subscriber.getInformation() != null) {
-	    comboVillages.setSelectedItem(new Village(subscriber.getInformation().getVillageId()));
+	if (employee.getInformation() != null) {
+	    comboVillages.setSelectedItem(new Village(employee.getInformation().getVillageId()));
 
-	    txtRegion.setText(subscriber.getInformation().getRegion());
-	    txtAddress.setText(subscriber.getInformation().getDetailedAddress());
+	    txtRegion.setText(employee.getInformation().getRegion());
+	    txtAddress.setText(employee.getInformation().getDetailedAddress());
 	    txtAddress.setLineWrap(true);
 
 	    txtAddress.setBorder(UIManager.getBorder("TextField.border"));
 
-	    txtLandLine.setText(subscriber.getInformation().getLandLine());
-	    txtPhone1.setText(subscriber.getInformation().getMainPhone());
-	    txtPhone2.setText(subscriber.getInformation().getAlternativePhone());
-	    txtEmail.setText(subscriber.getInformation().getEmail());
+	    txtLandLine.setText(employee.getInformation().getLandLine());
+	    txtPhone1.setText(employee.getInformation().getMainPhone());
+	    txtPhone2.setText(employee.getInformation().getAlternativePhone());
+	    txtEmail.setText(employee.getInformation().getEmail());
 	}
     }
 
@@ -129,18 +129,18 @@ public class SubscriberForm extends BasicForm {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 
-		if (subscriber == null) {
-		    subscriber = new Subscriber();
+		if (employee == null) {
+		    employee = new Employee();
 		}
 
-		subscriber.setName(txtName.getText());
-		subscriber.setLastName(txtLastName.getText());
-		subscriber.setFatherName(txtFatherName.getText());
-		subscriber.setIdentifier(txtIdentifier.getText());
+		employee.setName(txtName.getText());
+		employee.setLastName(txtLastName.getText());
+		employee.setFatherName(txtFatherName.getText());
+		employee.setIdentifier(txtIdentifier.getText());
 
-		SubscriberInformation information = new SubscriberInformation();
-		if (subscriber != null && subscriber.getInformation() != null) {
-		    information.setId(subscriber.getInformation().getId());
+		EmployeeInformation information = new EmployeeInformation();
+		if (employee != null && employee.getInformation() != null) {
+		    information.setId(employee.getInformation().getId());
 		}
 		information.setVillageId(comboVillages.getValue().getId());
 		information.setRegion(txtRegion.getText());
@@ -150,12 +150,12 @@ public class SubscriberForm extends BasicForm {
 		information.setAlternativePhone(txtPhone2.getText());
 		information.setEmail(txtEmail.getText());
 
-		subscriber.setInformation(information);
+		employee.setInformation(information);
 
-		ServiceProvider.get().getSubscriberService().saveSubscriber(subscriber);
+		ServiceProvider.get().getSubscriberService().saveEmployee(employee);
 		closeWindow();
 		if (callback != null) {
-		    callback.onSuccess(subscriber);
+		    callback.onSuccess(employee);
 		}
 	    }
 	});

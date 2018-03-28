@@ -13,11 +13,11 @@ import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.Mode;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
-import com.aizong.ishtirak.model.Village;
+import com.aizong.ishtirak.model.EmployeeType;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
-public class VillageForm extends BasicForm implements RefreshTableInterface {
+public class EmployeeTypeForm extends BasicForm implements RefreshTableInterface {
 
     /**
      * 
@@ -28,31 +28,29 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
     private SavingCallback callback;
     private Mode mode;
-    private Village oldVillage;
-
-    public VillageForm(Mode mode) {
+    private EmployeeType employeeType;
+    
+    public EmployeeTypeForm(Mode mode) {
 	this.mode = mode;
 	initializePanel();
     }
 
-    public VillageForm(Mode mode, SavingCallback callback) {
+    public EmployeeTypeForm(Mode mode, SavingCallback callback) {
 	this(mode);
 	this.callback = callback;
     }
 
-    public VillageForm(Mode mode, Village village, SavingCallback callback) {
+    public EmployeeTypeForm(Mode mode, EmployeeType employeeType, SavingCallback callback) {
 	this(mode);
-	this.oldVillage = village;
+	this.employeeType = employeeType;
 	this.callback = callback;
 	fillData();
     }
-
+    
     private void fillData() {
-
-	if (oldVillage != null) {
-	    txtName.setText(oldVillage.getName());
-	}
+	
     }
+    
 
     @Override
     protected void initComponents() {
@@ -61,9 +59,9 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
-	builder.appendSeparator("القرية");
+	builder.appendSeparator(message("employeeType.form.seperator"));
 	builder.setDefaultDialogBorder();
-	builder.append("الإسم*", txtName);
+	builder.append(message("employeeType.form.name"), txtName);
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
@@ -71,13 +69,13 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		Village village = oldVillage == null ? new Village() : oldVillage;
-		village.setName(txtName.getText());
+		EmployeeType employeeType = new EmployeeType();
+		employeeType .setName(txtName.getText());
 
-		ServiceProvider.get().getSubscriberService().saveVillage(village);
+		ServiceProvider.get().getSubscriberService().saveEmployeeType(employeeType);
 		closeWindow();
 		if (callback != null) {
-		    callback.onSuccess(village);
+		    callback.onSuccess(employeeType);
 		}
 	    }
 	});
@@ -90,12 +88,7 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
 	    }
 	});
-
-	if (mode == Mode.VIEW) {
-	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
-	} else {
-	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
-	}
+	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
 	return builder.getPanel();
     }
 
@@ -107,7 +100,7 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
     @Override
     public void refreshTable() {
 	fillData();
-
+	
     }
 
 }

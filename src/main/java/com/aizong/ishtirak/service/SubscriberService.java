@@ -7,6 +7,8 @@ import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.DieselLog;
+import com.aizong.ishtirak.model.Employee;
+import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.MaintenaceLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
@@ -16,12 +18,12 @@ import com.aizong.ishtirak.model.Village;
 
 public interface SubscriberService {
 
-    List<Subscriber> getSubscribers();
-
     List<Village> getVillages();
-    
+
     void saveVillage(Village village);
     
+    List<Subscriber> getSubscribers();
+
     void saveSubscriber(Subscriber subscriber);
     
     Subscriber getSubscriberById(Long id);
@@ -65,4 +67,26 @@ public interface SubscriberService {
     void saveMaintenanceLog(MaintenaceLog maintenaceLog);
 
     void saveDieselLog(MaintenaceLog maintenaceLog, DieselLog dieselLog);
+
+    void deleteVillages(List<Long> villageIds);
+    
+    List<Employee> getEmployees();
+
+    void saveEmployee(Employee employee);
+    
+    Employee getEmployeeById(Long id);
+
+    void deleteEmployees(List<Long> employeeIds);
+    
+    List<EmployeeType> getEmployeeTypes();
+
+    void saveEmployeeType(EmployeeType employeeType);
+    
+    EmployeeType getEmployeeTypeById(Long id);
+
+    void deleteEmployeeTypes(List<Long> employeeTypeIds);
+
+    List<Employee> getEmployeesWithEmployeeTypes();
+
+    Village getVillageById(Long id);
 }

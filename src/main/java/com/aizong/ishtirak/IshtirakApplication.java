@@ -37,6 +37,7 @@ import com.aizong.ishtirak.gui.table.EngineFitlerTable;
 import com.aizong.ishtirak.gui.table.MonthlyBundleFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
+import com.aizong.ishtirak.gui.table.VillageFilterTable;
 
 @SpringBootApplication
 public class IshtirakApplication extends JFrame {
@@ -92,7 +93,7 @@ public class IshtirakApplication extends JFrame {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		WindowUtils.createDialog(null, "قرية جديدة", new VillageForm());
+		WindowUtils.createDialog(null, "قرية جديدة", new VillageFilterTable("القرية"));
 	    }
 	});
 

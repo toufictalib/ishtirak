@@ -1,20 +1,14 @@
 package com.aizong.ishtirak.model;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.MappedSuperclass;
 
-@Entity(name = "information")
+@MappedSuperclass
 public class Information implements Serializable {
 
     /**
@@ -23,7 +17,6 @@ public class Information implements Serializable {
     private static final long serialVersionUID = 3466709784752671004L;
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     protected Long id;
 
@@ -51,9 +44,7 @@ public class Information implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    private Subscriber subscriber;
+   
 
     public Long getId() {
 	return id;
@@ -101,14 +92,6 @@ public class Information implements Serializable {
 
     public void setEmail(String email) {
 	this.email = email;
-    }
-
-    public Subscriber getSubscriber() {
-	return subscriber;
-    }
-
-    public void setSubscriber(Subscriber subscriber) {
-	this.subscriber = subscriber;
     }
 
     public Long getVillageId() {

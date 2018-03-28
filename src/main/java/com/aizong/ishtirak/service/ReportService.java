@@ -7,4 +7,10 @@ public interface ReportService {
     ReportTableModel getSubscribers();
 
     ReportTableModel getEngines();
+
+    ReportTableModel getEmployees();
+
+    ReportTableModel getVillages();
+
+    ReportTableModel getEmployeeTypes();
 }

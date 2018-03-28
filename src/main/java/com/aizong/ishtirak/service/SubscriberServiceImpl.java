@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.DieselLog;
+import com.aizong.ishtirak.model.Employee;
+import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.MaintenaceLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
@@ -38,19 +41,28 @@ public class SubscriberServiceImpl implements SubscriberService {
     SubscriberDao subscriberDao;
 
     @Override
-    public List<Subscriber> getSubscribers() {
-	return subscriberDao.findAll(Subscriber.class);
-    }
-
-    @Override
     public List<Village> getVillages() {
 	return subscriberDao.findAll(Village.class);
     }
 
     @Override
     public void saveVillage(Village village) {
-	subscriberDao.save(Arrays.asList(village));
+	if (village.getId() != null) {
+	    subscriberDao.update(village);
+	} else {
+	    subscriberDao.save(Arrays.asList(village));
+	}
 
+    }
+
+    @Override
+    public void deleteVillages(List<Long> villageIds) {
+	subscriberDao.deleteVillages(villageIds);
+    }
+
+    @Override
+    public List<Subscriber> getSubscribers() {
+	return subscriberDao.findAll(Subscriber.class);
     }
 
     @Override
@@ -306,4 +318,68 @@ public class SubscriberServiceImpl implements SubscriberService {
 	subscriberDao.save(Arrays.asList(maintenaceLog));
     }
 
+    @Override
+    public List<Employee> getEmployees() {
+	return subscriberDao.findAll(Employee.class);
+    }
+
+    @Override
+    public List<Employee> getEmployeesWithEmployeeTypes() {
+	List<Employee> employees = subscriberDao.findAll(Employee.class);
+	for (Employee employee : employees) {
+	    Hibernate.initialize(employee.getEmployeeTypeId());
+	}
+	return employees;
+    }
+
+    @Override
+    public void saveEmployee(Employee employee) {
+	if (employee.getId() != null) {
+	    subscriberDao.update(employee);
+	} else {
+	    subscriberDao.save(Arrays.asList(employee));
+	}
+    }
+
+    @Override
+    public Employee getEmployeeById(Long id) {
+	return subscriberDao.find(Employee.class, id);
+    }
+
+    @Override
+    public void deleteEmployees(List<Long> employeeIds) {
+	subscriberDao.deleteEmployees(employeeIds);
+
+    }
+
+    @Override
+    public List<EmployeeType> getEmployeeTypes() {
+	return subscriberDao.findAll(EmployeeType.class);
+    }
+
+    @Override
+    public void saveEmployeeType(EmployeeType employeeType) {
+	if (employeeType.getId() != null) {
+	    subscriberDao.update(employeeType);
+	} else {
+	    subscriberDao.save(Arrays.asList(employeeType));
+	}
+
+    }
+
+    @Override
+    public EmployeeType getEmployeeTypeById(Long id) {
+	return subscriberDao.find(EmployeeType.class, id);
+    }
+
+    @Override
+    public void deleteEmployeeTypes(List<Long> employeeTypeIds) {
+	subscriberDao.deleteEmployeeType(employeeTypeIds);
+
+    }
+
+    @Override
+    public Village getVillageById(Long id) {
+	return subscriberDao.find(Village.class, id);
+    }
 }

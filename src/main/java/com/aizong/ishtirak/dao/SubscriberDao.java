@@ -24,4 +24,10 @@ public interface SubscriberDao extends GenericDao<Object> {
     List<Contract> getActiveContracts();
 
     List<CounterHistory> getCounterHistory(int month);
+
+    void deleteVillages(List<Long> ids);
+    
+    void deleteEmployeeType(List<Long> ids);
+    
+    void deleteEmployees(List<Long> ids);
 }
