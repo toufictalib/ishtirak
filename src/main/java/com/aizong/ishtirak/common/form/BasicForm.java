@@ -24,24 +24,28 @@ public abstract class BasicForm extends BasicPanel {
     }
     
     protected abstract void initComponents();
-    
+
     private void initUI() {
 
-   	FormLayout layouts = new FormLayout("pref:grow");
-   	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
-   	rowBuilder.setDefaultDialogBorder();
+	FormLayout layouts = new FormLayout("pref:grow");
+	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
+	rowBuilder.setDefaultDialogBorder();
 
-   	//create builder
-   	String leftToRightSpecs = getLayoutSpecs();
+	// create builder
+	DefaultFormBuilder builder = createBuilder(getLayoutSpecs());
+
+	rowBuilder.append(buildPanel(builder));
+
+    }
+    
+    public static DefaultFormBuilder createBuilder(String leftToRightSpecs) {
 	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
 	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 	builder.setLeftToRight(false);
-	
-   	rowBuilder.append(buildPanel(builder));
+	return builder;
+    }
 
-       }
-    
     protected abstract Component buildPanel(DefaultFormBuilder builder);
-    
+
     protected abstract String getLayoutSpecs();
 }

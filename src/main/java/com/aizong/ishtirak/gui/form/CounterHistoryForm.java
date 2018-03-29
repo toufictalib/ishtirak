@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.form.OrientationUtils;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
 import com.aizong.ishtirak.common.misc.IntergerTextField;
@@ -24,8 +23,6 @@ import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Subscriber;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class CounterHistoryForm extends BasicForm {
 

@@ -27,27 +27,26 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import com.aizong.ishtirak.bean.ReportTableModel;
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
-import com.aizong.ishtirak.common.form.OrientationUtils;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ImageUtils;
+import com.aizong.ishtirak.common.misc.TableUtils;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 @SuppressWarnings("serial")
 public abstract class CommonFilterTable extends BasicPanel implements RefreshTableInterface {
 
-    private JTable table;
-    private TableModel model;
-    private TableRowSorter<TableModel> sorter;
-    private String title;
-    private JTextField txtFE;
-    private JLabel txtRowCount;
-    private JButton btnAdd;
-    private MyTableListener listener;
+    protected JTable table;
+    protected TableModel model;
+    protected TableRowSorter<TableModel> sorter;
+    protected String title;
+    protected JTextField txtFE;
+    protected JLabel txtRowCount;
+    protected JButton btnAdd;
+    protected MyTableListener listener;
 
     public CommonFilterTable(String title, MyTableListener listener) {
 
@@ -60,7 +59,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     private void start() {
 	initComponents();
 	fillTable();
-	initUI();
+	add(initUI());
     }
 
     private void initComponents() {
@@ -80,6 +79,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 	    }
 	});
+	table.setRowSorter(sorter);
 
 	txtFE = new JTextField(25);
 	txtFE.addKeyListener(new KeyAdapter() {
@@ -112,14 +112,13 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	txtRowCount.setText("العدد : " + row);
     }
 
-    private void initUI() {
+    protected JPanel initUI() {
 
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), new RowSpec[] {});
-	DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
-	builder.setDefaultDialogBorder();
-	builder.setLeftToRight(false);
 
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs);
+	builder.setDefaultDialogBorder();
+	
 	builder.appendSeparator(title);
 
 	builder.append(txtFE, btnAdd);
@@ -128,6 +127,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 	builder.append(txtRowCount);
 
+	return builder.getPanel();
     }
 
     private void fillTable() {
@@ -141,10 +141,12 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	table.setRowSorter(sorter);
 	setTxtRowCount(model.getRowCount());
 	applyRenderer();
+
+	TableUtils.resizeColumnWidth(table);
     }
 
     private void applyRenderer() {
-	TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount()-1);
+	TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
 	column.setCellEditor(new RssFeedCell());
 	column.setMinWidth(150);
 	column.setCellRenderer(new RssFeedCell());
@@ -272,7 +274,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	fillTable();
 
     }
-    
+
     public abstract ReportTableModel getReportTableModel();
 
 }

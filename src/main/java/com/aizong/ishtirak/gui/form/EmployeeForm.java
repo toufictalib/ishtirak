@@ -1,10 +1,12 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -13,10 +15,12 @@ import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.ButtonFactory;
 import com.aizong.ishtirak.common.misc.ExCombo;
+import com.aizong.ishtirak.common.misc.IntergerTextField;
 import com.aizong.ishtirak.common.misc.Mode;
 import com.aizong.ishtirak.common.misc.ServiceProvider;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeInformation;
+import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -32,6 +36,9 @@ public class EmployeeForm extends BasicForm {
     private JTextField txtFatherName;
     private JTextField txtLastName;
     private JTextField txtIdentifier;
+    private IntergerTextField txtSalary;
+    private JCheckBox cbActive;
+    private ExCombo<EmployeeType> comboEmployeeTypes;
     private ExCombo<Village> comboVillages;
     private JTextField txtRegion;
     private JTextArea txtAddress;
@@ -70,6 +77,10 @@ public class EmployeeForm extends BasicForm {
 	txtLastName.setText(employee.getLastName());
 	txtIdentifier.setText(employee.getIdentifier());
 
+	txtSalary.setText(String.valueOf(employee.getSalary()));
+	cbActive.setSelected(employee.isActive());
+	comboEmployeeTypes.setSelectedItem(new EmployeeType(employee.getEmployeeTypeId().getId()));
+	
 	if (employee.getInformation() != null) {
 	    comboVillages.setSelectedItem(new Village(employee.getInformation().getVillageId()));
 
@@ -78,6 +89,7 @@ public class EmployeeForm extends BasicForm {
 	    txtAddress.setLineWrap(true);
 
 	    txtAddress.setBorder(UIManager.getBorder("TextField.border"));
+	    txtAddress.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 	    txtLandLine.setText(employee.getInformation().getLandLine());
 	    txtPhone1.setText(employee.getInformation().getMainPhone());
@@ -92,6 +104,11 @@ public class EmployeeForm extends BasicForm {
 	txtFatherName = new JTextField();
 	txtLastName = new JTextField();
 	txtIdentifier = new JTextField();
+	
+	txtSalary=  new IntergerTextField();
+	cbActive = new JCheckBox();
+	cbActive.setSelected(true);
+	comboEmployeeTypes = new ExCombo<>(ServiceProvider.get().getSubscriberService().getEmployeeTypes());
 
 	comboVillages = new ExCombo<>(ServiceProvider.get().getSubscriberService().getVillages());
 	txtRegion = new JTextField();
@@ -113,6 +130,9 @@ public class EmployeeForm extends BasicForm {
 	builder.append(message("subsriber.form.fatherName"), txtFatherName);
 	builder.append(message("subsriber.form.lastName"), txtLastName);
 	builder.append(message("subsriber.form.identifier"), txtIdentifier);
+	builder.append(message("employee.form.salary"),txtSalary);
+	builder.append(message("employee.form.active"),cbActive);
+	builder.append(message("employee.form.employeeType"),comboEmployeeTypes);
 	builder.appendSeparator(message("subsriber.form.address"));
 	builder.append(message("subsriber.form.village"), comboVillages);
 	builder.append(message("subsriber.form.region"), txtRegion);
@@ -137,7 +157,10 @@ public class EmployeeForm extends BasicForm {
 		employee.setLastName(txtLastName.getText());
 		employee.setFatherName(txtFatherName.getText());
 		employee.setIdentifier(txtIdentifier.getText());
-
+		employee.setSalary(txtSalary.getValue());
+		employee.setActive(cbActive.isSelected());
+		employee.setEmployeeTypeId(comboEmployeeTypes.getValue());
+		
 		EmployeeInformation information = new EmployeeInformation();
 		if (employee != null && employee.getInformation() != null) {
 		    information.setId(employee.getInformation().getId());

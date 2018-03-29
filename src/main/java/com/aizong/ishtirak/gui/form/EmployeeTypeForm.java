@@ -28,8 +28,8 @@ public class EmployeeTypeForm extends BasicForm implements RefreshTableInterface
 
     private SavingCallback callback;
     private Mode mode;
-    private EmployeeType employeeType;
-    
+    private EmployeeType oldEmployeeType;
+
     public EmployeeTypeForm(Mode mode) {
 	this.mode = mode;
 	initializePanel();
@@ -42,15 +42,16 @@ public class EmployeeTypeForm extends BasicForm implements RefreshTableInterface
 
     public EmployeeTypeForm(Mode mode, EmployeeType employeeType, SavingCallback callback) {
 	this(mode);
-	this.employeeType = employeeType;
+	this.oldEmployeeType = employeeType;
 	this.callback = callback;
 	fillData();
     }
-    
+
     private void fillData() {
-	
+	if (oldEmployeeType != null) {
+	    txtName.setText(oldEmployeeType.getName());
+	}
     }
-    
 
     @Override
     protected void initComponents() {
@@ -69,8 +70,8 @@ public class EmployeeTypeForm extends BasicForm implements RefreshTableInterface
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		EmployeeType employeeType = new EmployeeType();
-		employeeType .setName(txtName.getText());
+		EmployeeType employeeType = oldEmployeeType == null ? new EmployeeType() : oldEmployeeType;
+		employeeType.setName(txtName.getText());
 
 		ServiceProvider.get().getSubscriberService().saveEmployeeType(employeeType);
 		closeWindow();
@@ -88,7 +89,13 @@ public class EmployeeTypeForm extends BasicForm implements RefreshTableInterface
 
 	    }
 	});
-	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+
+	if (mode == Mode.VIEW) {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
+	} else {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+	}
+
 	return builder.getPanel();
     }
 
@@ -100,7 +107,7 @@ public class EmployeeTypeForm extends BasicForm implements RefreshTableInterface
     @Override
     public void refreshTable() {
 	fillData();
-	
+
     }
 
 }

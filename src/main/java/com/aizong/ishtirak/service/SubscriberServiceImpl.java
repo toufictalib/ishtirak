@@ -68,6 +68,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void saveSubscriber(Subscriber subscriber) {
 	if (subscriber.getId() != null) {
+	    subscriber.getInformation().setId(subscriber.getId());
 	    subscriberDao.update(subscriber.getInformation());
 	    subscriberDao.update(subscriber);
 	} else {
@@ -335,10 +336,15 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void saveEmployee(Employee employee) {
 	if (employee.getId() != null) {
+	    employee.getInformation().setId(employee.getId());
+	    subscriberDao.update(employee.getInformation());
 	    subscriberDao.update(employee);
 	} else {
 	    subscriberDao.save(Arrays.asList(employee));
+	    employee.getInformation().setId(employee.getId());
+	    subscriberDao.save(Arrays.asList(employee.getInformation()));
 	}
+	
     }
 
     @Override

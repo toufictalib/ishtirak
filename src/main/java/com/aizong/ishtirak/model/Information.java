@@ -1,7 +1,6 @@
 package com.aizong.ishtirak.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -20,15 +19,6 @@ public class Information implements Serializable {
     @Column(name = "id", unique = true, nullable = false)
     protected Long id;
 
-    @Column(name = "insert_date")
-    private Date insertDate;
-
-    @Column(name = "update_date")
-    private Date updateDate;
-
-    @Column(name = "user_id")
-    private Long userId;
-
     @Embedded
     private Address address = new Address();
 
@@ -43,8 +33,6 @@ public class Information implements Serializable {
 
     @Column(name = "email")
     private String email;
-
-   
 
     public Long getId() {
 	return id;
@@ -125,31 +113,5 @@ public class Information implements Serializable {
     public void setAddress(Address address) {
 	this.address = address;
     }
-
-    public Date getInsertDate() {
-        return insertDate;
-    }
-
-    public void setInsertDate(Date insertDate) {
-        this.insertDate = insertDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-    
-    
 
 }

@@ -17,7 +17,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -87,7 +86,16 @@ public class WindowUtils {
         frame.setMinimumSize(frame.getPreferredSize());
         frame.setLocationRelativeTo(owner);
         frame.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        Component[] component = frame.getComponents();
+        applyRtl(frame);
+        
+        frame.setVisible(true);
+        return frame;
+    }
+
+
+
+    public static void applyRtl(Window frame) {
+	Component[] component = frame.getComponents();
         for(int i=0; i<component.length; i++){
             component[i].applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
             Component[] cp = ((Container) component[i]).getComponents();
@@ -100,9 +108,6 @@ public class WindowUtils {
                 }
             }
         }
-        
-        frame.setVisible(true);
-        return frame;
     }
     
     public static JFrame createFrame(String title, JPanel jp) {

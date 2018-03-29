@@ -72,7 +72,7 @@ public class EmployeeTypeFilterTable extends CommonFilterTable {
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
-		    ServiceProvider.get().getSubscriberService().deleteBundles(ids);
+		    ServiceProvider.get().getSubscriberService().deleteEmployeeTypes(ids);
 		    refreshTableInterface.refreshTable();
 		}
 	    }
