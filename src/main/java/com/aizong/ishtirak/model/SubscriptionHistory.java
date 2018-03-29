@@ -2,6 +2,8 @@ package com.aizong.ishtirak.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.aizong.ishtirak.common.misc.BaseEntity;
@@ -23,15 +25,17 @@ public class SubscriptionHistory extends BaseEntity {
 
     @Column(name = "consumption")
     private double consumption;
+    
+    @OneToOne
+    @JoinColumn(name="transaction")
+    private Transaction transaction;
 
     public SubscriptionHistory() {
 	super();
-	// TODO Auto-generated constructor stub
     }
 
     public SubscriptionHistory(Long id) {
 	super(id);
-	// TODO Auto-generated constructor stub
     }
 
     public double getCostPerKb() {
@@ -57,5 +61,14 @@ public class SubscriptionHistory extends BaseEntity {
     public void setConsumption(double consumption) {
 	this.consumption = consumption;
     }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+    
 
 }

@@ -6,15 +6,18 @@ import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
+import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
-import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Subscriber;
 
 @Repository
+@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements SubscriberDao {
 
     @Override
@@ -50,7 +53,6 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Subscriber> searchSubscribers(SearchCustomerCriteria criteria) {
 	SearchCustomerType customerType = SearchCustomerType.NAME;
@@ -86,7 +88,6 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 
     }
 
-    @SuppressWarnings({ "unchecked", "deprecation" })
     @Override
     public List<Contract> getContractBySubscriberId(Long subscriberId) {
 	Criteria criteria = getsession().createCriteria(Contract.class);
@@ -102,13 +103,21 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	return criteria.list();
     }
 
+    
     @Override
-    public List<CounterHistory> getCounterHistory(int month) {
-	
-	String sql = "select * from counter_history";
-	NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
-	createSQLQuery.addEntity(CounterHistory.class);
-	return createSQLQuery.list();
+    public List<ContractConsumptionBean> getCounterHistory(int previousMonth, int currentMonth) {
+
+	String sql = "select c1.contract_id as 'contractId',c1.consumption as 'previousCounterValue',c2.consumption as 'currentCounterValue' "
+		+ "from counter_history c1,counter_history c2 where "
+		+ "c1.contract_id = c2.contract_id and month(c1.insert_date) in (:previousMonth) "
+		+ "and month(c2.insert_date) in (:currentMonth)";
+	NativeQuery sqlQuery = getsession().createSQLQuery(sql);
+	sqlQuery.setParameter("previousMonth", previousMonth).setParameter("currentMonth", currentMonth);
+	sqlQuery.addScalar("contractId", StandardBasicTypes.LONG).addScalar("previousCounterValue",
+		StandardBasicTypes.LONG).addScalar("currentCounterValue",
+			StandardBasicTypes.LONG);
+	sqlQuery.setResultTransformer(Transformers.aliasToBean(ContractConsumptionBean.class));
+	return sqlQuery.list();
     }
 
     @Override
@@ -139,6 +148,17 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    String sql = "delete from employee where id  in :ids";
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
 	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
+
+    @Override
+    public void deleteTransactions(List<Long> contractIds) {
+	if (contractIds.size() > 0) {
+	    String sql = "delete from transaction where id_contract  in :contractIds";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("contractIds", contractIds);
 	    sqlQuery.executeUpdate();
 	}
 	

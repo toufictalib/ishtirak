@@ -13,7 +13,7 @@ public class MonthlyBundle extends Bundle {
      */
     private static final long serialVersionUID = 8130216796555842292L;
 
-    @Column(name = "fees")
+    @Column(name = "monthly_fees")
     private double fees;
 
     public MonthlyBundle() {

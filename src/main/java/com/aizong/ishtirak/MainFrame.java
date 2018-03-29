@@ -3,17 +3,14 @@ package com.aizong.ishtirak;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Enumeration;
 import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -24,6 +21,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.aspectj.bridge.MessageUtil;
+import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
@@ -33,7 +32,11 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import com.aizong.ishtirak.common.misc.ComponentUtils;
 import com.aizong.ishtirak.common.misc.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.Message;
+import com.aizong.ishtirak.common.misc.MessageUtils;
+import com.aizong.ishtirak.common.misc.ServiceProvider;
 import com.aizong.ishtirak.common.misc.WindowUtils;
+import com.aizong.ishtirak.demo.ExampleRibbonFrame;
+import com.aizong.ishtirak.gui.form.MaintenaceForm;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
 import com.aizong.ishtirak.gui.table.EngineFitlerTable;
@@ -47,8 +50,10 @@ import com.jidesoft.swing.JideBorderLayout;
 import com.jidesoft.swing.JideButton;
 import com.jidesoft.swing.JideSwingUtilities;
 
+import ca.odell.glazedlists.impl.Main;
+
 @SpringBootApplication
-public class MainFrame extends JFrame {
+public class MainFrame extends JRibbonFrame {
 
     public MainFrame() {
 	try {
@@ -60,15 +65,14 @@ public class MainFrame extends JFrame {
 		     * UIManager.put("nimbusBlueGrey", Color.GREEN);
 		     * UIManager.put("control", Color.RED);
 		     */
-		    Enumeration keys = UIManager.getDefaults().keys();
+		  /*  Enumeration keys = UIManager.getDefaults().keys();
 		    while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			Object value = UIManager.get(key);
 			if (value instanceof Font) {
 			    UIManager.put(key, new Font(Font.DIALOG, Font.BOLD, 15));
 			}
-		    }
-		    break;
+		    }*/
 		}
 	    }
 	} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -125,7 +129,21 @@ public class MainFrame extends JFrame {
 	btnEmployeeJob.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new EmployeeTypeFilterTable(e.getActionCommand()));
 	});
-
+	
+	JideButton btnExpenses = button("إضافة  مصاريف", "48px-Crystal_Clear_app_kthememgr.png");
+	btnExpenses.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new MaintenaceForm());
+	});
+	
+	JideButton btnReceipts = button("إنشاء كل الايصالات", "48px_customer.png");
+	btnReceipts.addActionListener(e -> {
+	   boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر", "اصدار ايصالات");
+	   if(yes) {
+	       ServiceProvider.get().getSubscriberService().generateReceipts();
+	       MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+	   }
+	});
+	
 	setTitle("Simple example");
 
 	DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("p,15dlu,p"));
@@ -137,12 +155,15 @@ public class MainFrame extends JFrame {
 	builder.append(btnMonthlyBundle);
 	builder.append(btnEmployee);
 	builder.append(btnEmployeeJob);
+	builder.append(btnExpenses);
+	builder.append(btnReceipts);
 
-	setContentPane(JideSwingUtilities.createCenterPanel(builder.getPanel()));
+	ExampleRibbonFrame.createApplicationRibbon(getRibbon());
+	add(JideSwingUtilities.createCenterPanel(builder.getPanel()));
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	setSize(screenSize);
-	setJMenuBar(createMenus());
+	// setJMenuBar(createMenus());
 	setLocationRelativeTo(null);
 	setDefaultCloseOperation(EXIT_ON_CLOSE);
 	applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -225,11 +246,11 @@ public class MainFrame extends JFrame {
 	menu = new JMenu("Another Menu");
 	menu.setMnemonic(KeyEvent.VK_N);
 	menu.getAccessibleContext().setAccessibleDescription("This menu does nothing");
-	
+
 	JMenuItem menu2Item = new JMenuItem("Menu 2");
 	menu.add(menu2Item);
 	menuBar.add(menu);
-	
+
 	return menuBar;
 
     }

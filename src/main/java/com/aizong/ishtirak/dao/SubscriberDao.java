@@ -2,9 +2,9 @@ package com.aizong.ishtirak.dao;
 
 import java.util.List;
 
+import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
-import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Subscriber;
 
 public interface SubscriberDao extends GenericDao<Object> {
@@ -23,11 +23,13 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Contract> getActiveContracts();
 
-    List<CounterHistory> getCounterHistory(int month);
+    List<ContractConsumptionBean> getCounterHistory(int previousMonth, int currentMonth);
 
     void deleteVillages(List<Long> ids);
     
     void deleteEmployeeType(List<Long> ids);
     
     void deleteEmployees(List<Long> ids);
+
+    void deleteTransactions(List<Long> contractIds);
 }

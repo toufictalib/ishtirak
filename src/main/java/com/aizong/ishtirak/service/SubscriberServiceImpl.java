@@ -210,36 +210,15 @@ public class SubscriberServiceImpl implements SubscriberService {
 	return subscriberDao.getActiveContracts();
     }
 
-    private List<CounterHistory> getCounterHistory(int month) {
-	return subscriberDao.getCounterHistory(month);
-    }
-
     private List<ContractConsumptionBean> getContractConsupmtion() {
 	LocalDateTime currentTime = LocalDateTime.now();
 	Month month = currentTime.getMonth();
 	int currentMonth = month.getValue();
 	// back up nbOfDaysBeforeToday of current date
 	LocalDateTime dateMinusMonths = currentTime.minusMonths(1);
-	int monthBefore = dateMinusMonths.getMonth().getValue();
+	int previousMonth = dateMinusMonths.getMonth().getValue();
 
-	List<CounterHistory> currentHistory = getCounterHistory(currentMonth);
-	List<CounterHistory> previousHistory = getCounterHistory(monthBefore);
-	Map<Long, CounterHistory> previousHistoryMap = previousHistory.stream()
-		.collect(Collectors.toMap(e -> e.getContractId(), e -> e));
-
-	List<ContractConsumptionBean> list = new ArrayList<>();
-	for (CounterHistory c : currentHistory) {
-	    CounterHistory counterHistory = previousHistoryMap.get(c.getContractId());
-
-	    Long v = null;
-	    if (counterHistory != null) {
-		v = counterHistory.getConsumption();
-	    }
-
-	    list.add(new ContractConsumptionBean(c.getContractId(), v, c.getConsumption()));
-	}
-
-	return list;
+	return subscriberDao.getCounterHistory(previousMonth, currentMonth);
     }
 
     @Override
@@ -260,6 +239,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 	Map<Long, ContractConsumptionBean> counterHistory = counterHistories.stream()
 		.collect(Collectors.toMap(e -> e.getContractId(), e -> e));
 
+	//before any generation for the current month, we should remove all transaction related to 
+	//current contracts due that each contract has once
+	subscriberDao.deleteTransactions(contracts.stream().map(e->e.getId()).collect(Collectors.toList()));
+	
 	// 1-create the transaction for each bundle type
 	// 2-create the subscription history for each counter subscription
 	// N.B amount for counter subscription is : monthly fees + consumption *
@@ -276,12 +259,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 	    } else if (bundle instanceof SubscriptionBundle) {
 
 		ContractConsumptionBean contractConsumptionBean = counterHistory.get(contract.getId());
-		if (contractConsumptionBean == null) {
-		    continue;
-		}
-
-		if (contractConsumptionBean.hasOldCounterValue()) {
-		    long consumption = contractConsumptionBean.getConsumption();
+		if (contractConsumptionBean != null && contractConsumptionBean.getConsumption().isPresent()) {
+		    long consumption = contractConsumptionBean.getConsumption().get();
 		    SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
 		    Transaction transaction = new Transaction();
 		    transaction.setAmount(
@@ -294,9 +273,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    subscriptionHistory.setConsumption(consumption);
 		    subscriptionHistory.setCostPerKb(subscriptionBundle.getCostPerKb());
 		    subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
+		    subscriptionHistory.setTransaction(transaction);
 		    subscriptionHistoryList.add(subscriptionHistory);
-		}
 
+		}
 	    }
 	}
 
@@ -317,6 +297,9 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void saveDieselLog(MaintenaceLog maintenaceLog, DieselLog dieselLog) {
 	subscriberDao.save(Arrays.asList(maintenaceLog));
+
+	dieselLog.setMaintenanceLog(maintenaceLog.getId());
+	subscriberDao.save(Arrays.asList(dieselLog));
     }
 
     @Override
@@ -344,7 +327,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	    employee.getInformation().setId(employee.getId());
 	    subscriberDao.save(Arrays.asList(employee.getInformation()));
 	}
-	
+
     }
 
     @Override

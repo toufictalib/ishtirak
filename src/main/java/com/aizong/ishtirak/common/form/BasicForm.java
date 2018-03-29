@@ -2,6 +2,7 @@ package com.aizong.ishtirak.common.form;
 
 import java.awt.Component;
 
+import com.aizong.ishtirak.common.misc.WindowUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
@@ -36,6 +37,18 @@ public abstract class BasicForm extends BasicPanel {
 
 	rowBuilder.append(buildPanel(builder));
 
+    }
+    
+    protected void redrawPanel() {
+	removeAll();
+	initUI();
+	revalidate();
+	repaint();
+	
+	if(getOwner()!=null) {
+	    WindowUtils.applyRtl(getOwner());
+	    getOwner().pack();
+	}
     }
     
     public static DefaultFormBuilder createBuilder(String leftToRightSpecs) {

@@ -32,9 +32,6 @@ public class MaintenaceLog extends BaseEntity {
     @Column(name="note")
     private String note;
     
-    @Column(name="modifierId")
-    private Long modifierId;
-
     public String getDesc() {
 	return desc;
     }
@@ -65,14 +62,6 @@ public class MaintenaceLog extends BaseEntity {
 
     public void setEngineId(Long engineId) {
 	this.engineId = engineId;
-    }
-
-    public Long getModifierId() {
-	return modifierId;
-    }
-
-    public void setModifierId(Long modifierId) {
-	this.modifierId = modifierId;
     }
 
     public String getNote() {

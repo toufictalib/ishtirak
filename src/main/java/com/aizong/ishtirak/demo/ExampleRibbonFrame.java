@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -61,7 +60,7 @@ public class ExampleRibbonFrame extends JRibbonFrame {
      * 
      * @return the application ribbon
      */
-    private JRibbon createApplicationRibbon(JRibbon ribbon) {
+    public static JRibbon createApplicationRibbon(JRibbon ribbon) {
 	ribbon.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	RibbonFactory factory = new RibbonFactory(ribbon).withHelp();
 
@@ -120,10 +119,10 @@ public class ExampleRibbonFrame extends JRibbonFrame {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		// TODO handle task visibility
-		if (getRibbon().isVisible(extra1RibbonTasks)) {
-		    getRibbon().setVisible(extra1RibbonTasks, false);
+		if (ribbon.isVisible(extra1RibbonTasks)) {
+		    ribbon.setVisible(extra1RibbonTasks, false);
 		} else {
-		    getRibbon().setVisible(extra1RibbonTasks, true);
+		    ribbon.setVisible(extra1RibbonTasks, true);
 		}
 	    }
 	});
@@ -132,10 +131,10 @@ public class ExampleRibbonFrame extends JRibbonFrame {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		// TODO handle task visibility
-		if (getRibbon().isVisible(extra2RibbonTasks)) {
-		    getRibbon().setVisible(extra2RibbonTasks, false);
+		if (ribbon.isVisible(extra2RibbonTasks)) {
+		    ribbon.setVisible(extra2RibbonTasks, false);
 		} else {
-		    getRibbon().setVisible(extra2RibbonTasks, true);
+		    ribbon.setVisible(extra2RibbonTasks, true);
 		}
 	    }
 	});
@@ -144,10 +143,10 @@ public class ExampleRibbonFrame extends JRibbonFrame {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		// TODO handle task visibility
-		if (getRibbon().isVisible(extra3RibbonTasks)) {
-		    getRibbon().setVisible(extra3RibbonTasks, false);
+		if (ribbon.isVisible(extra3RibbonTasks)) {
+		    ribbon.setVisible(extra3RibbonTasks, false);
 		} else {
-		    getRibbon().setVisible(extra3RibbonTasks, true);
+		    ribbon.setVisible(extra3RibbonTasks, true);
 		}
 	    }
 	});

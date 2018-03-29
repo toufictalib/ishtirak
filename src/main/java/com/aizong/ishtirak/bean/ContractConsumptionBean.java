@@ -1,12 +1,17 @@
 package com.aizong.ishtirak.bean;
 
+import java.util.Optional;
+
 public class ContractConsumptionBean {
 
     private Long contractId;
     private Long previousCounterValue;
     private Long currentCounterValue;
 
-    
+    public ContractConsumptionBean() {
+	super();
+    }
+
     public ContractConsumptionBean(Long contractId, Long previousCounterValue, Long currentCounterValue) {
 	super();
 	this.contractId = contractId;
@@ -38,11 +43,14 @@ public class ContractConsumptionBean {
 	this.currentCounterValue = currentCounterValue;
     }
 
-    public boolean hasOldCounterValue() {
-	return previousCounterValue != null;
+    public boolean isValid() {
+	return currentCounterValue != null && previousCounterValue != null;
     }
-    
-    public long getConsumption() {
-	return currentCounterValue - previousCounterValue;
+
+    public Optional<Long> getConsumption() {
+	if (isValid()) {
+	    return Optional.of(Math.abs(currentCounterValue - previousCounterValue));
+	}
+	return Optional.empty();
     }
 }
