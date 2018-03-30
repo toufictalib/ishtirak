@@ -2,7 +2,7 @@ package com.aizong.ishtirak.common.form;
 
 import java.awt.Component;
 
-import com.aizong.ishtirak.common.misc.WindowUtils;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;

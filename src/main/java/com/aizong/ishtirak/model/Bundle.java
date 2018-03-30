@@ -8,7 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
-import com.aizong.ishtirak.common.misc.BaseEntity;
+import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @Entity
 @Table(name = "bundle")

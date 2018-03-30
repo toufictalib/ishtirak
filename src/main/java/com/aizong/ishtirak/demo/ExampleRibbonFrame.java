@@ -21,7 +21,7 @@ import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 import org.pushingpixels.flamingo.api.ribbon.RibbonContextualTaskGroup;
 import org.pushingpixels.flamingo.api.ribbon.RibbonElementPriority;
 
-import com.aizong.ishtirak.common.misc.WindowUtils;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 
 /**
  * The <code>ExampleRibbonFrame</code> class exists to show users how to use the

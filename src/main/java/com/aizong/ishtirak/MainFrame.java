@@ -17,11 +17,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.aspectj.bridge.MessageUtil;
 import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,14 +29,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import com.aizong.ishtirak.common.misc.ComponentUtils;
-import com.aizong.ishtirak.common.misc.ImageHelperCustom;
-import com.aizong.ishtirak.common.misc.Message;
-import com.aizong.ishtirak.common.misc.MessageUtils;
-import com.aizong.ishtirak.common.misc.ServiceProvider;
-import com.aizong.ishtirak.common.misc.WindowUtils;
+import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
+import com.aizong.ishtirak.common.misc.utils.Message;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
+import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.demo.ExampleRibbonFrame;
 import com.aizong.ishtirak.gui.form.MaintenaceForm;
+import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
 import com.aizong.ishtirak.gui.table.EngineFitlerTable;
@@ -50,12 +51,21 @@ import com.jidesoft.swing.JideBorderLayout;
 import com.jidesoft.swing.JideButton;
 import com.jidesoft.swing.JideSwingUtilities;
 
-import ca.odell.glazedlists.impl.Main;
-
 @SpringBootApplication
 public class MainFrame extends JRibbonFrame {
 
     public MainFrame() {
+	
+	SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+        	startGui();
+            }
+        });
+	
+    }
+
+    private void startGui() {
 	try {
 	    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		if ("Nimbus".equals(info.getName())) {
@@ -144,6 +154,11 @@ public class MainFrame extends JRibbonFrame {
 	   }
 	});
 	
+	JideButton btnReports = button("تقارير", "48px-Crystal_Clear_app_kthememgr.png");
+	btnReports.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
+	});
+	
 	setTitle("Simple example");
 
 	DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("p,15dlu,p"));
@@ -157,6 +172,7 @@ public class MainFrame extends JRibbonFrame {
 	builder.append(btnEmployeeJob);
 	builder.append(btnExpenses);
 	builder.append(btnReceipts);
+	builder.append(btnReports);
 
 	ExampleRibbonFrame.createApplicationRibbon(getRibbon());
 	add(JideSwingUtilities.createCenterPanel(builder.getPanel()));
@@ -280,7 +296,7 @@ public class MainFrame extends JRibbonFrame {
     @Bean
     public MessageSource messageSource() {
 	ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-	source.setBasenames("i18n/messages", "i18n/enum", "i18n/enum_sql");
+	source.setBasenames("i18n/messages", "i18n/enum", "i18n/enum_sql", "i18n/cols");
 	source.setDefaultEncoding("UTF-8");
 	return source;
     }

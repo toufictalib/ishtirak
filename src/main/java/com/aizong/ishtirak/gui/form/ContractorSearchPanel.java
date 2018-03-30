@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
-import com.aizong.ishtirak.common.misc.ServiceProvider;
-import com.aizong.ishtirak.common.misc.WindowUtils;
+import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.model.Subscriber;
 
 public class ContractorSearchPanel extends CustomerSearchPanel {

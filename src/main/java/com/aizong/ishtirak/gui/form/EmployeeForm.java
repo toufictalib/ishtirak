@@ -13,11 +13,11 @@ import javax.swing.UIManager;
 
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.misc.ButtonFactory;
-import com.aizong.ishtirak.common.misc.ExCombo;
-import com.aizong.ishtirak.common.misc.IntergerTextField;
-import com.aizong.ishtirak.common.misc.Mode;
-import com.aizong.ishtirak.common.misc.ServiceProvider;
+import com.aizong.ishtirak.common.misc.component.ExCombo;
+import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
+import com.aizong.ishtirak.common.misc.utils.Mode;
+import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeInformation;
 import com.aizong.ishtirak.model.EmployeeType;

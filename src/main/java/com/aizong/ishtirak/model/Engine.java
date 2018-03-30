@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
-import com.aizong.ishtirak.common.misc.BaseEntity;
+import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @Entity
 public class Engine extends BaseEntity {

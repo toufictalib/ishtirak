@@ -9,7 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import com.aizong.ishtirak.bean.TransactionType;
-import com.aizong.ishtirak.common.misc.BaseEntity;
+import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @Entity
 @Table(name = "transaction")

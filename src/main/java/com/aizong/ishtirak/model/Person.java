@@ -3,7 +3,7 @@ package com.aizong.ishtirak.model;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import com.aizong.ishtirak.common.misc.BaseEntity;
+import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @MappedSuperclass
 public class Person extends BaseEntity {

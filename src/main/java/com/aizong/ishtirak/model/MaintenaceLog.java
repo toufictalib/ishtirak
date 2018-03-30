@@ -8,7 +8,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import com.aizong.ishtirak.bean.MaintenanceType;
-import com.aizong.ishtirak.common.misc.BaseEntity;
+import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @SuppressWarnings("serial")
 @Entity

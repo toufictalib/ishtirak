@@ -2,7 +2,7 @@ package com.aizong.ishtirak.model;
 
 import javax.persistence.Entity;
 
-import com.aizong.ishtirak.common.misc.BaseEntity;
+import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @Entity(name = "village")
 public class Village extends BaseEntity {

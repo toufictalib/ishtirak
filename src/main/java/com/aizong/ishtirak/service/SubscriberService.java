@@ -89,4 +89,5 @@ public interface SubscriberService {
     List<Employee> getEmployeesWithEmployeeTypes();
 
     Village getVillageById(Long id);
+    
 }

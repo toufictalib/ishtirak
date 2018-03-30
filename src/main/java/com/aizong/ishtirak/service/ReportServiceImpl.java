@@ -1,12 +1,18 @@
 package com.aizong.ishtirak.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aizong.ishtirak.bean.MaintenanceType;
 import com.aizong.ishtirak.bean.ReportTableModel;
+import com.aizong.ishtirak.common.misc.component.DateRange;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
+import com.aizong.ishtirak.common.misc.utils.Message;
+import com.aizong.ishtirak.dao.ReportDao;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
@@ -21,6 +27,12 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     SubscriberService subscriberService;
 
+    @Autowired
+    ReportDao reportDao;
+
+    @Autowired
+    Message message;
+    
     @Override
     public ReportTableModel getSubscribers() {
 	List<Subscriber> subscribers = subscriberService.getSubscribers();
@@ -123,7 +135,7 @@ public class ReportServiceImpl implements ReportService {
 
 	return new ReportTableModel(cols, rows, clazzes);
     }
-    
+
     @Override
     public ReportTableModel getVillages() {
 	List<Village> employees = subscriberService.getVillages();
@@ -142,7 +154,7 @@ public class ReportServiceImpl implements ReportService {
 
 	return new ReportTableModel(cols, rows, clazzes);
     }
-    
+
     @Override
     public ReportTableModel getEmployeeTypes() {
 	List<EmployeeType> employees = subscriberService.getEmployeeTypes();
@@ -158,6 +170,38 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	Class<?>[] clazzes = { Long.class, String.class };
+
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+
+    @Override
+    public ReportTableModel getSubscriptionsIncomeReport() {
+	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	List<Object[]> rows = reportDao.getSubscriptionsIncomeReport(startEndDateOfCurrentMonth.getStartDate(),startEndDateOfCurrentMonth.getEndDate());
+
+	String[] cols = { "contractId", "name", "lastName", "address", "subscriptionBundle", "amount", "paid" };
+
+
+	Class<?>[] clazzes = { Long.class, String.class, String.class, String.class, String.class, Double.class, Boolean.class };
+
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+    
+    @Override
+    public ReportTableModel getTransactions() {
+	List<Object[]> rows = reportDao.getTransactions(DateUtil.minusDays(new Date(), 5),DateUtil.addDays(new Date(), 5));
+
+	Object value = null;
+	for(Object[] row:rows) {
+	    value = row[4];
+	    if(value!=null) {
+		row[4] = message.getEnumLabel(value.toString(), MaintenanceType.class);
+	    }
+	}
+	String[] cols = { "maintenanceId", "engine", "amount", "description", "maintenanceType" };
+	
+	
+	Class<?>[] clazzes = { Long.class, String.class, Double.class, String.class, String.class };
 
 	return new ReportTableModel(cols, rows, clazzes);
     }

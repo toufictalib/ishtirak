@@ -7,8 +7,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.misc.ExCombo;
-import com.aizong.ishtirak.common.misc.ServiceProvider;
+import com.aizong.ishtirak.common.misc.component.ExCombo;
+import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Address;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;

@@ -13,4 +13,8 @@ public interface ReportService {
     ReportTableModel getVillages();
 
     ReportTableModel getEmployeeTypes();
+
+    ReportTableModel getSubscriptionsIncomeReport();
+
+    ReportTableModel getTransactions();
 }
