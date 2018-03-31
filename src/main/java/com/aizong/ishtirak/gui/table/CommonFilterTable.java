@@ -35,6 +35,7 @@ import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
@@ -313,6 +314,10 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     public void refreshTable() {
 	fillTable();
 
+    }
+    
+    public void warnNoSelectedRow() {
+	MessageUtils.showInfoMessage(getOwner(), message("table.row.select.missing"));
     }
 
     public abstract ReportTableModel getReportTableModel();

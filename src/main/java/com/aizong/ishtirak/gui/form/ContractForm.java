@@ -3,6 +3,8 @@ package com.aizong.ishtirak.gui.form;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -13,12 +15,14 @@ import javax.swing.UIManager;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Address;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.Engine;
-import com.aizong.ishtirak.model.Subscriber;
+import com.aizong.ishtirak.model.MonthlyBundle;
+import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -39,19 +43,43 @@ public class ContractForm extends BasicForm {
     private JTextField txtRegion;
     private JTextArea txtAddress;
 
-    private Subscriber subscriber;
+    private Long subscriberId;
+    private Contract contract;
 
-    public ContractForm(Subscriber subscriber) {
-	this.subscriber = subscriber;
+    private Mode mode = Mode.NEW;
+    
+    public ContractForm(Long subscriberId) {
+	this.subscriberId = subscriberId;
+	initializePanel();
+	fillData();
+    }
+
+    public ContractForm(Contract contract, Mode mode) {
+	this.contract = contract;
+	this.subscriberId = contract.getSubscriberId();
+	this.mode = mode;
 	initializePanel();
 	fillData();
     }
 
     private void fillData() {
-	if (subscriber == null) {
+	if (contract == null) {
 	    return;
 	}
 
+	txtCounterId.setText(contract.getCounterId());
+	cbActive.setSelected(contract.isActive());
+	
+	Bundle bundle = ServiceProvider.get().getSubscriberService().getBundleById(contract.getBundleId());
+	comboBundles.setSelectedItem(bundle);
+	comboEngines.setSelectedItem(new Engine(contract.getEngineId()));
+
+	if (contract.getAddress() != null) {
+	    comboVillages.setSelectedItem(new Village(contract.getAddress().getVillageId()));
+	    txtRegion.setText(contract.getAddress().getRegion());
+	    txtAddress.setText(contract.getAddress().getDetailedAddress());
+
+	}
     }
 
     @Override
@@ -63,6 +91,16 @@ public class ContractForm extends BasicForm {
 
 	comboEngines = new ExCombo<>(ServiceProvider.get().getSubscriberService().getEngines());
 	comboBundles = new ExCombo<>(ServiceProvider.get().getSubscriberService().getAllBundles());
+	comboBundles.addItemListener(new ItemListener() {
+
+	    @Override
+	    public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+		    enableTxtCounter(comboBundles.getValue() instanceof SubscriptionBundle);
+		}
+
+	    }
+	});
 	comboVillages = new ExCombo<>(ServiceProvider.get().getSubscriberService().getVillages());
 	txtRegion = new JTextField();
 	txtAddress = new JTextArea(2, 1);
@@ -70,6 +108,12 @@ public class ContractForm extends BasicForm {
 
 	txtAddress.setBorder(UIManager.getBorder("TextField.border"));
 
+	enableTxtCounter(comboBundles.getValue() instanceof SubscriptionBundle);
+
+    }
+
+    private void enableTxtCounter(boolean isCounterSubscription) {
+	txtCounterId.setEnabled(isCounterSubscription);
     }
 
     protected Component buildPanel(DefaultFormBuilder builder) {
@@ -91,7 +135,7 @@ public class ContractForm extends BasicForm {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 
-		Contract contract = new Contract();
+		contract = contract == null ? new Contract() : contract;
 		contract.setActive(cbActive.isSelected());
 
 		Address address = new Address();
@@ -102,9 +146,10 @@ public class ContractForm extends BasicForm {
 		contract.setAddress(address);
 
 		contract.setBundleId(comboBundles.getValue().getId());
-		contract.setCounterId(txtCounterId.getText());
+		contract.setCounterId(
+			(comboBundles.getValue() instanceof MonthlyBundle) ? comboBundles.getValue().getName() : txtCounterId.getText());
 		contract.setEngineId(comboEngines.getValue().getId());
-		contract.setSubscriberId(subscriber.getId());
+		contract.setSubscriberId(subscriberId);
 
 		ServiceProvider.get().getSubscriberService().saveContract(contract);
 		closeWindow();
@@ -119,7 +164,13 @@ public class ContractForm extends BasicForm {
 
 	    }
 	});
-	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+	
+	if(mode==Mode.VIEW) {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
+	}else {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+	}
+	
 	return builder.getPanel();
     }
 

@@ -303,7 +303,7 @@ public class MainFrame extends JRibbonFrame {
     @Bean
     public MessageSource messageSource() {
 	ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-	source.setBasenames("i18n/messages", "i18n/enum", "i18n/enum_sql", "i18n/cols");
+	source.setBasenames("i18n/messages", "i18n/enum", "i18n/enum_sql", "i18n/cols","i18n/form");
 	source.setDefaultEncoding("UTF-8");
 	return source;
     }

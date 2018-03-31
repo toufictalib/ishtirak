@@ -59,7 +59,7 @@ public interface SubscriberService {
 
     void saveConsumptionHistory(CounterHistory history);
     
-    List<Contract> getContractBySubscriberId(Long subscriberId);
+    List<Contract> getCounterContractBySubscriberId(Long subscriberId);
 
     void generateReceipts();
 
@@ -92,5 +92,7 @@ public interface SubscriberService {
     ExpensesLog getExpensesById(Long id);
 
     void deleteExpenses(List<Long> ids);
+
+    List<Contract> getContractBySubscriberId(Long id);
     
 }

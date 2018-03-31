@@ -59,7 +59,7 @@ public class CounterHistoryForm extends BasicForm {
 	txtConsumption = new IntergerTextField();
 
 	List<Contract> contractBySubscriberId = ServiceProvider.get().getSubscriberService()
-		.getContractBySubscriberId(subscriber.getId());
+		.getCounterContractBySubscriberId(subscriber.getId());
 	for (Contract contract : contractBySubscriberId) {
 	    Bundle bundle = ServiceProvider.get().getSubscriberService().getBundleById(contract.getBundleId());
 	    if (bundle != null) {

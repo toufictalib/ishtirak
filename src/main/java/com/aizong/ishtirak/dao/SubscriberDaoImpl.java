@@ -17,6 +17,7 @@ import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Subscriber;
+import com.aizong.ishtirak.model.SubscriptionBundle;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -91,10 +92,15 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<Contract> getContractBySubscriberId(Long subscriberId) {
-	Criteria criteria = getsession().createCriteria(Contract.class);
-	criteria.add(Restrictions.eq("subscriberId", subscriberId));
-	return criteria.list();
+    public List<Contract> getCounterContractBySubscriberId(Long subscriberId) {
+	
+	String sql = "select * from contract where subscriber_id  =:subscriberId and "
+		+ " bundle_id in (select id from bundle where type =:subscriptionBundle)";
+	NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
+	createSQLQuery.setParameter("subscriberId", subscriberId).
+	setParameter("subscriptionBundle", SubscriptionBundle.class.getSimpleName());
+	createSQLQuery.addEntity(Contract.class);
+	return createSQLQuery.list();
     }
 
     @Override
@@ -199,6 +205,13 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	}
 	
 	return new ArrayList<Long>();
+    }
+
+    @Override
+    public List<Contract> getContractBySubscriberId(Long subscriberId) {
+	Criteria criteria = getsession().createCriteria(Contract.class);
+	criteria.add(Restrictions.eq("subscriberId", subscriberId));
+	return criteria.list();
     }
 
 }

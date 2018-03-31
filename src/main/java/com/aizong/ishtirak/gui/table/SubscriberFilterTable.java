@@ -1,18 +1,24 @@
 package com.aizong.ishtirak.gui.table;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Window;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
@@ -23,6 +29,7 @@ import com.aizong.ishtirak.gui.form.CounterHistoryForm;
 import com.aizong.ishtirak.gui.form.SubscriberForm;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
+import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.Subscriber;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
@@ -91,7 +98,12 @@ public class SubscriberFilterTable extends CommonFilterTable {
     protected JPanel initUI() {
 
 	table.add(new JPopupMenu("تعديل مشترك"));
+	
 	JButton btnAddContract = createAddContractBtn();
+	
+	JButton btnEditContract = createEditContractBtn("تعديل إشتراك", Mode.UPDATE);
+	
+	JButton btnViewContract = createEditContractBtn("معاينة إشتراك",Mode.VIEW);
 	
 	JButton btnAddCounterHistory = createAddCounterHistoryBtn();
 	
@@ -104,9 +116,13 @@ public class SubscriberFilterTable extends CommonFilterTable {
    	
    	JPanel panel = new JPanel();
    	panel.add(btnAdd);
+   	panel.add(btnEditContract);
+   	panel.add(btnViewContract);
    	panel.add(btnAddContract);
    	panel.add(btnAddCounterHistory);
-   	builder.append(txtFE, panel);
+   	
+   	builder.append(panel,builder.getColumnCount());
+   	builder.append(txtFE, builder.getColumnCount());
 
    	builder.append(new JScrollPane(table), builder.getColumnCount());
 
@@ -117,7 +133,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
     private JButton createAddCounterHistoryBtn() {
 	JButton btnAddCounterHistory = new JButton("أضف معلومات العداد", ImageHelperCustom.get().getImageIcon("maintenance32.png"));
-	ButtonFactory.makeButtonAsIcon(btnAddCounterHistory);
+	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
 	btnAddCounterHistory.addActionListener(e->{
 	    int selectedRow = table.getSelectedRow();
 	    if(selectedRow>=0) {
@@ -131,6 +147,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 			}
 			 WindowUtils.createDialog(getOwner(), "إدخال عداد", new CounterHistoryForm(subscriber));
 		}
+	    }else {
+		warnNoSelectedRow();
 	    }
 	   
 	});
@@ -139,7 +157,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
     private JButton createAddContractBtn() {
 	JButton btnAddContract = new JButton("أضف إشتراك", ImageHelperCustom.get().getImageIcon("menus/green_circle.png"));
-	ButtonFactory.makeButtonAsIcon(btnAddContract);
+	btnAddContract.setToolTipText(btnAddContract.getText());
 	btnAddContract.addActionListener(e->{
 	    int selectedRow = table.getSelectedRow();
 	    if(selectedRow>=0) {
@@ -151,10 +169,71 @@ public class SubscriberFilterTable extends CommonFilterTable {
 			    MessageUtils.showWarningMessage(getOwner(), "مشترك ناقص", "الرجاء اختيار مشترك");
 			    return;
 			}
-		    WindowUtils.createDialog(getOwner(), "إشتراك جديد", new ContractForm(subscriber));
+		    WindowUtils.createDialog(getOwner(), "إشتراك جديد", new ContractForm(subscriber.getId()));
 		}
+	    }else {
+		warnNoSelectedRow();
 	    }
 	});
 	return btnAddContract;
     }
+    
+    private JButton createEditContractBtn(String title, Mode mode) {
+   	JButton btnAddContract = new JButton(title, ImageHelperCustom.get().getImageIcon("red_circle.png"));
+   	btnAddContract.setToolTipText(btnAddContract.getText());
+   	btnAddContract.addActionListener(e->{
+   	    int selectedRow = table.getSelectedRow();
+   	    if(selectedRow>=0) {
+   		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
+   		if(valueAt instanceof Long) {
+   		    Long id = (Long) valueAt;
+   		    List<Contract> contracts = ServiceProvider.get().getSubscriberService().getContractBySubscriberId(id);
+   			if (contracts == null || contracts.isEmpty()) {
+   			    MessageUtils.showWarningMessage(getOwner(), "مشترك ناقص", "لا يوجد اشتراكات لهذا المشترك");
+   			    return;
+   			}
+		    if (contracts.size() > 1) {
+
+			JPanel panel = new JPanel(new BorderLayout());
+			panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+			JPanel panelBotton = new JPanel();
+			panelBotton.setPreferredSize(new Dimension(400, 350));
+			ExCombo<Contract> combo = new ExCombo<>(true, contracts);
+			panel.add(combo, BorderLayout.PAGE_START);
+			panel.add(panelBotton, BorderLayout.CENTER);
+			combo.addItemListener(new ItemListener() {
+
+			    @Override
+			    public void itemStateChanged(ItemEvent arg0) {
+				if (arg0.getStateChange() == ItemEvent.SELECTED) {
+
+				    panelBotton.removeAll();
+				    if (combo.getValue() != null) {
+					panelBotton.add(new ContractForm(combo.getValue(), mode));
+				    }
+				    panelBotton.revalidate();
+				    panelBotton.repaint();
+
+				    Window owner = SwingUtilities.getWindowAncestor(panel);
+				    if (owner != null) {
+					WindowUtils.applyRtl(owner);
+					getOwner().pack();
+				    }
+				}
+
+			    }
+			});
+
+			WindowUtils.createDialog(getOwner(), "تعديل اشتراك", panel);
+
+		    }else {
+   		    WindowUtils.createDialog(getOwner(), "تعديل اشتراك", new ContractForm(contracts.get(0), mode));
+   			}
+   		}
+   	    }else {
+   		warnNoSelectedRow();
+   	    }
+   	});
+   	return btnAddContract;
+       }
 }

@@ -133,7 +133,7 @@ public class CustomerSearchPanel extends BasicForm {
     }
 
     public void onCreate(Subscriber subscriber) {
-	WindowUtils.createDialog(CustomerSearchPanel.this.getOwner(), "إشتراك جديد", new ContractForm(subscriber));
+	WindowUtils.createDialog(CustomerSearchPanel.this.getOwner(), "إشتراك جديد", new ContractForm(subscriber.getId()));
     }
 
     public List<Subscriber> onSearch(String text, SearchCustomerType customerType) {

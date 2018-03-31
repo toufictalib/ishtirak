@@ -20,7 +20,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     void deleteContracts(List<Long> ids);
 
-    List<Contract> getContractBySubscriberId(Long subscriberId);
+    List<Contract> getCounterContractBySubscriberId(Long subscriberId);
 
     List<Contract> getActiveContracts();
 
@@ -39,4 +39,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     void deleteExpenses(List<Long> ids);
 
     List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, int currentMonth);
+
+    List<Contract> getContractBySubscriberId(Long subscriberId);
 }

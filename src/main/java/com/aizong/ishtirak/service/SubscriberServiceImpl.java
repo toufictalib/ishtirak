@@ -204,6 +204,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
+    public List<Contract> getCounterContractBySubscriberId(Long subscriberId) {
+	return subscriberDao.getCounterContractBySubscriberId(subscriberId);
+    }
+    
+    @Override
     public List<Contract> getContractBySubscriberId(Long subscriberId) {
 	return subscriberDao.getContractBySubscriberId(subscriberId);
     }
