@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.bean.MaintenanceType;
 import com.aizong.ishtirak.bean.ReportTableModel;
+import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.Message;
@@ -184,7 +185,7 @@ public class ReportServiceImpl implements ReportService {
 	for(Object[] row:rows) {
 	    value = row[7];
 	    if(value!=null) {
-		row[7] = message.getEnumLabel(value.toString(), MaintenanceType.class);
+		row[7] = message.getEnumLabel(value.toString(), TransactionType.class);
 	    }
 	}
 	

@@ -7,6 +7,8 @@ package com.aizong.ishtirak.common.misc.utils;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -187,6 +189,13 @@ public class DateUtil {
 	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth());
 
 	return new DateRange(fromLocalDate(start), fromLocalDate(end));
+    }
+    
+    public static int getCurrentMonth() {
+	LocalDateTime currentTime = LocalDateTime.now();
+	Month month = currentTime.getMonth();
+	int currentMonth = month.getValue();
+	return currentMonth;
     }
 
 }

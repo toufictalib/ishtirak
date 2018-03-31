@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -180,6 +181,24 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    sqlQuery.setParameterList("ids", ids);
 	    sqlQuery.executeUpdate();
 	}
+    }
+
+    @Override
+    public List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, int currentMonth) {
+	
+	if(!activeContracts.isEmpty()) {
+	    String sql = "select id_contract from transaction t "
+	    	+ "where month(t.insert_date) = :currentMonth "
+	    	+ "and t.id_contract in (:activeContracts)";
+	    
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("activeContracts", activeContracts)
+	    .setParameter("currentMonth", currentMonth);
+	    sqlQuery.addScalar("id_contract", StandardBasicTypes.LONG);
+	    return sqlQuery.list();
+	}
+	
+	return new ArrayList<Long>();
     }
 
 }

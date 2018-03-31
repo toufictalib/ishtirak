@@ -37,4 +37,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     List<Employee> getEmployees(Boolean active);
 
     void deleteExpenses(List<Long> ids);
+
+    List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, int currentMonth);
 }

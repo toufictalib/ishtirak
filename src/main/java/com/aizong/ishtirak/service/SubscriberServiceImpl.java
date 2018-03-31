@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
@@ -225,6 +228,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	// get active contracts
 	List<Contract> contracts = getActiveContracts();
+	
+	//create only the contracts already created yet
+	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(contracts, DateUtil.getCurrentMonth()));
 
 	// get all bundles monthly and subscription types
 	List<Bundle> allBundles = getAllBundles();
@@ -238,15 +244,16 @@ public class SubscriberServiceImpl implements SubscriberService {
 	Map<Long, ContractConsumptionBean> counterHistory = counterHistories.stream()
 		.collect(Collectors.toMap(e -> e.getContractId(), e -> e));
 
-	//before any generation for the current month, we should remove all transaction related to 
-	//current contracts due that each contract has once
-	subscriberDao.deleteTransactions(contracts.stream().map(e->e.getId()).collect(Collectors.toList()));
-	
 	// 1-create the transaction for each bundle type
 	// 2-create the subscription history for each counter subscription
 	// N.B amount for counter subscription is : monthly fees + consumption *
 	// price/kb
 	for (Contract contract : contracts) {
+	    
+	    if(alreadyCreatedContracts.contains(contract.getId())) {
+		continue;
+	    }
+	    
 	    Bundle bundle = map.get(contract.getBundleId());
 	    if (bundle instanceof MonthlyBundle) {
 		Transaction transaction = new Transaction();
