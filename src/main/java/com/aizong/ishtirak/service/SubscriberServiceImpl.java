@@ -21,7 +21,6 @@ import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
-import com.aizong.ishtirak.model.DieselLog;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
@@ -295,14 +294,6 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void saveDieselLog(MaintenaceLog maintenaceLog, DieselLog dieselLog) {
-	subscriberDao.save(Arrays.asList(maintenaceLog));
-
-	dieselLog.setMaintenanceLog(maintenaceLog.getId());
-	subscriberDao.save(Arrays.asList(dieselLog));
-    }
-
-    @Override
     public List<Employee> getEmployees() {
 	return subscriberDao.findAll(Employee.class);
     }
@@ -370,5 +361,21 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public Village getVillageById(Long id) {
 	return subscriberDao.find(Village.class, id);
+    }
+
+    @Override
+    public List<Employee> getActiveEmployees() {
+	return subscriberDao.getEmployees(true);
+    }
+
+    @Override
+    public MaintenaceLog getExpensesById(Long id) {
+	return subscriberDao.find(MaintenaceLog.class, id);
+    }
+
+    @Override
+    public void deleteExpenses(List<Long> ids) {
+	subscriberDao.deleteExpenses(ids);
+	
     }
 }

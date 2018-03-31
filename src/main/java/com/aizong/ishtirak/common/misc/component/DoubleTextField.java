@@ -26,7 +26,12 @@ public class DoubleTextField extends JTextField implements FocusListener
 
 	public Double getValue()
 	{
+	    	try {
 		return Double.parseDouble(getText());
+	    	}
+	    	catch(Exception e) {
+	    	    return null;
+	    	}
 	}
 
 	@Override

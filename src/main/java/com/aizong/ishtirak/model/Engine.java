@@ -27,6 +27,15 @@ public class Engine extends BaseEntity {
     //in hour
     private Double dieselConsumption;
 
+    
+    public Engine() {
+	super();
+    }
+
+    public Engine(Long id) {
+	super(id);
+    }
+
     public String getName() {
         return name;
     }

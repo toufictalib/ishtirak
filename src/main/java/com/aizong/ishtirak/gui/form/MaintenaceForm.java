@@ -16,12 +16,15 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import com.aizong.ishtirak.bean.MaintenanceType;
+import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DoubleTextField;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
+import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
-import com.aizong.ishtirak.model.DieselLog;
+import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.MaintenaceLog;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -39,15 +42,25 @@ public class MaintenaceForm extends BasicForm {
     protected ExCombo<SearchResult> comboMaintenaceTypes;
     protected ExCombo<Engine> comboEngines;
     protected JTextArea txtNote;
-    private DoubleTextField txtDieselQuantity;
+    private IntergerTextField txtDieselQuantity;
+    private ExCombo<Employee> comboEmployees;
+    private SavingCallback callback;
+    private Mode mode = Mode.NEW;
+    private MaintenaceLog expensesLog;
 
-    private DefaultFormBuilder builder;
-
-    boolean diesel;
-
+    private MaintenanceType[] maintenanceTypeValues = MaintenanceType.values();
+    
     public MaintenaceForm() {
 	super();
 	initializePanel();
+    }
+
+    public MaintenaceForm(Mode mode, MaintenaceLog expensesLog, SavingCallback callback) {
+	this.mode = mode;
+	this.callback = callback;
+	this.expensesLog = expensesLog;
+	initializePanel();
+	fillData();
     }
 
     @Override
@@ -55,39 +68,12 @@ public class MaintenaceForm extends BasicForm {
 	txtDesc = new JTextField();
 	txtAmount = new DoubleTextField();
 	List<SearchResult> values = new ArrayList<>();
-	for (MaintenanceType type : MaintenanceType.values()) {
-
-	    SearchResult result = new SearchResult();
-	    result.type = type;
-	    result.label = enumMessage(type.name(), MaintenanceType.class);
-
-	    values.add(result);
+	for (MaintenanceType type : maintenanceTypeValues) {
+	    values.add(new SearchResult(type, enumMessage(type.name(), MaintenanceType.class)));
 	}
+	
 	comboMaintenaceTypes = new ExCombo<>(values);
-	comboMaintenaceTypes.addItemListener(new ItemListener() {
-
-	    @Override
-	    public void itemStateChanged(ItemEvent arg0) {
-		if (arg0.getStateChange() == ItemEvent.SELECTED) {
-		    diesel = false;
-		    SearchResult value = comboMaintenaceTypes.getValue();
-		    if (value != null) {
-			switch (value.type) {
-			case DIESEL:
-			    diesel = true;
-			    redrawPanel();
-			    break;
-
-			default:
-			    diesel = false;
-			    redrawPanel();
-			    break;
-			}
-		    }
-		}
-
-	    }
-	});
+	comboMaintenaceTypes.addItemListener(createComboDieselListener());
 	comboEngines = new ExCombo<>(true, ServiceProvider.get().getSubscriberService().getEngines());
 
 	txtNote = new JTextArea();
@@ -96,7 +82,62 @@ public class MaintenaceForm extends BasicForm {
 	txtNote.setLineWrap(true);
 	txtNote.setRows(4);
 
-	txtDieselQuantity = new DoubleTextField();
+	txtDieselQuantity = new IntergerTextField();
+    }
+
+
+    private boolean isDiesel() {
+	return comboMaintenaceTypes.getValue() != null
+		&& comboMaintenaceTypes.getValue().type == MaintenanceType.DIESEL;
+    }
+
+    private boolean isEmployee() {
+	return comboMaintenaceTypes.getValue() != null
+		&& comboMaintenaceTypes.getValue().type == MaintenanceType.EMPLOYEE;
+    }
+
+    private void reset() {
+	txtDesc.setText("");
+	txtAmount.setText("");
+	if (comboMaintenaceTypes.getItemCount() > 0) {
+	    comboMaintenaceTypes.setSelectedIndex(0);
+	}
+
+	if (comboEngines.getItemCount() > 0) {
+	    comboEngines.setSelectedIndex(0);
+	}
+	txtNote.setText("");
+	txtDieselQuantity.setText("");
+
+	if (comboEmployees.getItemCount() > 0) {
+	    comboEmployees.setSelectedIndex(0);
+	}
+
+    }
+
+    private void fillData() {
+	if (expensesLog == null) {
+	    return;
+	}
+
+	txtDesc.setText(expensesLog.getDesc());
+	txtAmount.setText(String.valueOf(expensesLog.getAmount()));
+	comboMaintenaceTypes.setSelectedItem(new SearchResult(expensesLog.getMaintenanceType(), null));
+	if (expensesLog.getEngineId() != null) {
+	    comboEngines.setSelectedItem(new Engine(expensesLog.getEngineId()));
+	}
+	txtNote.setText(expensesLog.getNote());
+
+	if (expensesLog.getDieselConsupmtion() != null) {
+	    txtDieselQuantity.setText(String.valueOf(expensesLog.getDieselConsupmtion()));
+	}
+
+	if (expensesLog.getEmployeeId() != null) {
+	    if (comboEmployees == null) {
+		comboEmployees = new ExCombo<>(ServiceProvider.get().getSubscriberService().getActiveEmployees());
+	    }
+	    comboEmployees.setSelectedItem(new Employee(expensesLog.getEmployeeId()));
+	}
     }
 
     @Override
@@ -105,11 +146,23 @@ public class MaintenaceForm extends BasicForm {
 	builder.appendSeparator(message("maintenance.form.seperator"));
 	builder.append(message("maintenance.form.maintenaceType"), comboMaintenaceTypes);
 	builder.append(message("maintenance.form.name"), txtDesc);
-	if (diesel) {
+	if (isDiesel()) {
 	    builder.append(message("maintenance.form.dieselAmount"), txtDieselQuantity);
 	}
-	builder.append(message("maintenance.form.amount"), txtAmount);
-	builder.append(message("maintenance.form.engines"), comboEngines);
+
+	if (isEmployee()) {
+	    if (comboEmployees == null) {
+		comboEmployees = new ExCombo<>(ServiceProvider.get().getSubscriberService().getActiveEmployees());
+	    }
+	    builder.append(message("maintenance.form.employee"), comboEmployees);
+	    if (comboEmployees.getValue() != null) {
+		txtAmount.setText(String.valueOf(comboEmployees.getValue().getSalary()));
+	    }
+	    builder.append(message("maintenance.form.salary"), txtAmount);
+	} else {
+	    builder.append(message("maintenance.form.amount"), txtAmount);
+	    builder.append(message("maintenance.form.engines"), comboEngines);
+	}
 
 	JScrollPane scrollPane = new JScrollPane(txtNote);
 	scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -117,10 +170,21 @@ public class MaintenaceForm extends BasicForm {
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
+	JButton btnSaveAndNew = ButtonFactory.createBtnSaveAndNew();
 	btnSave.addActionListener(save());
+	btnSaveAndNew.addActionListener(save());
+	btnSaveAndNew.setActionCommand("saveAndNew");
 	JButton btnClose = ButtonFactory.createBtnClose();
 	btnClose.addActionListener(e -> closeWindow());
-	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
+	
+	if(mode==Mode.VIEW) {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose),
+			builder.getColumnCount());
+	}else {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSaveAndNew, btnSave),
+			builder.getColumnCount());
+	}
+	
 	return builder.getPanel();
     }
 
@@ -130,27 +194,33 @@ public class MaintenaceForm extends BasicForm {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 
-		MaintenaceLog maintenaceLog = new MaintenaceLog();
+		MaintenaceLog maintenaceLog = expensesLog == null ? new MaintenaceLog() : expensesLog;
 		maintenaceLog.setDesc(txtDesc.getText());
-		maintenaceLog.setAmount(txtAmount.getValue());
 		maintenaceLog.setMaintenanceType(comboMaintenaceTypes.getValue().type);
 		maintenaceLog.setEngineId(comboEngines.getValue() != null ? comboEngines.getValue().getId() : null);
 		maintenaceLog.setNote(txtNote.getText().trim());
+		maintenaceLog.setAmount(txtAmount.getValue());
+		
+		if (isEmployee()) {
+		    maintenaceLog.setEmployeeId(comboEmployees.getValue().getId());
+		    maintenaceLog.setEngineId(null);
+		}
 
-		if (diesel) {
-		    DieselLog dieselLog = new DieselLog();
-		    dieselLog.setAmount(txtAmount.getValue());
-		    dieselLog.setDescription(txtDesc.getText());
-		    dieselLog.setDieselAmount(txtDieselQuantity.getValue());
-		    dieselLog.setMaintenanceLog(maintenaceLog.getId());
+		if (isDiesel()) {
+		    maintenaceLog.setDieselConsupmtion(txtDieselQuantity.getValue());
+		}
 
-		    ServiceProvider.get().getSubscriberService().saveDieselLog(maintenaceLog, dieselLog);
+		ServiceProvider.get().getSubscriberService().saveMaintenanceLog(maintenaceLog);
+
+		if (!"saveAndNew".equalsIgnoreCase(e.getActionCommand())) {
+		    closeWindow();
 
 		} else {
-
-		    ServiceProvider.get().getSubscriberService().saveMaintenanceLog(maintenaceLog);
+		    reset();
 		}
-		closeWindow();
+		if (callback != null) {
+		    callback.onSuccess(maintenaceLog);
+		}
 	    }
 	};
     }
@@ -160,9 +230,43 @@ public class MaintenaceForm extends BasicForm {
 	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
+    private ItemListener createComboDieselListener() {
+  	return new ItemListener() {
+
+  	    @Override
+  	    public void itemStateChanged(ItemEvent arg0) {
+  		if (arg0.getStateChange() == ItemEvent.SELECTED) {
+  		    SearchResult value = comboMaintenaceTypes.getValue();
+  		    if (value != null) {
+  			switch (value.type) {
+  			case DIESEL:
+  			    redrawPanel();
+  			    break;
+  			case EMPLOYEE:
+  			    redrawPanel();
+  			    break;
+
+  			default:
+  			    redrawPanel();
+  			    break;
+  			}
+  		    }
+  		}
+
+  	    }
+  	};
+      }
+    
     static class SearchResult {
-	MaintenanceType type;
-	String label;
+	final MaintenanceType type;
+	final String label;
+
+	
+	public SearchResult(MaintenanceType type, String label) {
+	    super();
+	    this.type = type;
+	    this.label = label;
+	}
 
 	@Override
 	public String toString() {

@@ -30,6 +30,17 @@ public class Employee extends Person {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "employee")
     private EmployeeInformation information;
     
+    
+    public Employee() {
+	super();
+	// TODO Auto-generated constructor stub
+    }
+
+    public Employee(Long id) {
+	super(id);
+	// TODO Auto-generated constructor stub
+    }
+
     public EmployeeType getEmployeeTypeId() {
 	return employeeType;
     }

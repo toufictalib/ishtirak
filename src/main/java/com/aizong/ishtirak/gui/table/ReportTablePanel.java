@@ -14,9 +14,6 @@ import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.event.RowSorterListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -29,6 +26,7 @@ import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
+import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -68,21 +66,21 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     private void initComponents() {
 
 	table = new JTable() {
-	      @Override
-	      public Component prepareRenderer(TableCellRenderer renderer, int row,
-	          int col) {
-	        Component comp = super.prepareRenderer(renderer, row, col);
-	        if(comp instanceof JLabel) {
-	        ((JLabel) comp).setHorizontalAlignment(JLabel.RIGHT);
-	        }
-	        return comp;
-	      }
-	    };
-	    table.setPreferredScrollableViewportSize(table.getPreferredSize());
+	    @Override
+	    public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+		Component comp = super.prepareRenderer(renderer, row, col);
+		if (comp instanceof JLabel) {
+		    ((JLabel) comp).setHorizontalAlignment(JLabel.RIGHT);
+		}
+		return comp;
+	    }
+	};
+	table.setPreferredScrollableViewportSize(table.getPreferredSize());
 	
 	table.setRowHeight(50);
 	table.setFillsViewportHeight(true);
 	table.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+	table.setDefaultRenderer(Date.class, new DateCellRenderer());
 
 	sorter = new TableRowSorter<TableModel>();
 	sorter.addRowSorterListener(new RowSorterListener() {
@@ -95,6 +93,8 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	    }
 	});
 	table.setRowSorter(sorter);
+	table.setSelectionMode(0);
+	
 	JTableHeader header = table.getTableHeader();
 	header.setDefaultRenderer(new HeaderRenderer(table));
 
@@ -131,7 +131,9 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	builder.append(txtFE, 3);
 
-	builder.append(new JScrollPane(table), 3);
+	JScrollPane scrollPane = new JScrollPane(table);
+	//scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
+	builder.append(scrollPane, 3);
 
 	builder.append(txtRowCount,3);
 	
@@ -166,7 +168,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	};
 
 	table.setModel(model);
-	model.addTableModelListener(new TableModelListener() {
+	/*model.addTableModelListener(new TableModelListener() {
 	    
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -174,7 +176,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
             }
 
 	   
-        });
+        });*/
 	
 	sorter.setModel(model);
 	table.setRowSorter(sorter);
@@ -184,9 +186,10 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	TableUtils.resizeColumnWidth(table);
 	table.setPreferredScrollableViewportSize(table.getPreferredSize());
 	
-	sumAmount(table);
+	//sumAmount(table);
     }
 
+    @SuppressWarnings("unused")
     private void sumAmount(JTable table) {
 	TableModel model = table.getModel();
 	int numberOfRaw = model.getRowCount();

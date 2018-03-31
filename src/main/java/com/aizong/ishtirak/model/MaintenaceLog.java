@@ -12,26 +12,32 @@ import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "maintenance_log")
+@Table(name = "expenses_log")
 public class MaintenaceLog extends BaseEntity {
 
-    @Column(name="description")
+    @Column(name = "description")
     private String desc;
-    
-    @Column(name="amount")
+
+    @Column(name = "amount")
     private double amount;
-    
+
     @Enumerated(EnumType.STRING)
-    @Column(name="maintenace_type")
+    @Column(name = "maintenace_type")
     private MaintenanceType maintenanceType;
-    
-    @Column(name="engine")
+
+    @Column(name = "engine")
     private Long engineId;
+
+    @Column(name = "employee")
+    private Long employeeId;
     
+    @Column(name="diesel_consumption")
+    private Integer dieselConsupmtion;    
+
     @Lob
-    @Column(name="note")
+    @Column(name = "note")
     private String note;
-    
+
     public String getDesc() {
 	return desc;
     }
@@ -64,14 +70,29 @@ public class MaintenaceLog extends BaseEntity {
 	this.engineId = engineId;
     }
 
+    public Long getEmployeeId() {
+	return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+	this.employeeId = employeeId;
+    }
+
     public String getNote() {
-        return note;
+	return note;
     }
 
     public void setNote(String note) {
-        this.note = note;
+	this.note = note;
     }
-    
-    
 
+    public Integer getDieselConsupmtion() {
+        return dieselConsupmtion;
+    }
+
+    public void setDieselConsupmtion(Integer dieselConsupmtion) {
+        this.dieselConsupmtion = dieselConsupmtion;
+    }
+
+    
 }

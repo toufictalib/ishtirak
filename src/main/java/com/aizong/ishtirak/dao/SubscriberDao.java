@@ -5,6 +5,7 @@ import java.util.List;
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Subscriber;
 
 public interface SubscriberDao extends GenericDao<Object> {
@@ -32,4 +33,8 @@ public interface SubscriberDao extends GenericDao<Object> {
     void deleteEmployees(List<Long> ids);
 
     void deleteTransactions(List<Long> contractIds);
+
+    List<Employee> getEmployees(Boolean active);
+
+    void deleteExpenses(List<Long> ids);
 }

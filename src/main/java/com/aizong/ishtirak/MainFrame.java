@@ -41,6 +41,7 @@ import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
 import com.aizong.ishtirak.gui.table.EngineFitlerTable;
+import com.aizong.ishtirak.gui.table.ExpensesFitlerTable;
 import com.aizong.ishtirak.gui.table.MonthlyBundleFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
@@ -145,6 +146,11 @@ public class MainFrame extends JRibbonFrame {
 	    openWindow(e.getActionCommand(), new MaintenaceForm());
 	});
 	
+	JideButton btnExpensesManagement = button("إدارة  مصاريف", "48px-Crystal_Clear_app_kthememgr.png");
+	btnExpensesManagement.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new ExpensesFitlerTable(e.getActionCommand()));
+	});
+	
 	JideButton btnReceipts = button("إنشاء كل الايصالات", "48px_customer.png");
 	btnReceipts.addActionListener(e -> {
 	   boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر", "اصدار ايصالات");
@@ -171,6 +177,7 @@ public class MainFrame extends JRibbonFrame {
 	builder.append(btnEmployee);
 	builder.append(btnEmployeeJob);
 	builder.append(btnExpenses);
+	builder.append(btnExpensesManagement);
 	builder.append(btnReceipts);
 	builder.append(btnReports);
 

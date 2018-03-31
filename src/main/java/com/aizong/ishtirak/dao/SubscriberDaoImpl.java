@@ -14,6 +14,7 @@ import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Subscriber;
 
 @Repository
@@ -162,6 +163,23 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    sqlQuery.executeUpdate();
 	}
 	
+    }
+
+    @Override
+    public List<Employee> getEmployees(Boolean active) {
+	Criteria criteria = getsession().createCriteria(Employee.class);
+	criteria.add(Restrictions.eq("active", active));
+	return criteria.list();
+    }
+
+    @Override
+    public void deleteExpenses(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from expenses_log where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
     }
 
 }

@@ -179,17 +179,27 @@ public class ReportServiceImpl implements ReportService {
 	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
 	List<Object[]> rows = reportDao.getSubscriptionsIncomeReport(startEndDateOfCurrentMonth.getStartDate(),startEndDateOfCurrentMonth.getEndDate());
 
-	String[] cols = { "contractId", "name", "lastName", "address", "subscriptionBundle", "amount", "paid" };
+
+	Object value = null;
+	for(Object[] row:rows) {
+	    value = row[7];
+	    if(value!=null) {
+		row[7] = message.getEnumLabel(value.toString(), MaintenanceType.class);
+	    }
+	}
+	
+	String[] cols = { "contractId", "name", "lastName", "address", "subscriptionBundle", "amount", "paid" ,"transactionType"};
 
 
-	Class<?>[] clazzes = { Long.class, String.class, String.class, String.class, String.class, Double.class, Boolean.class };
+	Class<?>[] clazzes = { Long.class, String.class, String.class, String.class, String.class, Double.class, Boolean.class,String.class };
 
 	return new ReportTableModel(cols, rows, clazzes);
     }
     
     @Override
     public ReportTableModel getTransactions() {
-	List<Object[]> rows = reportDao.getTransactions(DateUtil.minusDays(new Date(), 5),DateUtil.addDays(new Date(), 5));
+	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	List<Object[]> rows = reportDao.getTransactions(startEndDateOfCurrentMonth.getStartDate(),startEndDateOfCurrentMonth.getEndDate());
 
 	Object value = null;
 	for(Object[] row:rows) {
@@ -198,10 +208,10 @@ public class ReportServiceImpl implements ReportService {
 		row[4] = message.getEnumLabel(value.toString(), MaintenanceType.class);
 	    }
 	}
-	String[] cols = { "maintenanceId", "engine", "amount", "description", "maintenanceType" };
+	String[] cols = { "maintenanceId", "engine", "amount", "description", "maintenanceType", "insertDate" };
 	
 	
-	Class<?>[] clazzes = { Long.class, String.class, Double.class, String.class, String.class };
+	Class<?>[] clazzes = { Long.class, String.class, Double.class, String.class, String.class, Date.class };
 
 	return new ReportTableModel(cols, rows, clazzes);
     }

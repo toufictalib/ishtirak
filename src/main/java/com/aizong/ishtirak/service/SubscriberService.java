@@ -6,7 +6,6 @@ import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
-import com.aizong.ishtirak.model.DieselLog;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
@@ -66,8 +65,6 @@ public interface SubscriberService {
 
     void saveMaintenanceLog(MaintenaceLog maintenaceLog);
 
-    void saveDieselLog(MaintenaceLog maintenaceLog, DieselLog dieselLog);
-
     void deleteVillages(List<Long> villageIds);
     
     List<Employee> getEmployees();
@@ -89,5 +86,11 @@ public interface SubscriberService {
     List<Employee> getEmployeesWithEmployeeTypes();
 
     Village getVillageById(Long id);
+
+    List<Employee> getActiveEmployees();
+
+    MaintenaceLog getExpensesById(Long id);
+
+    void deleteExpenses(List<Long> ids);
     
 }

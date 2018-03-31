@@ -19,6 +19,10 @@ public class ButtonFactory {
         return new JButton("حفظ", ImageUtils.getSaveIcon());
     }
     
+    public static JButton createBtnSaveAndNew() {
+        return new JButton("حفظ وجديد", ImageUtils.getSaveIcon());
+    }
+    
     public static JButton createBtnDelete() {
         return new JButton("حذف", ImageUtils.getDeleteIcon());
     }

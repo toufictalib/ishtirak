@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Date;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ import javax.swing.RowFilter;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -29,7 +31,9 @@ import javax.swing.table.TableRowSorter;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
+import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
@@ -63,10 +67,21 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     }
 
     private void initComponents() {
-	table = new JTable();
+	table = new JTable() {
+	    @Override
+	    public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+		Component comp = super.prepareRenderer(renderer, row, col);
+		if (comp instanceof JLabel) {
+		    ((JLabel) comp).setHorizontalAlignment(JLabel.RIGHT);
+		}
+		return comp;
+	    }
+	};
+	//table.setPreferredScrollableViewportSize(table.getPreferredSize());
 	table.setRowHeight(50);
 	table.setFillsViewportHeight(true);
 	table.setDefaultRenderer(JPanel.class, new RssFeedCell());
+	table.setDefaultRenderer(Date.class, new DateCellRenderer());
 	table.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 	sorter = new TableRowSorter<TableModel>();
@@ -81,6 +96,9 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	});
 	table.setRowSorter(sorter);
 
+	JTableHeader header = table.getTableHeader();
+	header.setDefaultRenderer(new HeaderRenderer(table));
+	
 	txtFE = new JTextField(25);
 	txtFE.addKeyListener(new KeyAdapter() {
 
@@ -133,9 +151,31 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     private void fillTable() {
 	ReportTableModel reportTableModel = getReportTableModel();
 	Object[] columns = reportTableModel.getCols();
-	columns = add(columns, "معاينة");
+	columns = add(columns, "btnView");
+	
+	Object[] internalisationCols = new Object[columns.length];
+	for (int i = 0; i < columns.length; i++) {
+	    if (columns[i] != null) {
+		internalisationCols[i] = message.getMessage(columns[i].toString());
+	    }else {
+		internalisationCols[i] = columns[i];
+	    }
+	}
 
-	model = new DefaultTableModel(reportTableModel.getRowsAsArray(), columns);
+	model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
+	    @Override
+	    public boolean isCellEditable(int arg0, int arg1) {
+		return arg1 == (table.getModel().getColumnCount() - 1);
+	    }
+	    
+	    @Override
+	    public Class<?> getColumnClass(int arg0) {
+	        if(arg0<reportTableModel.getClazzes().length) {
+	            return reportTableModel.getClazzes()[arg0];
+	        }
+		return super.getColumnClass(arg0);
+	    }
+	};
 	table.setModel(model);
 	sorter.setModel(model);
 	table.setRowSorter(sorter);
