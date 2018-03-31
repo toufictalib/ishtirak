@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.aizong.ishtirak.bean.MaintenanceType;
+import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.component.DateRange;
@@ -206,7 +206,7 @@ public class ReportServiceImpl implements ReportService {
 	for(Object[] row:rows) {
 	    value = row[4];
 	    if(value!=null) {
-		row[4] = message.getEnumLabel(value.toString(), MaintenanceType.class);
+		row[4] = message.getEnumLabel(value.toString(), ExpensesType.class);
 	    }
 	}
 	String[] cols = { "maintenanceId", "engine", "amount", "description", "maintenanceType", "insertDate" };

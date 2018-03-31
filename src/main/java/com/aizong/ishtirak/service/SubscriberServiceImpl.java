@@ -27,7 +27,7 @@ import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
-import com.aizong.ishtirak.model.MaintenaceLog;
+import com.aizong.ishtirak.model.ExpensesLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
@@ -291,7 +291,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void saveMaintenanceLog(MaintenaceLog maintenaceLog) {
+    public void saveMaintenanceLog(ExpensesLog maintenaceLog) {
 	if (maintenaceLog.getId() != null) {
 	    subscriberDao.update(maintenaceLog);
 	} else {
@@ -376,8 +376,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public MaintenaceLog getExpensesById(Long id) {
-	return subscriberDao.find(MaintenaceLog.class, id);
+    public ExpensesLog getExpensesById(Long id) {
+	return subscriberDao.find(ExpensesLog.class, id);
     }
 
     @Override

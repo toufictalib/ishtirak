@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import com.aizong.ishtirak.bean.MaintenanceType;
+import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DoubleTextField;
@@ -26,11 +26,11 @@ import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Engine;
-import com.aizong.ishtirak.model.MaintenaceLog;
+import com.aizong.ishtirak.model.ExpensesLog;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
-public class MaintenaceForm extends BasicForm {
+public class ExpensesForm extends BasicForm {
 
     /**
      * 
@@ -46,16 +46,16 @@ public class MaintenaceForm extends BasicForm {
     private ExCombo<Employee> comboEmployees;
     private SavingCallback callback;
     private Mode mode = Mode.NEW;
-    private MaintenaceLog expensesLog;
+    private ExpensesLog expensesLog;
 
-    private MaintenanceType[] maintenanceTypeValues = MaintenanceType.values();
+    private ExpensesType[] maintenanceTypeValues = ExpensesType.values();
     
-    public MaintenaceForm() {
+    public ExpensesForm() {
 	super();
 	initializePanel();
     }
 
-    public MaintenaceForm(Mode mode, MaintenaceLog expensesLog, SavingCallback callback) {
+    public ExpensesForm(Mode mode, ExpensesLog expensesLog, SavingCallback callback) {
 	this.mode = mode;
 	this.callback = callback;
 	this.expensesLog = expensesLog;
@@ -68,8 +68,8 @@ public class MaintenaceForm extends BasicForm {
 	txtDesc = new JTextField();
 	txtAmount = new DoubleTextField();
 	List<SearchResult> values = new ArrayList<>();
-	for (MaintenanceType type : maintenanceTypeValues) {
-	    values.add(new SearchResult(type, enumMessage(type.name(), MaintenanceType.class)));
+	for (ExpensesType type : maintenanceTypeValues) {
+	    values.add(new SearchResult(type, enumMessage(type.name(), ExpensesType.class)));
 	}
 	
 	comboMaintenaceTypes = new ExCombo<>(values);
@@ -88,12 +88,12 @@ public class MaintenaceForm extends BasicForm {
 
     private boolean isDiesel() {
 	return comboMaintenaceTypes.getValue() != null
-		&& comboMaintenaceTypes.getValue().type == MaintenanceType.DIESEL;
+		&& comboMaintenaceTypes.getValue().type == ExpensesType.DIESEL;
     }
 
     private boolean isEmployee() {
 	return comboMaintenaceTypes.getValue() != null
-		&& comboMaintenaceTypes.getValue().type == MaintenanceType.EMPLOYEE;
+		&& comboMaintenaceTypes.getValue().type == ExpensesType.EMPLOYEE;
     }
 
     private void reset() {
@@ -194,7 +194,7 @@ public class MaintenaceForm extends BasicForm {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 
-		MaintenaceLog maintenaceLog = expensesLog == null ? new MaintenaceLog() : expensesLog;
+		ExpensesLog maintenaceLog = expensesLog == null ? new ExpensesLog() : expensesLog;
 		maintenaceLog.setDesc(txtDesc.getText());
 		maintenaceLog.setMaintenanceType(comboMaintenaceTypes.getValue().type);
 		maintenaceLog.setEngineId(comboEngines.getValue() != null ? comboEngines.getValue().getId() : null);
@@ -258,11 +258,11 @@ public class MaintenaceForm extends BasicForm {
       }
     
     static class SearchResult {
-	final MaintenanceType type;
+	final ExpensesType type;
 	final String label;
 
 	
-	public SearchResult(MaintenanceType type, String label) {
+	public SearchResult(ExpensesType type, String label) {
 	    super();
 	    this.type = type;
 	    this.label = label;

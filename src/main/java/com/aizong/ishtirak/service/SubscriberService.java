@@ -9,7 +9,7 @@ import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
-import com.aizong.ishtirak.model.MaintenaceLog;
+import com.aizong.ishtirak.model.ExpensesLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
@@ -63,7 +63,7 @@ public interface SubscriberService {
 
     void generateReceipts();
 
-    void saveMaintenanceLog(MaintenaceLog maintenaceLog);
+    void saveMaintenanceLog(ExpensesLog maintenaceLog);
 
     void deleteVillages(List<Long> villageIds);
     
@@ -89,7 +89,7 @@ public interface SubscriberService {
 
     List<Employee> getActiveEmployees();
 
-    MaintenaceLog getExpensesById(Long id);
+    ExpensesLog getExpensesById(Long id);
 
     void deleteExpenses(List<Long> ids);
     

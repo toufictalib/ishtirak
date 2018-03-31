@@ -7,13 +7,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import com.aizong.ishtirak.bean.MaintenanceType;
+import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "expenses_log")
-public class MaintenaceLog extends BaseEntity {
+public class ExpensesLog extends BaseEntity {
 
     @Column(name = "description")
     private String desc;
@@ -23,7 +23,7 @@ public class MaintenaceLog extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "maintenace_type")
-    private MaintenanceType maintenanceType;
+    private ExpensesType maintenanceType;
 
     @Column(name = "engine")
     private Long engineId;
@@ -54,11 +54,11 @@ public class MaintenaceLog extends BaseEntity {
 	this.amount = amount;
     }
 
-    public MaintenanceType getMaintenanceType() {
+    public ExpensesType getMaintenanceType() {
 	return maintenanceType;
     }
 
-    public void setMaintenanceType(MaintenanceType maintenanceType) {
+    public void setMaintenanceType(ExpensesType maintenanceType) {
 	this.maintenanceType = maintenanceType;
     }
 

@@ -36,7 +36,7 @@ import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.demo.ExampleRibbonFrame;
-import com.aizong.ishtirak.gui.form.MaintenaceForm;
+import com.aizong.ishtirak.gui.form.ExpensesForm;
 import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
@@ -143,7 +143,7 @@ public class MainFrame extends JRibbonFrame {
 	
 	JideButton btnExpenses = button("إضافة  مصاريف", "48px-Crystal_Clear_app_kthememgr.png");
 	btnExpenses.addActionListener(e -> {
-	    openWindow(e.getActionCommand(), new MaintenaceForm());
+	    openWindow(e.getActionCommand(), new ExpensesForm());
 	});
 	
 	JideButton btnExpensesManagement = button("إدارة  مصاريف", "48px-Crystal_Clear_app_kthememgr.png");

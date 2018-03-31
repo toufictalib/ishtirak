@@ -10,10 +10,10 @@ import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
-import com.aizong.ishtirak.gui.form.MaintenaceForm;
+import com.aizong.ishtirak.gui.form.ExpensesForm;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
-import com.aizong.ishtirak.model.MaintenaceLog;
+import com.aizong.ishtirak.model.ExpensesLog;
 
 @SuppressWarnings("serial")
 public class ExpensesFitlerTable extends CommonFilterTable {
@@ -23,7 +23,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 	    
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
-		WindowUtils.createDialog(owner, "إضافة مصروف", new MaintenaceForm(Mode.NEW,null, new SavingCallback() {
+		WindowUtils.createDialog(owner, "إضافة مصروف", new ExpensesForm(Mode.NEW,null, new SavingCallback() {
 
 		    @Override
 		    public void onSuccess(Object o) {
@@ -36,18 +36,18 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
 	    @Override
 	    public void view(Window owner, Long id) {
-		MaintenaceLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
+		ExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
 		if (expenseLog != null) {
-		    WindowUtils.createDialog(owner, "عرض المصروف", new MaintenaceForm(Mode.VIEW, expenseLog, null));
+		    WindowUtils.createDialog(owner, "عرض المصروف", new ExpensesForm(Mode.VIEW, expenseLog, null));
 		}
 	    }
 
 	    @Override
 	    public void edit(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		MaintenaceLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
+		ExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
 		if (expenseLog != null) {
 		    WindowUtils.createDialog(owner, " تعديل المصروف " + expenseLog.getId(),
-			    new MaintenaceForm(Mode.UPDATE, expenseLog, new SavingCallback() {
+			    new ExpensesForm(Mode.UPDATE, expenseLog, new SavingCallback() {
 
 				@Override
 				public void onSuccess(Object o) {
