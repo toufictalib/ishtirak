@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
 public class ImageUtils {
 
     public static ImageIcon getSaveIcon() {
-        return ImageHelperCustom.get().getImageIcon("saveRed.png");
+        return ImageHelperCustom.get().getImageIcon("save.png");
     }
 
     public static ImageIcon getDeleteIcon() {
@@ -53,8 +53,8 @@ public class ImageUtils {
         return ImageHelperCustom.get().getImageIcon("print.png");
     }
     
-    public static ImageIcon getCheckupIcon() {
-        return ImageHelperCustom.get().getImageIcon("checkup.png");
+    public static ImageIcon getViewIcon() {
+        return ImageHelperCustom.get().getImageIcon("view.png");
     }
     
      public static ImageIcon getSearchIcon() {
@@ -72,5 +72,9 @@ public class ImageUtils {
      public static ImageIcon getSoftwareIcon() {
     	 return ImageHelperCustom.get().getImageIcon("menus/project.png");
      }
+
+    public static ImageIcon getEditIcon() {
+	 return ImageHelperCustom.get().getImageIcon("edit.png");
+    }
     
 }

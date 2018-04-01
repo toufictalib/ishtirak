@@ -694,7 +694,7 @@ public class RibbonFactory {
 	 */
 	public RibbonFactory withHelp() {
 		return withHelp(getResizableIconFromResource(RibbonFactory.class
-				.getClassLoader().getResource("menus/48px_customer.png")),
+				.getClassLoader().getResource("menus/16/48px_customer.png")),
 				null);
 	}
 

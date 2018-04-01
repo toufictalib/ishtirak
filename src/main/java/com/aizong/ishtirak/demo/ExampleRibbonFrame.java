@@ -357,7 +357,7 @@ public class ExampleRibbonFrame extends JRibbonFrame {
      */
     public static ResizableIcon getResizableIconFromResource(String resource) {
 	return getResizableIconFromResource(
-		ExampleRibbonFrame.class.getClassLoader().getResource("images/menus/48px_customer.png"),
+		ExampleRibbonFrame.class.getClassLoader().getResource("images/16/menus/48px_customer.png"),
 		new Dimension(48, 48));
     }
 

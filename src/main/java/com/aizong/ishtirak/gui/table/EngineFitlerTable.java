@@ -74,4 +74,10 @@ public class EngineFitlerTable extends CommonFilterTable {
     @Override
     public ReportTableModel getReportTableModel() {
 	return ServiceProvider.get().getReportServiceImpl().getEngines();
+    }
+
+    @Override
+    protected String getAddTooltip() {
+	// TODO Auto-generated method stub
+	return null;
     }}

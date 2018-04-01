@@ -70,7 +70,7 @@ public class MainFrame extends JRibbonFrame {
 	try {
 	    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		if ("Nimbus".equals(info.getName())) {
-		    UIManager.setLookAndFeel(info.getClassName());
+		    UIManager.setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
 		    /*
 		     * UIManager.put("nimbusBase", Color.BLUE);
 		     * UIManager.put("nimbusBlueGrey", Color.GREEN);
@@ -183,9 +183,13 @@ public class MainFrame extends JRibbonFrame {
 	builder.append(btnReceipts);
 	builder.append(btnReports);
 
+	try {
 	ExampleRibbonFrame.createApplicationRibbon(getRibbon());
+	
+	}catch(Exception e) {
+	    e.printStackTrace();
+	}
 	add(JideSwingUtilities.createCenterPanel(builder.getPanel()));
-
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	setSize(screenSize);
 	// setJMenuBar(createMenus());

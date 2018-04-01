@@ -84,5 +84,10 @@ public class EmployeeFilterTable extends CommonFilterTable {
 	return ServiceProvider.get().getReportServiceImpl().getEmployees();
     }
 
+    @Override
+    protected String getAddTooltip() {
+	return null;
+    }
+
    
 }

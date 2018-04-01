@@ -74,4 +74,10 @@ public class ExpensesFitlerTable extends CommonFilterTable {
     @Override
     public ReportTableModel getReportTableModel() {
 	return ServiceProvider.get().getReportServiceImpl().getTransactions();
+    }
+
+    @Override
+    protected String getAddTooltip() {
+	// TODO Auto-generated method stub
+	return null;
     }}

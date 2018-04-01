@@ -112,9 +112,9 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 	});
 
-	btnAdd = ButtonFactory.createBtnAdd();
-	ButtonFactory.makeButtonAsIcon(btnAdd);
-	btnAdd.setToolTipText("أضف مشترك");
+	btnAdd =new JButton(getAddTooltip(), ImageUtils.getAddIcon());
+	btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	btnAdd.setToolTipText(btnAdd.getText());
 	btnAdd.addActionListener(new ActionListener() {
 
 	    @Override
@@ -127,8 +127,10 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	txtRowCount = new JLabel();
     }
 
+    protected abstract String getAddTooltip();
+
     private void setTxtRowCount(int row) {
-	txtRowCount.setText("العدد : " + row);
+	txtRowCount.setText(message("table.rowCount", row));
     }
 
     protected JPanel initUI() {
@@ -231,7 +233,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	public RssFeedCell() {
 	    buttons = new JPanel();
 	    buttons.setOpaque(true);
-	    JButton btnView = new JButton("معاينة", ImageUtils.getCheckupIcon());
+	    JButton btnView = ButtonFactory.createBtnView();
 	    btnView.addActionListener(new ActionListener() {
 
 		@Override
@@ -243,7 +245,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 		}
 	    });
 	    btnView.setCursor(new Cursor(Cursor.HAND_CURSOR));
-	    JButton btnEdit = new JButton("تعديل", ImageUtils.getInfoIcon());
+	    JButton btnEdit = ButtonFactory.createBtnEdit();
 	    btnEdit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 	    btnEdit.addActionListener(new ActionListener() {
@@ -256,7 +258,9 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 		}
 	    });
-	    JButton btnDelete = new JButton("حذف", ImageUtils.getDeleteIcon());
+	    JButton btnDelete = ButtonFactory.createBtnDelete();
+	    btnEdit.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	    
 	    btnDelete.addActionListener(new ActionListener() {
 
 		@Override

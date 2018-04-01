@@ -81,13 +81,11 @@ public class WindowUtils {
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setContentPane(jp);
-        frame.pack();
-
         frame.setMinimumSize(frame.getPreferredSize());
         frame.setLocationRelativeTo(owner);
         frame.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         applyRtl(frame);
-        
+        frame.pack();
         frame.setVisible(true);
         return frame;
     }

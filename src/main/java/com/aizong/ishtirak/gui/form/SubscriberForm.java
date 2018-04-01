@@ -179,7 +179,7 @@ public class SubscriberForm extends BasicForm {
 
     @Override
     protected String getLayoutSpecs() {
-	return "right:pref, 4dlu, fill:100dlu:grow";
+	return "right:pref, 4dlu, fill:125dlu:grow";
     }
 
 }

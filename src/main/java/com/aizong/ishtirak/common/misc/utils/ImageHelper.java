@@ -17,9 +17,9 @@ public class ImageHelper {
     }
 
     public ImageIcon getImageIcon(String url) {
-        return new ImageIcon(getImage(url));
+        return new ImageIcon(getImage("/16/"+url));
     }
-
+    
     public Image getImage(String path) {
         Image image = null;
         try {

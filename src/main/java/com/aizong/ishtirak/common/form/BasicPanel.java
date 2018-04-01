@@ -15,7 +15,7 @@ public abstract class BasicPanel extends JPanel {
      */
     private static final long serialVersionUID = 3026529267754719720L;
 
-    protected Message message;
+    protected static Message message;
 
     public BasicPanel() {
 	super(new BorderLayout());
@@ -33,7 +33,7 @@ public abstract class BasicPanel extends JPanel {
 	}
     }
 
-    protected String message(String code, Object... params) {
+    protected static String message(String code, Object... params) {
 	if(message!=null) {
 	    return message.getMessage(code, params);
 	}

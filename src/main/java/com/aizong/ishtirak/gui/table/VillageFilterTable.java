@@ -84,5 +84,11 @@ public  class VillageFilterTable extends CommonFilterTable {
 	return ServiceProvider.get().getReportServiceImpl().getVillages();
     }
 
+    @Override
+    protected String getAddTooltip() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
    
 }
