@@ -2,12 +2,11 @@ package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -22,6 +21,7 @@ import com.aizong.ishtirak.common.misc.component.DoubleTextField;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Employee;
@@ -44,6 +44,8 @@ public class ExpensesForm extends BasicForm {
     protected JTextArea txtNote;
     private IntergerTextField txtDieselQuantity;
     private ExCombo<Employee> comboEmployees;
+    
+    
     private SavingCallback callback;
     private Mode mode = Mode.NEW;
     private ExpensesLog expensesLog;
@@ -170,10 +172,11 @@ public class ExpensesForm extends BasicForm {
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
+	btnSave.addActionListener(e->save(false));
 	JButton btnSaveAndNew = ButtonFactory.createBtnSaveAndNew();
-	btnSave.addActionListener(saveData());
-	btnSaveAndNew.addActionListener(saveData());
+	btnSaveAndNew.addActionListener(e->save(true));
 	btnSaveAndNew.setActionCommand("saveAndNew");
+	
 	JButton btnClose = ButtonFactory.createBtnClose();
 	btnClose.addActionListener(e -> closeWindow());
 	
@@ -188,41 +191,42 @@ public class ExpensesForm extends BasicForm {
 	return builder.getPanel();
     }
 
-    private ActionListener saveData() {
-	return new ActionListener() {
+    
+    private void save(boolean saveAndNew) {
+	Optional<List<String>> validateInputs = validateInputs();
+	if (validateInputs.isPresent()) {
+	    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
+	    return;
+	}
+	
+	ExpensesLog maintenaceLog = expensesLog == null ? new ExpensesLog() : expensesLog;
+	maintenaceLog.setDesc(txtDesc.getText());
+	maintenaceLog.setMaintenanceType(comboMaintenaceTypes.getValue().type);
+	maintenaceLog.setEngineId(comboEngines.getValue() != null ? comboEngines.getValue().getId() : null);
+	maintenaceLog.setNote(txtNote.getText().trim());
+	maintenaceLog.setAmount(txtAmount.getValue());
 
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
+	if (isEmployee()) {
+	    maintenaceLog.setEmployeeId(comboEmployees.getValue().getId());
+	    maintenaceLog.setEngineId(null);
+	}
 
-		ExpensesLog maintenaceLog = expensesLog == null ? new ExpensesLog() : expensesLog;
-		maintenaceLog.setDesc(txtDesc.getText());
-		maintenaceLog.setMaintenanceType(comboMaintenaceTypes.getValue().type);
-		maintenaceLog.setEngineId(comboEngines.getValue() != null ? comboEngines.getValue().getId() : null);
-		maintenaceLog.setNote(txtNote.getText().trim());
-		maintenaceLog.setAmount(txtAmount.getValue());
-		
-		if (isEmployee()) {
-		    maintenaceLog.setEmployeeId(comboEmployees.getValue().getId());
-		    maintenaceLog.setEngineId(null);
-		}
+	if (isDiesel()) {
+	    maintenaceLog.setDieselConsupmtion(txtDieselQuantity.getValue());
+	}
 
-		if (isDiesel()) {
-		    maintenaceLog.setDieselConsupmtion(txtDieselQuantity.getValue());
-		}
+	ServiceProvider.get().getSubscriberService().saveMaintenanceLog(maintenaceLog);
 
-		ServiceProvider.get().getSubscriberService().saveMaintenanceLog(maintenaceLog);
+	if (!saveAndNew) {
+	    closeWindow();
 
-		if (!"saveAndNew".equalsIgnoreCase(e.getActionCommand())) {
-		    closeWindow();
+	} else {
+	    reset();
+	}
+	if (callback != null) {
+	    callback.onSuccess(maintenaceLog);
+	}
 
-		} else {
-		    reset();
-		}
-		if (callback != null) {
-		    callback.onSuccess(maintenaceLog);
-		}
-	    }
-	};
     }
 
     @Override
@@ -230,6 +234,40 @@ public class ExpensesForm extends BasicForm {
 	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
+    @Override
+    protected Optional<List<String>> validateInputs() {
+        List<String> errors =new ArrayList<>();
+        
+        if(txtDesc.getText().isEmpty()) {
+            errors.add(errorPerfix("maintenance.form.name"));
+        }
+        
+        
+        if(isDiesel()) {
+            if(txtDieselQuantity.getValue()==null) {
+        	errors.add(errorPerfix("maintenance.form.dieselAmount"));
+            }
+        }
+        
+        if (isEmployee()) {
+            if(comboEmployees.getValue()==null) {
+        	errors.add(errorPerfix("maintenance.form.dieselAmount"));
+            }
+            
+            if(txtAmount.getValue()==null) {
+        	errors.add(errorPerfix("maintenance.form.salary"));
+            }
+        }else {
+            if(txtAmount.getValue()==null) {
+        	errors.add(errorPerfix("maintenance.form.amount"));
+            }
+            if(comboEngines.getValue()==null) {
+        	errors.add(errorPerfix("maintenance.form.engines"));
+            }
+        }
+        
+        return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+    }
     private ItemListener createComboDieselListener() {
   	return new ItemListener() {
 
@@ -238,6 +276,7 @@ public class ExpensesForm extends BasicForm {
   		if (arg0.getStateChange() == ItemEvent.SELECTED) {
   		    SearchResult value = comboMaintenaceTypes.getValue();
   		    if (value != null) {
+  			txtAmount.setValue(null);
   			switch (value.type) {
   			case DIESEL:
   			    redrawPanel();

@@ -23,7 +23,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 	    
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
-		WindowUtils.createDialog(owner, "إضافة مصروف", new ExpensesForm(Mode.NEW,null, new SavingCallback() {
+		WindowUtils.createDialog(owner, message("expenses.form.new"), new ExpensesForm(Mode.NEW,null, new SavingCallback() {
 
 		    @Override
 		    public void onSuccess(Object o) {
@@ -38,7 +38,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 	    public void view(Window owner, Long id) {
 		ExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
 		if (expenseLog != null) {
-		    WindowUtils.createDialog(owner, "عرض المصروف", new ExpensesForm(Mode.VIEW, expenseLog, null));
+		    WindowUtils.createDialog(owner, message("expenses.form.view"), new ExpensesForm(Mode.VIEW, expenseLog, null));
 		}
 	    }
 
@@ -46,7 +46,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 	    public void edit(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
 		ExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
 		if (expenseLog != null) {
-		    WindowUtils.createDialog(owner, " تعديل المصروف " + expenseLog.getId(),
+		    WindowUtils.createDialog(owner, message("expenses.form.edit"),
 			    new ExpensesForm(Mode.UPDATE, expenseLog, new SavingCallback() {
 
 				@Override
@@ -60,7 +60,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		boolean yes = MessageUtils.showConfirmationMessage(owner, "هل تريد حذف هذا القيد؟", "حذف");
+		boolean yes = MessageUtils.showConfirmationMessage(owner, message("bundle.report.buttons.delete"), message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
@@ -78,6 +78,5 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
     @Override
     protected String getAddTooltip() {
-	// TODO Auto-generated method stub
-	return null;
+	return message("expenses.form.add");
     }}
