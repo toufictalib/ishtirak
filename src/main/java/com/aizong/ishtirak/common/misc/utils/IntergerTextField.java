@@ -1,72 +1,70 @@
 package com.aizong.ishtirak.common.misc.utils;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
 import javax.swing.JTextField;
-import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 
-public class IntergerTextField extends JTextField implements FocusListener
-{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8512234769416723831L;
+public class IntergerTextField extends JTextField {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8512234769416723831L;
 
-	
-	public IntergerTextField(Document doc, String text, int columns)
-	{
-		super(doc, text, columns);
-		// TODO Auto-generated constructor stub
+    /*
+     * @Override public void processKeyEvent(KeyEvent ev) { if
+     * (Character.isDigit(ev.getKeyChar())) { super.processKeyEvent(ev); }
+     * ev.consume(); return; }
+     */
+
+    public IntergerTextField(Integer value, int columns) {
+	super(value != null ? value + "" : "", columns);
+	PlainDocument doc = (PlainDocument) getDocument();
+	doc.setDocumentFilter(new MyIntFilter());
+    }
+
+    public IntergerTextField(Integer value) {
+	this(value, 5);
+    }
+
+    public IntergerTextField() {
+	this((Integer) null);
+    }
+
+    public Long getValueAsLong() {
+	Long result = null;
+	String text = getText();
+	text = text == null ? text : text.trim();
+	if (text != null && !"".equals(text)) {
+	    try {
+		return Long.parseLong(text);
+	    } catch (NumberFormatException e) {
+
+	    }
 	}
+	return result;
 
+    }
 
-	public IntergerTextField(String text, int columns)
-	{
-		super(text, columns);
-		// TODO Auto-generated constructor stub
-	}
+    public void setValueAsLong(Long value) {
+	setText(value == null ? "" : String.valueOf(value));
+    }
+    
+    public void setValue(Integer value) {
+	setText(value == null ? "" : String.valueOf(value));
+    }
 
-	public IntergerTextField(String text)
-	{
-		super(text);
-		// TODO Auto-generated constructor stub
-	}
+    public Integer getValue() {
+	Integer result = null;
+	String text = getText();
+	text = text == null ? text : text.trim();
+	if (text != null && !"".equals(text)) {
+	    try {
+		return Integer.parseInt(text);
+	    } catch (NumberFormatException e) {
 
-	public IntergerTextField(Integer value,int columns)
-	{
-		this(value != null ? value+"" : "", columns);
+	    }
 	}
-	
-	public IntergerTextField(Integer value)
-	{
-		this(value, 5);
-	}
-	
-	public IntergerTextField()
-	{
-		this((String)null);
-		addFocusListener(this);
-	}
+	return result;
 
+    }
 
-	public Integer getValue()
-	{
-		return Integer.parseInt(getText());
-	}
-
-	@Override
-	public void focusGained(FocusEvent e)
-	{
-		select(0, getText().length());
-		
-	}
-
-	@Override
-	public void focusLost(FocusEvent e)
-	{
-		select(0, 0);
-		 
-		
-	}
 }

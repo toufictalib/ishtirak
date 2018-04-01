@@ -57,7 +57,7 @@ public interface SubscriberService {
     
     void deleteContracts(List<Long> ids);
 
-    void saveConsumptionHistory(CounterHistory history);
+    void saveCounterHistory(CounterHistory history) throws Exception;
     
     List<Contract> getCounterContractBySubscriberId(Long subscriberId);
 
@@ -94,5 +94,7 @@ public interface SubscriberService {
     void deleteExpenses(List<Long> ids);
 
     List<Contract> getContractBySubscriberId(Long id);
+
+    CounterHistory getCounterHistoryByContractId(Long contractId);
     
 }

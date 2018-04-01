@@ -20,6 +20,7 @@ import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
+import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
@@ -41,6 +42,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Autowired
     SubscriberDao subscriberDao;
+   
+    @Autowired
+    Message message;
 
     @Override
     public List<Village> getVillages() {
@@ -193,16 +197,21 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void saveConsumptionHistory(CounterHistory history) {
-	if (history.getId() != null) {
-	    subscriberDao.update(history);
-	} else {
-
-	    subscriberDao.save(Arrays.asList(history));
-	}
+    public void saveCounterHistory(CounterHistory history) throws Exception {
+	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractId(), DateUtil.getCurrentMonth());
+	 if(counterHistoryByContractId==null) {
+	     subscriberDao.save(Arrays.asList(history));
+	 }else {
+	     subscriberDao.updateCounterHistory(history);
+	 }
 
     }
 
+    @Override
+    public CounterHistory getCounterHistoryByContractId(Long contractId) {
+	return subscriberDao.getCounterHistoryByContractId(contractId, DateUtil.getCurrentMonth());
+    }
+    
     @Override
     public List<Contract> getCounterContractBySubscriberId(Long subscriberId) {
 	return subscriberDao.getCounterContractBySubscriberId(subscriberId);

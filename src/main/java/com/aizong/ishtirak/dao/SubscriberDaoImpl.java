@@ -15,6 +15,7 @@ import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Contract;
+import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
@@ -95,7 +96,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     public List<Contract> getCounterContractBySubscriberId(Long subscriberId) {
 	
 	String sql = "select * from contract where subscriber_id  =:subscriberId and "
-		+ " bundle_id in (select id from bundle where type =:subscriptionBundle)";
+		+ " bundle_id in (select id from bundle where type =:subscriptionBundle) and is_active = 1";
 	NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
 	createSQLQuery.setParameter("subscriberId", subscriberId).
 	setParameter("subscriptionBundle", SubscriptionBundle.class.getSimpleName());
@@ -212,6 +213,25 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	Criteria criteria = getsession().createCriteria(Contract.class);
 	criteria.add(Restrictions.eq("subscriberId", subscriberId));
 	return criteria.list();
+    }
+
+    @Override
+    public CounterHistory getCounterHistoryByContractId(Long contractId, int month) {
+	String sql = "select * from counter_history where contract_id = :contractId and month(insert_date) = :month";
+	NativeQuery<CounterHistory> sqlQuery= getsession().createNativeQuery(sql);
+	sqlQuery.setParameter("contractId", contractId).setParameter("month", month)
+	.addEntity(CounterHistory.class)
+	;
+	return sqlQuery.uniqueResult();
+    }
+
+    @Override
+    public void updateCounterHistory(CounterHistory history) {
+	String sql = "update counter_history set consumption = :consumption where contract_id = :contractId" ;
+	NativeQuery<Void> sqlQuery = getsession().createNativeQuery(sql);
+	sqlQuery.setParameter("consumption", history.getConsumption()).setParameter("contractId", history.getContractId());
+	sqlQuery.executeUpdate();
+	
     }
 
 }

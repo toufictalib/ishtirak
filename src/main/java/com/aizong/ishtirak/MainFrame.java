@@ -109,7 +109,9 @@ public class MainFrame extends JRibbonFrame {
 
 	JideButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
 	btnSubscriberManagement.addActionListener(e -> {
-	    openWindow(e.getActionCommand(), new SubscriberFilterTable(e.getActionCommand()));
+	    SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand());
+	    subscriberFilterTable.setPreferredSize(ComponentUtils.getDimension(90, 90));
+	    openWindow(e.getActionCommand(), subscriberFilterTable);
 	});
 
 	JideButton btnEngineManagement = button("إدارة المولدات", "48px-Crystal_Clear_app_error.png");

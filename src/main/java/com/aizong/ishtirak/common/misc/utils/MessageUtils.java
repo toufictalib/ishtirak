@@ -6,6 +6,7 @@
 package com.aizong.ishtirak.common.misc.utils;
 
 import java.awt.Component;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -14,8 +15,12 @@ import javax.swing.JOptionPane;
  */
 public class MessageUtils {
 
+    public static String getDefaultErrorTitle(String code){
+	return ServiceProvider.get().getMessage().getMessage(code);
+    }
+    
     public static void showErrorMessage(Component owner, String message) {
-        JOptionPane.showMessageDialog(owner, message, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(owner, message, getDefaultErrorTitle("error"), JOptionPane.ERROR_MESSAGE);
 
     }
 
@@ -25,7 +30,7 @@ public class MessageUtils {
     }
     
     public static void showWarningMessage(Component owner,  String message) {
-        JOptionPane.showMessageDialog(owner, message, "Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(owner, message,getDefaultErrorTitle("warning") , JOptionPane.WARNING_MESSAGE);
 
     }
 
@@ -35,7 +40,7 @@ public class MessageUtils {
     }
 
     public static void showInfoMessage(Component owner, String message) {
-        showInfoMessage(owner, "Info", message);
+        showInfoMessage(owner, getDefaultErrorTitle("info"), message);
 
     }
     

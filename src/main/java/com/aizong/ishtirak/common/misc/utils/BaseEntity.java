@@ -9,8 +9,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
@@ -22,9 +23,11 @@ public class BaseEntity implements Serializable {
     protected Long id;
 
     @Column(name = "insert_date")
+    @CreationTimestamp
     private Date insertDate;
 
     @Column(name = "update_date")
+    @UpdateTimestamp
     private Date updateDate;
 
     @Column(name = "user_id")
@@ -71,7 +74,7 @@ public class BaseEntity implements Serializable {
 	this.userId = userId;
     }
 
-    @PrePersist
+   /* @PrePersist
     protected void onCreate() {
 	this.insertDate = new Date();
     }
@@ -79,7 +82,7 @@ public class BaseEntity implements Serializable {
     @PreUpdate
     protected void onUpdate() {
 	this.updateDate = new Date();
-    }
+    }*/
 
     @Override
     public int hashCode() {

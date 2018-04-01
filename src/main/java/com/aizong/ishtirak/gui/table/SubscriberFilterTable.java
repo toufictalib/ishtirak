@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -105,7 +106,9 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	
 	JButton btnViewContract = createEditContractBtn("معاينة إشتراك",Mode.VIEW);
 	
-	JButton btnAddCounterHistory = createAddCounterHistoryBtn();
+	JButton btnEditCounterHistory = createEditCounterHistoryBtn("حفظ وتعديل عداد",Mode.UPDATE);
+	
+	JButton btnViewCounterHistory = createEditCounterHistoryBtn("معاينة عداد",Mode.VIEW);
 	
    	String leftToRightSpecs = "fill:p:grow,5dlu,p";
    	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs);
@@ -119,7 +122,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
    	panel.add(btnEditContract);
    	panel.add(btnViewContract);
    	panel.add(btnAddContract);
-   	panel.add(btnAddCounterHistory);
+   	panel.add(btnEditCounterHistory);
+   	panel.add(btnViewCounterHistory);
    	
    	builder.append(panel,builder.getColumnCount());
    	builder.append(txtFE, builder.getColumnCount());
@@ -131,26 +135,33 @@ public class SubscriberFilterTable extends CommonFilterTable {
    	return builder.getPanel();
        }
 
-    private JButton createAddCounterHistoryBtn() {
-	JButton btnAddCounterHistory = new JButton("أضف معلومات العداد", ImageHelperCustom.get().getImageIcon("maintenance32.png"));
+    private JButton createEditCounterHistoryBtn(String title, Mode mode) {
+	JButton btnAddCounterHistory = new JButton(title, ImageHelperCustom.get().getImageIcon("maintenance32.png"));
 	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
 	btnAddCounterHistory.addActionListener(e->{
-	    int selectedRow = table.getSelectedRow();
-	    if(selectedRow>=0) {
-		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
-		if(valueAt instanceof Long) {
-		    Long id = (Long) valueAt;
-		    Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
-			if (subscriber == null) {
-			    MessageUtils.showWarningMessage(getOwner(), "مشترك ناقص", "الرجاء اختيار مشترك");
-			    return;
+		    int selectedRow = table.getSelectedRow();
+		    if(selectedRow>=0) {
+			Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
+			if(valueAt instanceof Long) {
+			    Long id = (Long) valueAt;
+			    Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
+				if (subscriber == null) {
+				    MessageUtils.showWarningMessage(getOwner(), "مشترك ناقص", "الرجاء اختيار مشترك");
+				    return;
+				}
+				JDialog createDialog = null;
+				try {
+				    createDialog = WindowUtils.createDialog(getOwner(),  title, new CounterHistoryForm(subscriber.getId(), mode));
+				} catch (Exception e1) {
+				   MessageUtils.showInfoMessage(getOwner(), message("counterHistory.noContract"));
+				  if(createDialog!=null) {
+				      createDialog.dispose();
+				  }
+		    }
 			}
-			 WindowUtils.createDialog(getOwner(), "إدخال عداد", new CounterHistoryForm(subscriber));
-		}
-	    }else {
-		warnNoSelectedRow();
-	    }
-	   
+		    }else {
+			warnNoSelectedRow();
+		    }
 	});
 	return btnAddCounterHistory;
     }
