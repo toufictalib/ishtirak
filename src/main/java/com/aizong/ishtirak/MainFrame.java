@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -18,20 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
-import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
@@ -48,55 +38,28 @@ import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jidesoft.swing.JideBorderLayout;
 import com.jidesoft.swing.JideButton;
 import com.jidesoft.swing.JideSwingUtilities;
 
-@SpringBootApplication
+@SuppressWarnings("serial")
 public class MainFrame extends JRibbonFrame {
 
     public MainFrame() {
 	
 	SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-        	startGui();
-            }
-        });
-	
+	    @Override
+	    public void run() {
+		startGui();
+	    }
+	});
+
     }
 
     private void startGui() {
-	try {
-	    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		if ("Nimbus".equals(info.getName())) {
-		    UIManager.setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
-		    /*
-		     * UIManager.put("nimbusBase", Color.BLUE);
-		     * UIManager.put("nimbusBlueGrey", Color.GREEN);
-		     * UIManager.put("control", Color.RED);
-		     */
-		  /*  Enumeration keys = UIManager.getDefaults().keys();
-		    while (keys.hasMoreElements()) {
-			Object key = keys.nextElement();
-			Object value = UIManager.get(key);
-			if (value instanceof Font) {
-			    UIManager.put(key, new Font(Font.DIALOG, Font.BOLD, 15));
-			}
-		    }*/
-		}
-	    }
-	} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-		| UnsupportedLookAndFeelException e1) {
-	    // TODO Auto-generated catch block
-	    e1.printStackTrace();
-	}
 	buildPanel();
     }
 
     private void buildPanel() {
-
-	JPanel panel = new JPanel(new JideBorderLayout());
 
 	JPanel buttomPanel = new JPanel();
 	buttomPanel.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -104,8 +67,6 @@ public class MainFrame extends JRibbonFrame {
 	buttomPanel.setPreferredSize(ComponentUtils.getDimension(70, 100));
 	buttomPanel.setOpaque(true);
 	buttomPanel.setBackground(Color.CYAN);
-	String[] images = new String[] { "48px-Crystal_Clear_app_ksame.png", "48px-Crystal_Clear_app_kthememgr.png",
-		"48px-Crystal_Clear_app_Staroffice.png" };
 
 	JideButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
 	btnSubscriberManagement.addActionListener(e -> {
@@ -118,7 +79,7 @@ public class MainFrame extends JRibbonFrame {
 	btnEngineManagement.addActionListener(e -> {
 	    JPanel innerPanel = new EngineFitlerTable(e.getActionCommand());
 	    innerPanel.setPreferredSize(ComponentUtils.getDimension(90, 90));
-	    openWindow(e.getActionCommand(),innerPanel );
+	    openWindow(e.getActionCommand(), innerPanel);
 	});
 	JideButton btnVillage = button("إدارة القرى", "48px-Crystal_Clear_app_ksame.png");
 	btnVillage.addActionListener(e -> {
@@ -144,31 +105,37 @@ public class MainFrame extends JRibbonFrame {
 	btnEmployeeJob.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new EmployeeTypeFilterTable(e.getActionCommand()));
 	});
-	
+
 	JideButton btnExpenses = button("إضافة  مصاريف", "48px-Crystal_Clear_app_kthememgr.png");
 	btnExpenses.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ExpensesForm());
 	});
-	
+
 	JideButton btnExpensesManagement = button("إدارة  مصاريف", "48px-Crystal_Clear_app_kthememgr.png");
 	btnExpensesManagement.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ExpensesFitlerTable(e.getActionCommand()));
 	});
-	
+
 	JideButton btnReceipts = button("إنشاء كل الايصالات", "48px_customer.png");
 	btnReceipts.addActionListener(e -> {
-	   boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر", "اصدار ايصالات");
-	   if(yes) {
-	       ServiceProvider.get().getSubscriberService().generateReceipts();
-	       MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
-	   }
+	    boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر",
+		    "اصدار ايصالات");
+	    if (yes) {
+		ServiceProvider.get().getSubscriberService().generateReceipts();
+		MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+	    }
 	});
-	
+
+	JideButton btnMonthlyReports = button("تقارير شهرية", "48px-Crystal_Clear_app_kthememgr.png");
+	btnMonthlyReports.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
+	});
+
 	JideButton btnReports = button("تقارير", "48px-Crystal_Clear_app_kthememgr.png");
 	btnReports.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
 	});
-	
+
 	setTitle("Simple example");
 
 	DefaultFormBuilder builder = new DefaultFormBuilder(new FormLayout("p,15dlu,p"));
@@ -183,12 +150,13 @@ public class MainFrame extends JRibbonFrame {
 	builder.append(btnExpenses);
 	builder.append(btnExpensesManagement);
 	builder.append(btnReceipts);
+	builder.append(btnMonthlyReports);
 	builder.append(btnReports);
 
 	try {
-	ExampleRibbonFrame.createApplicationRibbon(getRibbon());
-	
-	}catch(Exception e) {
+	    ExampleRibbonFrame.createApplicationRibbon(getRibbon());
+
+	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	add(JideSwingUtilities.createCenterPanel(builder.getPanel()));
@@ -203,6 +171,7 @@ public class MainFrame extends JRibbonFrame {
 
     }
 
+    @SuppressWarnings("unused")
     private JMenuBar createMenus() {
 	JMenuBar menuBar;
 	JMenu menu, submenu;
@@ -286,6 +255,7 @@ public class MainFrame extends JRibbonFrame {
 
     }
 
+    @SuppressWarnings("unused")
     private void addToButtonPanel(JPanel buttomPanel, JPanel guestPanel) {
 	buttomPanel.removeAll();
 	guestPanel.setPreferredSize(new Dimension(buttomPanel.getWidth(), buttomPanel.getHeight()));
@@ -298,6 +268,7 @@ public class MainFrame extends JRibbonFrame {
 	WindowUtils.createDialog(MainFrame.this, text, component);
     }
 
+    @SuppressWarnings("unused")
     private ImageIcon icon(String imagePath) {
 	return ImageHelperCustom.get().getImageIcon("menus/" + imagePath);
     }
@@ -307,24 +278,4 @@ public class MainFrame extends JRibbonFrame {
 		ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
 	return btnEngineManagement;
     }
-
-    @Bean
-    public MessageSource messageSource() {
-	ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-	source.setBasenames("i18n/messages", "i18n/enum", "i18n/enum_sql", "i18n/cols","i18n/form");
-	source.setDefaultEncoding("UTF-8");
-	return source;
-    }
-
-    @Bean
-    public Message createMessage() {
-	return new Message(new Locale("ar", "LB"));
-    }
-
-    public static void main(String[] args) {
-	SpringApplication.run(MainFrame.class, args);
-
-	// new Example().setVisible(true);
-    }
-
 }

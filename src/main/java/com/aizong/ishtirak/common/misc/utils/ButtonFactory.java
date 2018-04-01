@@ -95,4 +95,8 @@ public class ButtonFactory {
     public static JButton createBtnView() {
 	return new JButton(message("view"), ImageUtils.getViewIcon());
     }
+
+    public static JButton createBtnLogin() {
+	return new JButton(message("login"), ImageUtils.getLoginIcon());
+    }
 }

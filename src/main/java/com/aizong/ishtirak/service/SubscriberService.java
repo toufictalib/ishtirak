@@ -97,4 +97,6 @@ public interface SubscriberService {
 
     CounterHistory getCounterHistoryByContractId(Long contractId);
     
+    boolean login(String user, char[] password);
+    
 }

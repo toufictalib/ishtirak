@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.Message;
+import com.aizong.ishtirak.common.misc.utils.PasswordUtils;
 import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
@@ -34,6 +36,7 @@ import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.SubscriptionHistory;
 import com.aizong.ishtirak.model.Transaction;
+import com.aizong.ishtirak.model.User;
 import com.aizong.ishtirak.model.Village;
 
 @Service
@@ -398,5 +401,12 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void deleteExpenses(List<Long> ids) {
 	subscriberDao.deleteExpenses(ids);
 	
+    }
+
+    @Override
+    public boolean login(String userName, char[] password) {
+	User user = subscriberDao.getUserByName(userName);
+	Optional<String> hashPass = PasswordUtils.hashPass(new String(password));
+	return user!=null && hashPass.isPresent() && hashPass.get().equals(user.getPassword());
     }
 }

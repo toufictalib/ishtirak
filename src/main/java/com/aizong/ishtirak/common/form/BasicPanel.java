@@ -19,7 +19,6 @@ public abstract class BasicPanel extends JPanel {
 
     public BasicPanel() {
 	super(new BorderLayout());
-	message = ServiceProvider.get().getMessage();
     }
 
     public Window getOwner() {

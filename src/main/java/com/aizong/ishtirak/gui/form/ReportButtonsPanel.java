@@ -27,7 +27,7 @@ public class ReportButtonsPanel extends BasicForm {
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.setDefaultDialogBorder();
-	JideButton btnMonthlyReports = button("تقرير الإشتركات", "48px_customer.png");
+	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "48px_customer.png");
 	btnMonthlyReports.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
 	        
@@ -39,7 +39,7 @@ public class ReportButtonsPanel extends BasicForm {
 	   
 	});
 	
-	JideButton btnMonthlyExpenses = button("تقرير المصاريف", "48px_customer.png");
+	JideButton btnMonthlyExpenses = button(message("reports.subscirption.expenses"), "48px_customer.png");
 	btnMonthlyExpenses.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
 	        
@@ -63,7 +63,7 @@ public class ReportButtonsPanel extends BasicForm {
        }
     @Override
     protected String getLayoutSpecs() {
-	return "p,15dlu,p";
+	return "fill:p:grow";
     }
 
 }

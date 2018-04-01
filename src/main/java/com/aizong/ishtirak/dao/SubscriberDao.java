@@ -8,6 +8,7 @@ import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Subscriber;
+import com.aizong.ishtirak.model.User;
 
 public interface SubscriberDao extends GenericDao<Object> {
 
@@ -46,4 +47,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     CounterHistory getCounterHistoryByContractId(Long contractId, int month);
 
     void updateCounterHistory(CounterHistory history);
+
+    User getUserByName(String user);
 }

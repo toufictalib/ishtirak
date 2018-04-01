@@ -72,9 +72,12 @@ public class ImageUtils {
      public static ImageIcon getSoftwareIcon() {
     	 return ImageHelperCustom.get().getImageIcon("menus/project.png");
      }
-
     public static ImageIcon getEditIcon() {
 	 return ImageHelperCustom.get().getImageIcon("edit.png");
+    }
+     
+     public static ImageIcon getLoginIcon() {
+	 return ImageHelperCustom.get().getImageIcon("login.png");
     }
     
 }

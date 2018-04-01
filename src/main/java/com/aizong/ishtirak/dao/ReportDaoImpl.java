@@ -23,7 +23,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Object[]> getSubscriptionsIncomeReport(Date startDate, Date endDate) {
-	NativeQuery<Object[]> createSQLQuery = getsession().createSQLQuery("SELECT \n" + 
+	NativeQuery<Object[]> createSQLQuery = getsession().createNativeQuery("SELECT \n" + 
 		"    c.id as 'contract id', s.name as 'Subsciber Id',s.last_name as 'Last Name',concat(c.region,':',address) as address,\n" + 
 		"    b.name as 'Bundle Name' ,t.amount,t.is_paid, t.transaction_type " + 
 		"FROM\n" + 

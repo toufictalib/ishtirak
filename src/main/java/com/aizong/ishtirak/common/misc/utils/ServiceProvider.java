@@ -13,35 +13,34 @@ public class ServiceProvider {
 
     @Autowired
     SubscriberService subscriberService;
-    
+
     @Autowired
     ReportServiceImpl reportServiceImpl;
-    
+
     @Autowired
     Message message;
-    
-   private static ServiceProvider serviceProvider;
-    
+
+    private static ServiceProvider serviceProvider;
+
     @PostConstruct
     public void init() {
 	serviceProvider = this;
     }
-    
+
     public static ServiceProvider get() {
 	return serviceProvider;
     }
 
     public SubscriberService getSubscriberService() {
-        return subscriberService;
+	return subscriberService;
     }
 
     public ReportServiceImpl getReportServiceImpl() {
 	return reportServiceImpl;
     }
-    
+
     public Message getMessage() {
 	return message;
     }
-    
-    
+
 }

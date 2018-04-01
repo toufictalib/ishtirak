@@ -7,13 +7,13 @@ import org.springframework.context.MessageSource;
 
 public class Message {
 
-	@Autowired
 	private MessageSource message;
 
 	private Locale locale;
 
-	public Message(@Autowired final Locale locale) {
+	public Message(@Autowired final Locale locale, MessageSource messageSource) {
 		this.locale = locale;
+		this.message = messageSource;
 	}
 
 	public String getMessage(String code, Object... params) {

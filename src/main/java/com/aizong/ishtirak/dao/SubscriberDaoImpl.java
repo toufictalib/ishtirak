@@ -19,6 +19,7 @@ import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
+import com.aizong.ishtirak.model.User;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
@@ -232,6 +233,14 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	sqlQuery.setParameter("consumption", history.getConsumption()).setParameter("contractId", history.getContractId());
 	sqlQuery.executeUpdate();
 	
+    }
+
+    @Override
+    public User getUserByName(String userName) {
+	NativeQuery<User> sqlQuery = getsession().createNativeQuery("select * from user where user_name =:userName");
+	sqlQuery.setParameter("userName", userName).addEntity(User.class);
+	return sqlQuery.getSingleResult();
+
     }
 
 }
