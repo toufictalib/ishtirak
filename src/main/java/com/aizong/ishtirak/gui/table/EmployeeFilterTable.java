@@ -25,7 +25,7 @@ public class EmployeeFilterTable extends CommonFilterTable {
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
 		WindowUtils.createDialog(owner,
-			ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.add"),
+			message("employee.button.add"),
 			new EmployeeForm(Mode.NEW, new SavingCallback() {
 
 			    @Override
@@ -42,7 +42,7 @@ public class EmployeeFilterTable extends CommonFilterTable {
 		Employee subscriber = ServiceProvider.get().getSubscriberService().getEmployeeById(id);
 		if (subscriber != null) {
 		    WindowUtils.createDialog(owner,
-			    ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.view"),
+			    message("employee.button.view"),
 			    new EmployeeForm(Mode.VIEW, subscriber, null));
 		}
 	    }
@@ -52,7 +52,7 @@ public class EmployeeFilterTable extends CommonFilterTable {
 		Employee subscriber = ServiceProvider.get().getSubscriberService().getEmployeeById(id);
 		if (subscriber != null) {
 		    WindowUtils.createDialog(owner,
-			    ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.edit",
+			    message("employee.button.edit",
 				    subscriber.getName()),
 			    new EmployeeForm(Mode.UPDATE, subscriber, new SavingCallback() {
 
@@ -68,7 +68,7 @@ public class EmployeeFilterTable extends CommonFilterTable {
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
 		boolean yes = MessageUtils.showConfirmationMessage(owner,
-			ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.delete"), "حذف");
+			message("bundle.report.buttons.delete"), message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
@@ -86,7 +86,7 @@ public class EmployeeFilterTable extends CommonFilterTable {
 
     @Override
     protected String getAddTooltip() {
-	return null;
+	return message("employee.button.add");
     }
 
    

@@ -2,8 +2,9 @@ package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -14,7 +15,6 @@ import javax.swing.UIManager;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
-import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
@@ -143,54 +143,9 @@ public class EmployeeForm extends BasicForm {
 	builder.append(message("subsriber.form.email"), txtEmail);
 	builder.appendSeparator();
 
-	JButton btnSave = ButtonFactory.createBtnSave();
-	btnSave.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-
-		if (employee == null) {
-		    employee = new Employee();
-		}
-
-		employee.setName(txtName.getText());
-		employee.setLastName(txtLastName.getText());
-		employee.setFatherName(txtFatherName.getText());
-		employee.setIdentifier(txtIdentifier.getText());
-		employee.setSalary(txtSalary.getValue());
-		employee.setActive(cbActive.isSelected());
-		employee.setEmployeeTypeId(comboEmployeeTypes.getValue());
-		
-		EmployeeInformation information = new EmployeeInformation();
-		if (employee != null && employee.getInformation() != null) {
-		    information.setId(employee.getInformation().getId());
-		}
-		information.setVillageId(comboVillages.getValue().getId());
-		information.setRegion(txtRegion.getText());
-		information.setDetailedAddress(txtAddress.getText());
-		information.setLandLine(txtLandLine.getText());
-		information.setMainPhone(txtPhone1.getText());
-		information.setAlternativePhone(txtPhone2.getText());
-		information.setEmail(txtEmail.getText());
-
-		employee.setInformation(information);
-
-		ServiceProvider.get().getSubscriberService().saveEmployee(employee);
-		closeWindow();
-		if (callback != null) {
-		    callback.onSuccess(employee);
-		}
-	    }
-	});
-	JButton btnClose = ButtonFactory.createBtnClose();
-	btnClose.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		closeWindow();
-
-	    }
-	});
+	JButton btnSave = btnSave();
+	
+	JButton btnClose = btnClose();
 
 	if (mode == Mode.VIEW) {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
@@ -204,5 +159,76 @@ public class EmployeeForm extends BasicForm {
     protected String getLayoutSpecs() {
 	return "right:pref, 4dlu, fill:100dlu:grow";
     }
+    
+    @Override
+    protected Optional<List<String>> validateInputs() {
+	List<String> errors = new ArrayList<>();
+	
+	if (txtName.getText().isEmpty()) {
+	    errors.add(errorPerfix("subsriber.form.name"));
+	}
+	if (txtLastName.getText().isEmpty()) {
+	    errors.add(errorPerfix("subsriber.form.lastName"));
+	}
+	
+	if (txtSalary.getValue()==null) {
+	    errors.add(errorPerfix("employee.form.salary"));
+	}
+	
+	if (comboEmployeeTypes.getValue() ==null) {
+	    errors.add(errorPerfix("employee.form.employeeType"));
+	}
+	
+	if (comboVillages.getValue() == null) {
+	    errors.add(errorPerfix("subsriber.form.village"));
+	}
+	if (txtRegion.getText().isEmpty()) {
+	    errors.add(errorPerfix("subsriber.form.region"));
+	}
 
+	if (txtAddress.getText().isEmpty()) {
+	    errors.add(errorPerfix("subsriber.form.address"));
+	}
+	if (txtPhone1.getText().isEmpty()) {
+	    errors.add(errorPerfix("subsriber.form.mainPhone"));
+	}
+	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+
+    }
+
+    @Override
+    protected void save() {
+	if (employee == null) {
+	    employee = new Employee();
+	}
+
+	employee.setName(txtName.getText());
+	employee.setLastName(txtLastName.getText());
+	employee.setFatherName(txtFatherName.getText());
+	employee.setIdentifier(txtIdentifier.getText());
+	employee.setSalary(txtSalary.getValue());
+	employee.setActive(cbActive.isSelected());
+	employee.setEmployeeTypeId(comboEmployeeTypes.getValue());
+
+	EmployeeInformation information = new EmployeeInformation();
+	if (employee != null && employee.getInformation() != null) {
+	    information.setId(employee.getInformation().getId());
+	}
+	information.setVillageId(comboVillages.getValue().getId());
+	information.setRegion(txtRegion.getText());
+	information.setDetailedAddress(txtAddress.getText());
+	information.setLandLine(txtLandLine.getText());
+	information.setMainPhone(txtPhone1.getText());
+	information.setAlternativePhone(txtPhone2.getText());
+	information.setEmail(txtEmail.getText());
+
+	employee.setInformation(information);
+
+	ServiceProvider.get().getSubscriberService().saveEmployee(employee);
+	closeWindow();
+	if (callback != null) {
+	    callback.onSuccess(employee);
+	}
+
+    }
 }
