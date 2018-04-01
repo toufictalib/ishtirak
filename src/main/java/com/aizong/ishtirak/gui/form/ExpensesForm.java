@@ -171,8 +171,8 @@ public class ExpensesForm extends BasicForm {
 
 	JButton btnSave = ButtonFactory.createBtnSave();
 	JButton btnSaveAndNew = ButtonFactory.createBtnSaveAndNew();
-	btnSave.addActionListener(save());
-	btnSaveAndNew.addActionListener(save());
+	btnSave.addActionListener(saveData());
+	btnSaveAndNew.addActionListener(saveData());
 	btnSaveAndNew.setActionCommand("saveAndNew");
 	JButton btnClose = ButtonFactory.createBtnClose();
 	btnClose.addActionListener(e -> closeWindow());
@@ -188,7 +188,7 @@ public class ExpensesForm extends BasicForm {
 	return builder.getPanel();
     }
 
-    private ActionListener save() {
+    private ActionListener saveData() {
 	return new ActionListener() {
 
 	    @Override

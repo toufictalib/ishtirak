@@ -183,7 +183,8 @@ public class ContractForm extends BasicForm {
 	return builder.getPanel();
     }
     
-    private Optional<List<String>> validateInputs() {
+    @Override
+    protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
 	
 	if (comboBundles.getValue() == null) {

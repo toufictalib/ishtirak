@@ -149,7 +149,8 @@ public class EngineForm extends BasicForm {
 	}
     }
 
-    private Optional<List<String>> validateInputs() {
+    @Override
+    protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
 	if (txtName.getText().isEmpty()) {
 	    errors.add(error("value.missing", "engine.form.name"));

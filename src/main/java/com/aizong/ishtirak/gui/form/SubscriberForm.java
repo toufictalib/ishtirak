@@ -1,8 +1,6 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +13,6 @@ import javax.swing.UIManager;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
-import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
-import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Subscriber;
@@ -127,57 +123,8 @@ public class SubscriberForm extends BasicForm {
 	builder.append(message("subsriber.form.email"), txtEmail);
 	builder.appendSeparator();
 
-	JButton btnSave = ButtonFactory.createBtnSave();
-	btnSave.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		
-		Optional<List<String>> validateInputs = validateInputs();
-		if (validateInputs.isPresent()) {
-		    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
-		    return;
-		}
-		
-		if (subscriber == null) {
-		    subscriber = new Subscriber();
-		}
-
-		subscriber.setName(txtName.getText());
-		subscriber.setLastName(txtLastName.getText());
-		subscriber.setFatherName(txtFatherName.getText());
-		subscriber.setIdentifier(txtIdentifier.getText());
-
-		SubscriberInformation information = new SubscriberInformation();
-		if (subscriber != null && subscriber.getInformation() != null) {
-		    information.setId(subscriber.getInformation().getId());
-		}
-		information.setVillageId(comboVillages.getValue().getId());
-		information.setRegion(txtRegion.getText());
-		information.setDetailedAddress(txtAddress.getText());
-		information.setLandLine(txtLandLine.getText());
-		information.setMainPhone(txtPhone1.getText());
-		information.setAlternativePhone(txtPhone2.getText());
-		information.setEmail(txtEmail.getText());
-
-		subscriber.setInformation(information);
-
-		ServiceProvider.get().getSubscriberService().saveSubscriber(subscriber);
-		closeWindow();
-		if (callback != null) {
-		    callback.onSuccess(subscriber);
-		}
-	    }
-	});
-	JButton btnClose = ButtonFactory.createBtnClose();
-	btnClose.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		closeWindow();
-
-	    }
-	});
+	JButton btnSave = btnSave();
+	JButton btnClose = btnClose();
 
 	if (mode == Mode.VIEW) {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
@@ -187,7 +134,8 @@ public class SubscriberForm extends BasicForm {
 	return builder.getPanel();
     }
 
-    private Optional<List<String>> validateInputs() {
+    @Override
+    protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
 	if (txtName.getText().isEmpty()) {
 	    errors.add(error("value.missing", "subsriber.form.name"));
@@ -215,6 +163,39 @@ public class SubscriberForm extends BasicForm {
     @Override
     protected String getLayoutSpecs() {
 	return "right:pref, 4dlu, fill:125dlu:grow";
+    }
+
+    @Override
+    protected void save() {
+	if (subscriber == null) {
+	    subscriber = new Subscriber();
+	}
+
+	subscriber.setName(txtName.getText());
+	subscriber.setLastName(txtLastName.getText());
+	subscriber.setFatherName(txtFatherName.getText());
+	subscriber.setIdentifier(txtIdentifier.getText());
+
+	SubscriberInformation information = new SubscriberInformation();
+	if (subscriber != null && subscriber.getInformation() != null) {
+	    information.setId(subscriber.getInformation().getId());
+	}
+	information.setVillageId(comboVillages.getValue().getId());
+	information.setRegion(txtRegion.getText());
+	information.setDetailedAddress(txtAddress.getText());
+	information.setLandLine(txtLandLine.getText());
+	information.setMainPhone(txtPhone1.getText());
+	information.setAlternativePhone(txtPhone2.getText());
+	information.setEmail(txtEmail.getText());
+
+	subscriber.setInformation(information);
+
+	ServiceProvider.get().getSubscriberService().saveSubscriber(subscriber);
+	closeWindow();
+	if (callback != null) {
+	    callback.onSuccess(subscriber);
+	}
+	
     }
 
 }

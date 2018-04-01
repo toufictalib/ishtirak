@@ -1,7 +1,15 @@
 package com.aizong.ishtirak.common.form;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Optional;
 
+import javax.swing.JButton;
+
+import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -58,7 +66,47 @@ public abstract class BasicForm extends BasicPanel {
 	builder.setLeftToRight(false);
 	return builder;
     }
+    
+    protected JButton btnSave() {
+	JButton btnSave = ButtonFactory.createBtnSave();
+	btnSave.addActionListener(new ActionListener() {
 
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		Optional<List<String>> validateInputs = validateInputs();
+		if (validateInputs.isPresent()) {
+		    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
+		    return;
+		}
+
+		save();
+
+	    }
+	});
+	return btnSave;
+    }
+    
+    protected JButton btnClose() {
+	JButton btnClose = ButtonFactory.createBtnClose();
+	btnClose.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		closeWindow();
+
+	    }
+	});
+	return btnClose;
+    }
+    
+    protected void save() {
+	
+    }
+    
+    protected Optional<List<String>> validateInputs(){
+	return Optional.empty();
+    }
+    
     protected abstract Component buildPanel(DefaultFormBuilder builder);
 
     protected abstract String getLayoutSpecs();
