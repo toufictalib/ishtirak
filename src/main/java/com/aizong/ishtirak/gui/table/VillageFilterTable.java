@@ -25,7 +25,7 @@ public  class VillageFilterTable extends CommonFilterTable {
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
 		WindowUtils.createDialog(owner,
-			ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.add"),
+			message("village.form.add"),
 			new VillageForm(Mode.NEW, new SavingCallback() {
 
 			    @Override
@@ -42,7 +42,7 @@ public  class VillageFilterTable extends CommonFilterTable {
 		Village subscriber = ServiceProvider.get().getSubscriberService().getVillageById(id);
 		if (subscriber != null) {
 		    WindowUtils.createDialog(owner,
-			    ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.view"),
+			    message("village.form.view"),
 			    new VillageForm(Mode.VIEW, subscriber, null));
 		}
 	    }
@@ -52,8 +52,7 @@ public  class VillageFilterTable extends CommonFilterTable {
 		Village subscriber = ServiceProvider.get().getSubscriberService().getVillageById(id);
 		if (subscriber != null) {
 		    WindowUtils.createDialog(owner,
-			    ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.edit",
-				    subscriber.getName()),
+			    message("village.form.edit"),
 			    new VillageForm(Mode.UPDATE, subscriber, new SavingCallback() {
 
 				@Override
@@ -68,7 +67,7 @@ public  class VillageFilterTable extends CommonFilterTable {
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
 		boolean yes = MessageUtils.showConfirmationMessage(owner,
-			ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.delete"), "حذف");
+			message("deleteRow.confirmation"), "delete");
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
@@ -86,8 +85,7 @@ public  class VillageFilterTable extends CommonFilterTable {
 
     @Override
     protected String getAddTooltip() {
-	// TODO Auto-generated method stub
-	return null;
+	return   message("village.form.add");
     }
 
    

@@ -116,7 +116,9 @@ public class MainFrame extends JRibbonFrame {
 
 	JideButton btnEngineManagement = button("إدارة المولدات", "48px-Crystal_Clear_app_error.png");
 	btnEngineManagement.addActionListener(e -> {
-	    openWindow(e.getActionCommand(), new EngineFitlerTable(e.getActionCommand()));
+	    JPanel innerPanel = new EngineFitlerTable(e.getActionCommand());
+	    innerPanel.setPreferredSize(ComponentUtils.getDimension(90, 90));
+	    openWindow(e.getActionCommand(),innerPanel );
 	});
 	JideButton btnVillage = button("إدارة القرى", "48px-Crystal_Clear_app_ksame.png");
 	btnVillage.addActionListener(e -> {

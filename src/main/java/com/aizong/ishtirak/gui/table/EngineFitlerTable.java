@@ -23,7 +23,7 @@ public class EngineFitlerTable extends CommonFilterTable {
 	    
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
-		WindowUtils.createDialog(owner, "مولد جديد", new EngineForm(Mode.NEW, new SavingCallback() {
+		WindowUtils.createDialog(owner, message("engine.form.new"), new EngineForm(Mode.NEW, new SavingCallback() {
 
 		    @Override
 		    public void onSuccess(Object o) {
@@ -38,7 +38,7 @@ public class EngineFitlerTable extends CommonFilterTable {
 	    public void view(Window owner, Long id) {
 		Engine engine = ServiceProvider.get().getSubscriberService().getEngineById(id);
 		if (engine != null) {
-		    WindowUtils.createDialog(owner, "عرض المولد", new EngineForm(Mode.VIEW, engine, null));
+		    WindowUtils.createDialog(owner, message("engine.form.view"), new EngineForm(Mode.VIEW, engine, null));
 		}
 	    }
 
@@ -46,7 +46,7 @@ public class EngineFitlerTable extends CommonFilterTable {
 	    public void edit(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
 		Engine engine = ServiceProvider.get().getSubscriberService().getEngineById(id);
 		if (engine != null) {
-		    WindowUtils.createDialog(owner, " تعديل المولد " + engine.getName(),
+		    WindowUtils.createDialog(owner, message("engine.form.edit"),
 			    new EngineForm(Mode.UPDATE, engine, new SavingCallback() {
 
 				@Override
@@ -60,7 +60,8 @@ public class EngineFitlerTable extends CommonFilterTable {
 
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		boolean yes = MessageUtils.showConfirmationMessage(owner, "هل تريد حذف هذا القيد؟", "حذف");
+		boolean yes = MessageUtils.showConfirmationMessage(owner, message("deleteRow.confirmation"),
+			message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
@@ -78,6 +79,5 @@ public class EngineFitlerTable extends CommonFilterTable {
 
     @Override
     protected String getAddTooltip() {
-	// TODO Auto-generated method stub
-	return null;
+	return message("engine.form.add");
     }}

@@ -1,20 +1,21 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DoubleTextField;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Address;
@@ -63,17 +64,14 @@ public class EngineForm extends BasicForm {
 	}
 
 	txtName.setText(engine.getName());
-	txtKva.setText(engine.getKva() + "");
-	txtDieselPerHour.setText(engine.getDieselConsumption() + "");
+	txtKva.setValue(engine.getKva());
+	txtDieselPerHour.setValue(engine.getDieselConsumption());
 
 	if (engine.getAddress() != null) {
 	    comboVillages.setSelectedItem(new Village(engine.getAddress().getVillageId()));
 
 	    txtRegion.setText(engine.getAddress().getRegion());
 	    txtAddress.setText(engine.getAddress().getDetailedAddress());
-	    txtAddress.setLineWrap(true);
-
-	    txtAddress.setBorder(UIManager.getBorder("TextField.border"));
 
 	}
     }
@@ -86,10 +84,8 @@ public class EngineForm extends BasicForm {
 
 	comboVillages = new ExCombo<>(ServiceProvider.get().getSubscriberService().getVillages());
 	txtRegion = new JTextField();
-	txtAddress = new JTextArea(2, 1);
-	txtAddress.setLineWrap(true);
+	txtAddress = ComponentUtils.createTextArea();
 
-	txtAddress.setBorder(UIManager.getBorder("TextField.border"));
     }
 
     @Override
@@ -106,42 +102,9 @@ public class EngineForm extends BasicForm {
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
-	btnSave.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-
-		if (engine == null) {
-		    engine = new Engine();
-		}
-
-		engine.setName(txtName.getText());
-		engine.setKva(txtKva.getValue());
-		engine.setDieselConsumption(txtDieselPerHour.getValue());
-
-		Address address = new Address();
-		address.setVillageId(comboVillages.getValue().getId());
-		address.setRegion(txtRegion.getText());
-		address.setDetailedAddress(txtAddress.getText());
-
-		engine.setAddress(address);
-
-		ServiceProvider.get().getSubscriberService().saveEngine(engine);
-		closeWindow();
-		if (callback != null) {
-		    callback.onSuccess(engine);
-		}
-	    }
-	});
+	btnSave.addActionListener(e->btnSaveAction());
 	JButton btnClose = ButtonFactory.createBtnClose();
-	btnClose.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		closeWindow();
-
-	    }
-	});
+	btnClose.addActionListener(e->closeWindow());
 
 	if (mode == Mode.VIEW) {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
@@ -154,6 +117,49 @@ public class EngineForm extends BasicForm {
     @Override
     protected String getLayoutSpecs() {
 	return "right:pref, 4dlu, fill:100dlu:grow";
+    }
+
+    private void btnSaveAction() {
+	if (engine == null) {
+	    engine = new Engine();
+	}
+
+	List<String> errors = new ArrayList<>();
+	if (txtName.getText().isEmpty()) {
+	    errors.add(error("value.missing", "engine.form.name"));
+	}
+	if (comboVillages.getValue() == null) {
+	    errors.add(error("value.missing", "subsriber.form.village"));
+	}
+	if (txtRegion.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.region"));
+	}
+
+	if (txtAddress.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.address"));
+	}
+
+	if (!errors.isEmpty()) {
+	    MessageUtils.showWarningMessage(getOwner(), String.join("\n", errors));
+	    return;
+	}
+
+	engine.setName(txtName.getText());
+	engine.setKva(txtKva.getValue());
+	engine.setDieselConsumption(txtDieselPerHour.getValue());
+
+	Address address = new Address();
+	address.setVillageId(comboVillages.getValue().getId());
+	address.setRegion(txtRegion.getText());
+	address.setDetailedAddress(txtAddress.getText());
+
+	engine.setAddress(address);
+
+	ServiceProvider.get().getSubscriberService().saveEngine(engine);
+	closeWindow();
+	if (callback != null) {
+	    callback.onSuccess(engine);
+	}
     }
 
 }

@@ -33,6 +33,10 @@ public abstract class BasicPanel extends JPanel {
 	}
     }
 
+    protected static String error(String code, String codeField) {
+	return message(code, message(codeField));
+    }
+    
     protected static String message(String code, Object... params) {
 	if(message!=null) {
 	    return message.getMessage(code, params);

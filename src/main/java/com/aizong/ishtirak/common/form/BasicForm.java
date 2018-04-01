@@ -4,7 +4,6 @@ import java.awt.Component;
 
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
