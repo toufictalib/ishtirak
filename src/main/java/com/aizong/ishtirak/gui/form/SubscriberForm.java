@@ -138,23 +138,23 @@ public class SubscriberForm extends BasicForm {
     protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
 	if (txtName.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.name"));
+	    errors.add(errorPerfix("subsriber.form.name"));
 	}
 	if (txtFatherName.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.lastName"));
+	    errors.add(errorPerfix("subsriber.form.lastName"));
 	}
 	if (txtPhone1.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.mainPhone"));
+	    errors.add(errorPerfix("subsriber.form.mainPhone"));
 	}
 	if (comboVillages.getValue() == null) {
-	    errors.add(error("value.missing", "subsriber.form.village"));
+	    errors.add(errorPerfix("subsriber.form.village"));
 	}
 	if (txtRegion.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.region"));
+	    errors.add(errorPerfix("subsriber.form.region"));
 	}
 
 	if (txtAddress.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.address"));
+	    errors.add(errorPerfix("subsriber.form.address"));
 	}
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 

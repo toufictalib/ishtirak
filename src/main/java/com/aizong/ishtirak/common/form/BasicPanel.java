@@ -34,11 +34,7 @@ public abstract class BasicPanel extends JPanel {
     }
 
     protected static String errorPerfix(String codeField) {
-	return error("value.missing", codeField);
-    }
-    
-    protected static String error(String code, String codeField) {
-	return message(code, message(codeField));
+	return message("value.missing", message(codeField));
     }
     
     protected static String message(String code, Object... params) {

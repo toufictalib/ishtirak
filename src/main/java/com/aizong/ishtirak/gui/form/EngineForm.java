@@ -153,17 +153,17 @@ public class EngineForm extends BasicForm {
     protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
 	if (txtName.getText().isEmpty()) {
-	    errors.add(error("value.missing", "engine.form.name"));
+	    errors.add(errorPerfix("engine.form.name"));
 	}
 	if (comboVillages.getValue() == null) {
-	    errors.add(error("value.missing", "subsriber.form.village"));
+	    errors.add(errorPerfix("subsriber.form.village"));
 	}
 	if (txtRegion.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.region"));
+	    errors.add(errorPerfix("subsriber.form.region"));
 	}
 
 	if (txtAddress.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.address"));
+	    errors.add(errorPerfix("subsriber.form.address"));
 	}
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 

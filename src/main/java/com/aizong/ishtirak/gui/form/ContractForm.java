@@ -188,26 +188,26 @@ public class ContractForm extends BasicForm {
 	List<String> errors = new ArrayList<>();
 	
 	if (comboBundles.getValue() == null) {
-	    errors.add(error("value.missing", "contract.form.bundle"));
+	    errors.add(errorPerfix("contract.form.bundle"));
 	}
 	
 	if ((comboBundles.getValue() instanceof SubscriptionBundle) && txtCounterId.getText().isEmpty()) {
-	    errors.add(error("value.missing", "contract.form.counter"));
+	    errors.add(errorPerfix("contract.form.counter"));
 	}
 	
 	if (comboEngines.getValue() == null) {
-	    errors.add(error("value.missing", "contract.form.engine"));
+	    errors.add(errorPerfix("contract.form.engine"));
 	}
 	
 	if (comboVillages.getValue() == null) {
-	    errors.add(error("value.missing", "subsriber.form.village"));
+	    errors.add(errorPerfix("subsriber.form.village"));
 	}
 	if (txtRegion.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.region"));
+	    errors.add(errorPerfix("subsriber.form.region"));
 	}
 
 	if (txtAddress.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.address"));
+	    errors.add(errorPerfix("subsriber.form.address"));
 	}
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 

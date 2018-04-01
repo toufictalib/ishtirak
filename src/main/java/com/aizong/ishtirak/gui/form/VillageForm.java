@@ -3,8 +3,6 @@ package com.aizong.ishtirak.gui.form;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -75,7 +73,7 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		if (txtName.getText().isEmpty()) {
-		    MessageUtils.showWarningMessage(getOwner(), error("value.missing", "village.form.name"));
+		    MessageUtils.showWarningMessage(getOwner(), errorPerfix("village.form.name"));
 		    return;
 		}
 		
