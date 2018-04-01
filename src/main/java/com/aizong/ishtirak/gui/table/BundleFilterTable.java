@@ -24,7 +24,7 @@ public abstract class BundleFilterTable extends CommonFilterTable {
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
 		WindowUtils.createDialog(owner,
-			ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.add"),
+			message("bundle.form.new"),
 			new BundleForm(Mode.NEW, new SavingCallback() {
 
 			    @Override
@@ -41,7 +41,7 @@ public abstract class BundleFilterTable extends CommonFilterTable {
 		Bundle subscriber = ServiceProvider.get().getSubscriberService().getBundleById(id);
 		if (subscriber != null) {
 		    WindowUtils.createDialog(owner,
-			    ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.view"),
+			    message("bundle.report.buttons.view"),
 			    new BundleForm(Mode.VIEW, subscriber, null, monthly));
 		}
 	    }
@@ -51,7 +51,7 @@ public abstract class BundleFilterTable extends CommonFilterTable {
 		Bundle subscriber = ServiceProvider.get().getSubscriberService().getBundleById(id);
 		if (subscriber != null) {
 		    WindowUtils.createDialog(owner,
-			    ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.edit",
+			    message("bundle.report.buttons.edit",
 				    subscriber.getName()),
 			    new BundleForm(Mode.UPDATE, subscriber, new SavingCallback() {
 
@@ -67,7 +67,7 @@ public abstract class BundleFilterTable extends CommonFilterTable {
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
 		boolean yes = MessageUtils.showConfirmationMessage(owner,
-			ServiceProvider.get().getMessage().getMessage("bundle.report.buttons.delete"), "حذف");
+			message("bundle.report.buttons.delete"), message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
@@ -78,5 +78,8 @@ public abstract class BundleFilterTable extends CommonFilterTable {
 	});
     }
 
-   
+   @Override
+protected String getAddTooltip() {
+    return message("bundle.form.add");
+}
 }

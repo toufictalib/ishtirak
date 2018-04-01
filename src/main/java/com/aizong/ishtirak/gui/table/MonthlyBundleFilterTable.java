@@ -16,10 +16,5 @@ public class MonthlyBundleFilterTable extends BundleFilterTable {
 	return ServiceProvider.get().getReportServiceImpl().getMonthlyBundles(true);
     }
 
-    @Override
-    protected String getAddTooltip() {
-	// TODO Auto-generated method stub
-	return null;
-    }
 
 }
