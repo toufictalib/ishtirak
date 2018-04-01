@@ -3,6 +3,8 @@ package com.aizong.ishtirak.gui.form;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -10,6 +12,7 @@ import javax.swing.JTextField;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
@@ -61,9 +64,9 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
-	builder.appendSeparator("القرية");
+	builder.appendSeparator(message("village.form.seperator"));
 	builder.setDefaultDialogBorder();
-	builder.append("الإسم*", txtName);
+	builder.append(message("village.form.name"), txtName);
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
@@ -71,6 +74,12 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
+		if (txtName.getText().isEmpty()) {
+		    MessageUtils.showWarningMessage(getOwner(), error("value.missing", "village.form.name"));
+		    return;
+		}
+		
+		
 		Village village = oldVillage == null ? new Village() : oldVillage;
 		village.setName(txtName.getText());
 
@@ -80,6 +89,8 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 		    callback.onSuccess(village);
 		}
 	    }
+
+	   
 	});
 	JButton btnClose = ButtonFactory.createBtnClose();
 	btnClose.addActionListener(new ActionListener() {

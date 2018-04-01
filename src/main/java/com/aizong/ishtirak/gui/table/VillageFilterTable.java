@@ -67,7 +67,7 @@ public  class VillageFilterTable extends CommonFilterTable {
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
 		boolean yes = MessageUtils.showConfirmationMessage(owner,
-			message("deleteRow.confirmation"), "delete");
+			message("deleteRow.confirmation"), message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);

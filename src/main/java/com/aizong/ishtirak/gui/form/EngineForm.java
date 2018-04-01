@@ -3,6 +3,7 @@ package com.aizong.ishtirak.gui.form;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -124,26 +125,12 @@ public class EngineForm extends BasicForm {
 	    engine = new Engine();
 	}
 
-	List<String> errors = new ArrayList<>();
-	if (txtName.getText().isEmpty()) {
-	    errors.add(error("value.missing", "engine.form.name"));
-	}
-	if (comboVillages.getValue() == null) {
-	    errors.add(error("value.missing", "subsriber.form.village"));
-	}
-	if (txtRegion.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.region"));
-	}
-
-	if (txtAddress.getText().isEmpty()) {
-	    errors.add(error("value.missing", "subsriber.form.address"));
-	}
-
-	if (!errors.isEmpty()) {
-	    MessageUtils.showWarningMessage(getOwner(), String.join("\n", errors));
+	Optional<List<String>> validateInputs = validateInputs();
+	if (validateInputs.isPresent()) {
+	    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
 	    return;
 	}
-
+	
 	engine.setName(txtName.getText());
 	engine.setKva(txtKva.getValue());
 	engine.setDieselConsumption(txtDieselPerHour.getValue());
@@ -160,6 +147,25 @@ public class EngineForm extends BasicForm {
 	if (callback != null) {
 	    callback.onSuccess(engine);
 	}
+    }
+
+    private Optional<List<String>> validateInputs() {
+	List<String> errors = new ArrayList<>();
+	if (txtName.getText().isEmpty()) {
+	    errors.add(error("value.missing", "engine.form.name"));
+	}
+	if (comboVillages.getValue() == null) {
+	    errors.add(error("value.missing", "subsriber.form.village"));
+	}
+	if (txtRegion.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.region"));
+	}
+
+	if (txtAddress.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.address"));
+	}
+	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+
     }
 
 }
