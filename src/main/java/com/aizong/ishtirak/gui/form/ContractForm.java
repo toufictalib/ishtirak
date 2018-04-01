@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,6 +18,7 @@ import javax.swing.UIManager;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Address;
@@ -134,7 +138,12 @@ public class ContractForm extends BasicForm {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-
+		Optional<List<String>> validateInputs = validateInputs();
+		if (validateInputs.isPresent()) {
+		    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
+		    return;
+		}
+		
 		contract = contract == null ? new Contract() : contract;
 		contract.setActive(cbActive.isSelected());
 
@@ -172,6 +181,35 @@ public class ContractForm extends BasicForm {
 	}
 	
 	return builder.getPanel();
+    }
+    
+    private Optional<List<String>> validateInputs() {
+	List<String> errors = new ArrayList<>();
+	
+	if (comboBundles.getValue() == null) {
+	    errors.add(error("value.missing", "contract.form.bundle"));
+	}
+	
+	if ((comboBundles.getValue() instanceof SubscriptionBundle) && txtCounterId.getText().isEmpty()) {
+	    errors.add(error("value.missing", "contract.form.counter"));
+	}
+	
+	if (comboEngines.getValue() == null) {
+	    errors.add(error("value.missing", "contract.form.engine"));
+	}
+	
+	if (comboVillages.getValue() == null) {
+	    errors.add(error("value.missing", "subsriber.form.village"));
+	}
+	if (txtRegion.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.region"));
+	}
+
+	if (txtAddress.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.address"));
+	}
+	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+
     }
 
     @Override

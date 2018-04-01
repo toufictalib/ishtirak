@@ -3,6 +3,9 @@ package com.aizong.ishtirak.gui.form;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
@@ -13,6 +16,7 @@ import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Subscriber;
@@ -128,7 +132,13 @@ public class SubscriberForm extends BasicForm {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-
+		
+		Optional<List<String>> validateInputs = validateInputs();
+		if (validateInputs.isPresent()) {
+		    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
+		    return;
+		}
+		
 		if (subscriber == null) {
 		    subscriber = new Subscriber();
 		}
@@ -177,6 +187,31 @@ public class SubscriberForm extends BasicForm {
 	return builder.getPanel();
     }
 
+    private Optional<List<String>> validateInputs() {
+	List<String> errors = new ArrayList<>();
+	if (txtName.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.name"));
+	}
+	if (txtFatherName.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.lastName"));
+	}
+	if (txtPhone1.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.mainPhone"));
+	}
+	if (comboVillages.getValue() == null) {
+	    errors.add(error("value.missing", "subsriber.form.village"));
+	}
+	if (txtRegion.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.region"));
+	}
+
+	if (txtAddress.getText().isEmpty()) {
+	    errors.add(error("value.missing", "subsriber.form.address"));
+	}
+	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+
+    }
+    
     @Override
     protected String getLayoutSpecs() {
 	return "right:pref, 4dlu, fill:125dlu:grow";
