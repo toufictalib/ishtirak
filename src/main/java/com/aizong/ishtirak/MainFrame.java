@@ -33,6 +33,7 @@ import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
 import com.aizong.ishtirak.gui.table.EngineFitlerTable;
 import com.aizong.ishtirak.gui.table.ExpensesFitlerTable;
 import com.aizong.ishtirak.gui.table.MonthlyBundleFilterTable;
+import com.aizong.ishtirak.gui.table.OutExpensesFitlerTable;
 import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
@@ -135,6 +136,11 @@ public class MainFrame extends JRibbonFrame {
 	btnReports.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
 	});
+	
+	JideButton btnOutOfExpenses = button("مسحوبات المدير والموظفين", "48px-Crystal_Clear_app_kthememgr.png");
+	btnOutOfExpenses.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
+	});
 
 	setTitle("Simple example");
 
@@ -152,6 +158,7 @@ public class MainFrame extends JRibbonFrame {
 	builder.append(btnReceipts);
 	builder.append(btnMonthlyReports);
 	builder.append(btnReports);
+	builder.append(btnOutOfExpenses);
 
 	try {
 	    ExampleRibbonFrame.createApplicationRibbon(getRibbon());

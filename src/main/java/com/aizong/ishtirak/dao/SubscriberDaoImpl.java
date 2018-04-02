@@ -243,4 +243,15 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 
     }
 
+    @Override
+    public void deleteOutExpenses(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from out_expenses_log where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
+
 }

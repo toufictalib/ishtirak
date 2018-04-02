@@ -7,7 +7,9 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getSubscriptionsIncomeReport(Date startDate, Date endDate);
     
-    List<Object[]> getTransactions(Date startDate, Date endDate);
+    List<Object[]> getExpenses(Date startDate, Date endDate);
+
+    List<Object[]> getOutExpenses(Date startDate, Date endDate);
 
     
 }

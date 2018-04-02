@@ -45,7 +45,7 @@ public class ReportButtonsPanel extends BasicForm {
 	        
 	        @Override
 	        public ReportTableModel getReportTableModel() {
-	    	return ServiceProvider.get().getReportServiceImpl().getTransactions();
+	    	return ServiceProvider.get().getReportServiceImpl().getExpenses();
 	        }
 	    });
 	   

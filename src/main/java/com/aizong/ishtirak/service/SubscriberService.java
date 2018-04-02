@@ -11,6 +11,7 @@ import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.ExpensesLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
+import com.aizong.ishtirak.model.OutExpensesLog;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.Village;
@@ -98,5 +99,11 @@ public interface SubscriberService {
     CounterHistory getCounterHistoryByContractId(Long contractId);
     
     boolean login(String user, char[] password);
+
+    void saveOutExpenses(OutExpensesLog outExpensesLog);
+
+    OutExpensesLog getOutExpensesById(Long id);
+
+    void deleteOutExpenses(List<Long> ids);
     
 }

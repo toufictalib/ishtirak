@@ -43,8 +43,9 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Object[]> getTransactions(Date startDate, Date endDate) {
+    public List<Object[]> getExpenses(Date startDate, Date endDate) {
 	String sql = "select m.id, e.name 'engine', m.amount, m.description,m.maintenace_type,m.insert_date "
 		+ "from expenses_log m "
 		+ "left join engine e on e.id = m.engine "
@@ -53,6 +54,26 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	createSQLQuery.setParameter("startDate",startDate).setParameter("endDate", endDate);
 	createSQLQuery.addScalar("id",StandardBasicTypes.LONG).
 	addScalar("engine",StandardBasicTypes.STRING).
+	addScalar("amount",StandardBasicTypes.DOUBLE).
+	addScalar("description",StandardBasicTypes.STRING).
+	addScalar("maintenace_type",StandardBasicTypes.STRING).
+	addScalar("insert_date",StandardBasicTypes.DATE);
+	return createSQLQuery.list();
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Object[]> getOutExpenses(Date startDate, Date endDate) {
+	String sql = "select m.id, e.name 'Employee Name',e.last_name 'Employee Last Name', m.amount, m.description,m.maintenace_type,m.insert_date "
+		+ "from out_expenses_log m "
+		+ "left join employee e on e.id = m.employee "
+		+ "where m.insert_date >=:startDate and m.insert_date <=:endDate order by m.insert_date desc";
+	NativeQuery<Object[]> createSQLQuery = getsession().createNativeQuery(sql);
+	createSQLQuery.setParameter("startDate",startDate).setParameter("endDate", endDate);
+	createSQLQuery.addScalar("id",StandardBasicTypes.LONG).
+	addScalar("Employee Name",StandardBasicTypes.STRING).
+	addScalar("Employee Last Name",StandardBasicTypes.STRING).
 	addScalar("amount",StandardBasicTypes.DOUBLE).
 	addScalar("description",StandardBasicTypes.STRING).
 	addScalar("maintenace_type",StandardBasicTypes.STRING).

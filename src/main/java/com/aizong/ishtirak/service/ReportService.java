@@ -16,5 +16,7 @@ public interface ReportService {
 
     ReportTableModel getSubscriptionsIncomeReport();
 
-    ReportTableModel getTransactions();
+    ReportTableModel getExpenses();
+
+    ReportTableModel getOutExpenses();
 }

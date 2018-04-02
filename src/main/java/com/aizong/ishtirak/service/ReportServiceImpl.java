@@ -198,9 +198,9 @@ public class ReportServiceImpl implements ReportService {
     }
     
     @Override
-    public ReportTableModel getTransactions() {
+    public ReportTableModel getExpenses() {
 	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	List<Object[]> rows = reportDao.getTransactions(startEndDateOfCurrentMonth.getStartDate(),startEndDateOfCurrentMonth.getEndDate());
+	List<Object[]> rows = reportDao.getExpenses(startEndDateOfCurrentMonth.getStartDate(),startEndDateOfCurrentMonth.getEndDate());
 
 	Object value = null;
 	for(Object[] row:rows) {
@@ -213,6 +213,26 @@ public class ReportServiceImpl implements ReportService {
 	
 	
 	Class<?>[] clazzes = { Long.class, String.class, Double.class, String.class, String.class, Date.class };
+
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+
+    @Override
+    public ReportTableModel getOutExpenses() {
+	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	List<Object[]> rows = reportDao.getOutExpenses(startEndDateOfCurrentMonth.getStartDate(),startEndDateOfCurrentMonth.getEndDate());
+
+	Object value = null;
+	for(Object[] row:rows) {
+	    value = row[4];
+	    if(value!=null) {
+		row[4] = message.getEnumLabel(value.toString(), ExpensesType.class);
+	    }
+	}
+	String[] cols = { "maintenanceId", "withdrawerName","withdrawerLastName", "amount", "description", "maintenanceType", "insertDate" };
+	
+	
+	Class<?>[] clazzes = { Long.class, String.class,String.class, Double.class, String.class, String.class, Date.class };
 
 	return new ReportTableModel(cols, rows, clazzes);
     }

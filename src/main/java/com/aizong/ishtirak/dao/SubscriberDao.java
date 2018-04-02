@@ -49,4 +49,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     void updateCounterHistory(CounterHistory history);
 
     User getUserByName(String user);
+
+    void deleteOutExpenses(List<Long> ids);
 }

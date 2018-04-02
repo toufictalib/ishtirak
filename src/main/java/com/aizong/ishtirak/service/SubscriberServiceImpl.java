@@ -32,6 +32,7 @@ import com.aizong.ishtirak.model.EmployeeType;
 import com.aizong.ishtirak.model.Engine;
 import com.aizong.ishtirak.model.ExpensesLog;
 import com.aizong.ishtirak.model.MonthlyBundle;
+import com.aizong.ishtirak.model.OutExpensesLog;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.SubscriptionHistory;
@@ -316,6 +317,16 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 
     }
+    
+    @Override
+    public void saveOutExpenses(OutExpensesLog outExpensesLog) {
+	if (outExpensesLog.getId() != null) {
+	    subscriberDao.update(outExpensesLog);
+	} else {
+	    subscriberDao.save(Arrays.asList(outExpensesLog));
+	}
+
+    }
 
     @Override
     public List<Employee> getEmployees() {
@@ -396,6 +407,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     public ExpensesLog getExpensesById(Long id) {
 	return subscriberDao.find(ExpensesLog.class, id);
     }
+    
+    @Override
+    public OutExpensesLog getOutExpensesById(Long id) {
+	return subscriberDao.find(OutExpensesLog.class, id);
+    }
 
     @Override
     public void deleteExpenses(List<Long> ids) {
@@ -408,5 +424,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 	User user = subscriberDao.getUserByName(userName);
 	Optional<String> hashPass = PasswordUtils.hashPass(new String(password));
 	return user!=null && hashPass.isPresent() && hashPass.get().equals(user.getPassword());
+    }
+
+    @Override
+    public void deleteOutExpenses(List<Long> ids) {
+	subscriberDao.deleteOutExpenses(ids);
+	
     }
 }

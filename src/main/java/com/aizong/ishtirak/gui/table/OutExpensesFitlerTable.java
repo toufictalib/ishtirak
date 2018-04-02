@@ -10,20 +10,20 @@ import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
-import com.aizong.ishtirak.gui.form.ExpensesForm;
+import com.aizong.ishtirak.gui.form.OutExpensesForm;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
-import com.aizong.ishtirak.model.ExpensesLog;
+import com.aizong.ishtirak.model.OutExpensesLog;
 
 @SuppressWarnings("serial")
-public class ExpensesFitlerTable extends CommonFilterTable {
+public class OutExpensesFitlerTable extends CommonFilterTable {
 
-    public ExpensesFitlerTable(String title) {
+    public OutExpensesFitlerTable(String title) {
 	super(title, new MyTableListener() {
 	    
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
-		WindowUtils.createDialog(owner, message("expenses.form.new"), new ExpensesForm(Mode.NEW,null, new SavingCallback() {
+		WindowUtils.createDialog(owner, message("expenses.form.new"), new OutExpensesForm(Mode.NEW,null, new SavingCallback() {
 
 		    @Override
 		    public void onSuccess(Object o) {
@@ -36,18 +36,18 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
 	    @Override
 	    public void view(Window owner, Long id) {
-		ExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
+		OutExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getOutExpensesById(id);
 		if (expenseLog != null) {
-		    WindowUtils.createDialog(owner, message("expenses.form.view"), new ExpensesForm(Mode.VIEW, expenseLog, null));
+		    WindowUtils.createDialog(owner, message("expenses.form.view"), new OutExpensesForm(Mode.VIEW, expenseLog, null));
 		}
 	    }
 
 	    @Override
 	    public void edit(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		ExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getExpensesById(id);
+		OutExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getOutExpensesById(id);
 		if (expenseLog != null) {
 		    WindowUtils.createDialog(owner, message("expenses.form.edit"),
-			    new ExpensesForm(Mode.UPDATE, expenseLog, new SavingCallback() {
+			    new OutExpensesForm(Mode.UPDATE, expenseLog, new SavingCallback() {
 
 				@Override
 				public void onSuccess(Object o) {
@@ -64,7 +64,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
-		    ServiceProvider.get().getSubscriberService().deleteExpenses(ids);
+		    ServiceProvider.get().getSubscriberService().deleteOutExpenses(ids);
 		    refreshTableInterface.refreshTable();
 		}
 	    }
@@ -73,7 +73,7 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
     @Override
     public ReportTableModel getReportTableModel() {
-	return ServiceProvider.get().getReportServiceImpl().getExpenses();
+	return ServiceProvider.get().getReportServiceImpl().getOutExpenses();
     }
 
     @Override
