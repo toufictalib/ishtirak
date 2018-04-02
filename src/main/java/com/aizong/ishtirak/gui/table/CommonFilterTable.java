@@ -137,7 +137,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
 
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs);
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs,"p,p,fill:p:grow,p");
 	builder.setDefaultDialogBorder();
 	
 	builder.appendSeparator(title);

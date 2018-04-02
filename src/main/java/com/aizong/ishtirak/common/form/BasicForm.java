@@ -67,6 +67,13 @@ public abstract class BasicForm extends BasicPanel {
 	return builder;
     }
     
+    public static DefaultFormBuilder createBuilder(String leftToRightSpecs, String rowSpecs) {
+ 	FormLayout layout = new FormLayout(OrientationUtils.flipped(leftToRightSpecs), RowSpec.decodeSpecs(rowSpecs));
+ 	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+ 	builder.setLeftToRight(false);
+ 	return builder;
+     }
+    
     protected JButton btnSave() {
 	JButton btnSave = ButtonFactory.createBtnSave();
 	btnSave.addActionListener(new ActionListener() {

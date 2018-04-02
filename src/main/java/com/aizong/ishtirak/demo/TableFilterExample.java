@@ -1,4 +1,4 @@
-package com.aizong.ishtirak.gui.table.service;
+package com.aizong.ishtirak.demo;
 
 import java.awt.BorderLayout;
 import java.util.Date;
@@ -73,7 +73,9 @@ public class TableFilterExample extends JFrame implements ActionHandler {
         }
         JPanel tablePanel = createGui(modelRows);
         getContentPane().add(tablePanel);
+        filterHeader.setAutoChoices(AutoChoices.ENABLED);
         filterHeader.setTable(table);
+        filterHeader.setRowHeightDelta(10);
 //        filterHeader.setInstantFiltering(false);
     }
 
@@ -107,7 +109,7 @@ public class TableFilterExample extends JFrame implements ActionHandler {
                         TableFilterHeader header,
                         IFilterEditor     editor,
                         TableColumn       tableColumn) {
-                    handleNewColumn(editor, tableColumn);
+                   // handleNewColumn(editor, tableColumn);
                 }
             });
 

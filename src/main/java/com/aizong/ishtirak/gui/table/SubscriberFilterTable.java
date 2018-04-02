@@ -110,18 +110,19 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	JButton btnViewCounterHistory = createEditCounterHistoryBtn(message("counter.form.view"), "view.png", Mode.VIEW);
 
-	String leftToRightSpecs = "fill:p:grow,5dlu,p";
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs);
-	builder.setDefaultDialogBorder();
-
-	builder.appendSeparator(title);
-
 	JPanel panel = new JPanel();
 	panel.add(btnAddContract);
 	panel.add(btnEditContract);
 	panel.add(btnViewContract);
 	panel.add(btnEditCounterHistory);
 	panel.add(btnViewCounterHistory);
+	
+	
+	String leftToRightSpecs = "fill:p:grow,5dlu,p";
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs,"p,p,p,fill:p:grow,p");
+	builder.setDefaultDialogBorder();
+
+	builder.appendSeparator(title);
 
 	builder.append(panel, builder.getColumnCount());
 	builder.append(txtFE, btnAdd);

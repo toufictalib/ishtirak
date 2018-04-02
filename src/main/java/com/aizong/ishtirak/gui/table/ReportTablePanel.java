@@ -18,7 +18,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -31,12 +30,7 @@ import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-import net.coderazzi.filters.examples.utils.AgeCustomChoice;
-import net.coderazzi.filters.examples.utils.CenteredRenderer;
-import net.coderazzi.filters.examples.utils.DateRenderer;
-import net.coderazzi.filters.examples.utils.FlagRenderer;
-import net.coderazzi.filters.examples.utils.TestTableModel;
-import net.coderazzi.filters.gui.IFilterEditor;
+import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
 
 @SuppressWarnings("serial")
@@ -49,6 +43,8 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     protected JTextField txtFE;
     protected JLabel txtRowCount;
     protected JLabel txtTotal;
+
+    private TableFilterHeader filterHeader;
 
     public ReportTablePanel(String title) {
 
@@ -111,34 +107,36 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	});
 
 	txtRowCount = new JLabel();
-	
+
 	txtTotal = new JLabel();
-	
+
+	filterHeader = new TableFilterHeader(table, AutoChoices.ENABLED);
+	filterHeader.setRowHeightDelta(10);
+
     }
 
     private void setTxtRowCount(int row) {
-	txtRowCount.setText("العدد : " + row);
+	txtRowCount.setText(message("table.rowCount", row));
     }
 
     protected JPanel initUI() {
 
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
 
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs);
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs,"p,fill:p:grow,p,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);
 
-	builder.append(txtFE, 3);
+	//builder.append(txtFE, 3);
 
 	JScrollPane scrollPane = new JScrollPane(table);
-	//scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
+	// scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
 	builder.append(scrollPane, 3);
 
-	builder.append(txtRowCount,3);
-	
-	builder.append("المجموع" ,txtTotal);
-	
+	builder.append(txtRowCount, 3);
+
+	builder.append("المجموع", txtTotal);
 
 	return builder.getPanel();
     }
@@ -168,16 +166,16 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	};
 
 	table.setModel(model);
-	/*model.addTableModelListener(new TableModelListener() {
-	    
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                sumAmount(table);
-            }
+	/*
+	 * model.addTableModelListener(new TableModelListener() {
+	 * 
+	 * @Override public void tableChanged(TableModelEvent e) {
+	 * sumAmount(table); }
+	 * 
+	 * 
+	 * });
+	 */
 
-	   
-        });*/
-	
 	sorter.setModel(model);
 	table.setRowSorter(sorter);
 	setTxtRowCount(model.getRowCount());
@@ -185,23 +183,26 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	TableUtils.resizeColumnWidth(table);
 	table.setPreferredScrollableViewportSize(table.getPreferredSize());
+
+	filterHeader.updateUI();
+	filterHeader.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	
-	//sumAmount(table);
+	// sumAmount(table);
     }
 
     @SuppressWarnings("unused")
     private void sumAmount(JTable table) {
 	TableModel model = table.getModel();
 	int numberOfRaw = model.getRowCount();
-        double total = 0;
-        for (int i = 0; i < numberOfRaw; i++) {
-           //if checkbox is checked
-                double value = Double.valueOf(model.getValueAt(i, 5).toString());
-                total += value;
-        }
-        txtTotal.setText(Double.toString(total));
+	double total = 0;
+	for (int i = 0; i < numberOfRaw; i++) {
+	    // if checkbox is checked
+	    double value = Double.valueOf(model.getValueAt(i, 5).toString());
+	    total += value;
+	}
+	txtTotal.setText(Double.toString(total));
     }
-    
+
     private void applyRenderer() {
 	TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
 	column.setMinWidth(150);
@@ -224,44 +225,6 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     public void refreshTable() {
 	fillTable();
 
-    }
-    
-    private void setupHeader(TableFilterHeader header){
-    	IFilterEditor ed = getEditor(header, TestTableModel.COUNTRY, 
-    			new FlagRenderer());
-    	if (ed!=null) ed.setRenderer(new FlagRenderer());
-    	
-    	ed=getEditor(header, TestTableModel.NOTE, null);
-    	if(ed!=null) ed.setEditable(false);
-    	
-    	ed = getEditor(header, TestTableModel.AGE, new CenteredRenderer());
-    	if (ed!=null) ed.setCustomChoices(AgeCustomChoice.getCustomChoices());
-    	
-    	getEditor(header, TestTableModel.DATE, 
-    		new DateRenderer(header.getParserModel().getFormat(Date.class)));
-    	
-	    	header.addFilter(new net.coderazzi.filters.Filter(){
-	    		javax.swing.RowFilter r = 
-	    				javax.swing.RowFilter.regexFilter("J|j");
-	        	@Override public boolean include(Entry entry) {
-	        		return r.include(entry);
-	        	}
-	        });
-    }
-    
-    private IFilterEditor getEditor(TableFilterHeader header, String name, 
-    		TableCellRenderer renderer){
-    	TableColumnModel model = header.getTable().getColumnModel();
-    	for (int i=model.getColumnCount(); --i>=0;){
-    		TableColumn tc = model.getColumn(i);
-    		if (name.equals(tc.getHeaderValue())){
-    			if (renderer!=null){
-    				tc.setCellRenderer(renderer);
-    			}
-    			return header.getFilterEditor(i);
-    		}
-    	}
-    	return null;
     }
 
     public abstract ReportTableModel getReportTableModel();

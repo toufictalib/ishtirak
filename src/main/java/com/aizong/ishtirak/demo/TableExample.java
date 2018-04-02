@@ -1,9 +1,8 @@
-package com.aizong.ishtirak.common.misc.component;
+package com.aizong.ishtirak.demo;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.table.TableCellRenderer;
 public class TableExample extends JFrame
 {
     public TableExample()
@@ -21,8 +20,6 @@ public class TableExample extends JFrame
         };
         //create table with data
         JTable table = new JTable(data, columns);
-        TableCellRenderer renderer = CellRendererManager.getRenderer(Double.class);
-	table.setDefaultRenderer(Double.class, renderer);
         //add the table to the frame
         this.add(new JScrollPane(table));
          
