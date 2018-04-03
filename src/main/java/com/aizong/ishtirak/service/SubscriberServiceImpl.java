@@ -169,18 +169,43 @@ public class SubscriberServiceImpl implements SubscriberService {
 	return subscriberDao.searchSubscribers(criteria);
     }
 
+    
+    
+    /**
+     * save new contact and deactivate old one
+     */
     @Override
-    public void saveContract(Contract contract) {
+    public void saveAndDeactivateContact(Contract contract,Integer settelementFees, Long oldContractId) {
+	
+	//deactivate old contract
+	
+	if (oldContractId != null) {
+	    Contract oldContract = getContractById(oldContractId);
+	    if (oldContract != null) {
+		oldContract.setActive(false);
+		subscriberDao.save(Arrays.asList(oldContract));
+	    }
+	}
+	
+	saveContract(contract, settelementFees);
+	
+	
+    }
+    
+    /**
+     * in case of edit, settelementFees should not be changed because it 
+     * paid once at creation of subscription
+     */
+    @Override
+    public void saveContract(Contract contract,Integer settelementFees) {
 	if (contract.getId() != null) {
 	    subscriberDao.update(contract);
 	} else {
 	    subscriberDao.save(Arrays.asList(contract));
 
-	    Bundle bundle = getBundleById(contract.getBundleId());
-
-	    if (bundle != null) {
+	    if (settelementFees != null && settelementFees.doubleValue() > 0) {
 		Transaction transaction = new Transaction();
-		transaction.setAmount(bundle.getSettlementFees());
+		transaction.setAmount(Double.valueOf(settelementFees.doubleValue()));
 		transaction.setContractId(contract.getId());
 		transaction.setTransactionType(TransactionType.SETTELMENT_FEES);
 		subscriberDao.save(Arrays.asList(transaction));
@@ -223,10 +248,15 @@ public class SubscriberServiceImpl implements SubscriberService {
     
     @Override
     public List<Contract> getContractBySubscriberId(Long subscriberId) {
-	return subscriberDao.getContractBySubscriberId(subscriberId);
+	return subscriberDao.getContractBySubscriberId(subscriberId, null);
+    }
+    
+    @Override
+    public List<Contract> getActiveContractBySubscriberId(Long subscriberId) {
+	return subscriberDao.getContractBySubscriberId(subscriberId, true);
     }
 
-    private List<Contract> getActiveContracts() {
+    public List<Contract> getActiveContracts() {
 	return subscriberDao.getActiveContracts();
     }
 
@@ -242,8 +272,10 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void generateReceipts() {
+    public List<Contract> generateReceipts() {
 
+	List<Contract> failedContract = new ArrayList<>();
+	
 	// get active contracts
 	List<Contract> contracts = getActiveContracts();
 	
@@ -295,17 +327,23 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 		    SubscriptionHistory subscriptionHistory = new SubscriptionHistory();
 		    subscriptionHistory.setConsumption(consumption);
+		    subscriptionHistory.setPreviousCounter(contractConsumptionBean.getPreviousCounterValue());
+		    subscriptionHistory.setCurrentCounter(contractConsumptionBean.getCurrentCounterValue());
 		    subscriptionHistory.setCostPerKb(subscriptionBundle.getCostPerKb());
 		    subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
 		    subscriptionHistory.setTransaction(transaction);
 		    subscriptionHistoryList.add(subscriptionHistory);
 
+		}else {
+		    failedContract.add(contract);
 		}
 	    }
 	}
 
 	subscriberDao.save(new ArrayList<>(transactions));
 	subscriberDao.save(new ArrayList<>(subscriptionHistoryList));
+	
+	return failedContract;
     }
 
     @Override

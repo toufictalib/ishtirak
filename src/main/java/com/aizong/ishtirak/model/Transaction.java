@@ -27,6 +27,7 @@ public class Transaction extends BaseEntity {
     private Date paidDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name="transaction_type")
     private TransactionType transactionType;
 
     @Column(name = "id_contract")

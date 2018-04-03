@@ -112,6 +112,8 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 		"    t.id," + 
 		"    t.amount 'total'," + 
 		"    t.transaction_type," + 
+		"    sh.previous_counter, "+
+		"    sh.current_counter, "+
 		"    sh.consumption," + 
 		"    sh.cost_per_kb," + 
 		"    sh.consumption * sh.cost_per_kb 'subtotal'," + 
@@ -139,7 +141,47 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	
 	sql = MessageFormat.format(sql, fromDate, endDate, contractId);
 	sql1 = MessageFormat.format(sql1, fromDate, endDate, contractId);
-	List<Map<String,Object>> rows = jdbcTemplate.queryForList(transactionType==TransactionType.COUNTER_PAYMENT ? sql :sql1);
+	return toList(transactionType==TransactionType.COUNTER_PAYMENT ? sql :sql1);
+    }
+    
+    @Override
+    public List<Object[]> getActiveIshtirakInfo(List<Long> contractIds){
+	String sql = "SELECT " + 
+		"    c.id,\n" + 
+		"    s.name,\n" + 
+		"    s.last_name,\n" + 
+		"    v.name 'Village',\n" + 
+		"    si.main_phone,\n" + 
+		"    c.counter_id,\n" + 
+		"    b.name 'Bundle',\n" + 
+		"    e.name 'Engine'\n" + 
+		"FROM\n" + 
+		"    subscriber s,\n" + 
+		"    village v,\n" + 
+		"    contract c,\n" + 
+		"    subscriber_information si,\n" + 
+		"    bundle b,\n" + 
+		"    engine e\n" + 
+		"WHERE\n" + 
+		"    s.id = c.subscriber_id AND s.id = si.id\n" + 
+		"        AND si.id_village = v.id\n" + 
+		"        AND c.bundle_id = b.id\n" + 
+		"        AND c.engine_id = e.id\n" + 
+		"        AND c.is_active\n" + 
+		"";
+	
+	if(!contractIds.isEmpty()) {
+	    sql+= " AND c.id in ({0})";
+	    sql = MessageFormat.format(sql, contractIds.stream().map(e->String.valueOf(e)).collect(Collectors.joining(",")));
+	}
+	
+	return toList(sql);
+	
+    }
+
+
+    private List<Object[]> toList(String sql) {
+	List<Map<String,Object>> rows = jdbcTemplate.queryForList(sql);
 	return rows.stream().map(e->{
 	    Object[] row = new Object[e.size()];
 	    try(AtomicInteger counter = new AtomicInteger()){
@@ -149,6 +191,26 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	    }
 	    return row;
 	}).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<Long> getActiveContractWithoutReceipts() {
+	String sql = "SELECT \n" + 
+		"    id\n" + 
+		"FROM\n" + 
+		"    contract c\n" + 
+		"WHERE\n" + 
+		"    c.is_active = 1\n" + 
+		"        AND id NOT IN (SELECT \n" + 
+		"            id_contract\n" + 
+		"        FROM\n" + 
+		"            transaction t\n" + 
+		"        WHERE\n" + 
+		"            t.transaction_type <> 'SETTELMENT_FEES');";
+	NativeQuery<Long> createSQLQuery = getsession().createNativeQuery(sql);
+	createSQLQuery.addScalar("id",StandardBasicTypes.LONG);
+	return createSQLQuery.list();
     }
 
 }

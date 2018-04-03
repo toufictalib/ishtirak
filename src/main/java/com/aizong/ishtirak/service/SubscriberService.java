@@ -52,7 +52,7 @@ public interface SubscriberService {
     
     List<Subscriber> searchSubscribers(SearchCustomerCriteria criteria);
     
-    void saveContract(Contract contract);
+    void saveContract(Contract contract,Integer settelementFees);
     
     Contract getContractById(Long id);
     
@@ -62,7 +62,7 @@ public interface SubscriberService {
     
     List<Contract> getCounterContractBySubscriberId(Long subscriberId);
 
-    void generateReceipts();
+    List<Contract> generateReceipts();
 
     void saveMaintenanceLog(ExpensesLog maintenaceLog);
 
@@ -105,5 +105,9 @@ public interface SubscriberService {
     OutExpensesLog getOutExpensesById(Long id);
 
     void deleteOutExpenses(List<Long> ids);
+
+    void saveAndDeactivateContact(Contract contract, Integer settelementFees, Long oldContractId);
+
+    List<Contract> getActiveContractBySubscriberId(Long subscriberId);
     
 }

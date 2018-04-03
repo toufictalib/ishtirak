@@ -26,6 +26,7 @@ import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.form.ContractForm;
+import com.aizong.ishtirak.gui.form.ContractSwitchingForm;
 import com.aizong.ishtirak.gui.form.CounterHistoryForm;
 import com.aizong.ishtirak.gui.form.SubscriberForm;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
@@ -103,9 +104,11 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	JButton btnAddContract = createAddContractBtn(message("subscription.form.add"));
 
-	JButton btnEditContract = createEditContractBtn(message("subscription.form.edit"), Mode.UPDATE);
+	JButton btnEditContract = createEditContractBtn(message("subscription.form.edit"), Mode.UPDATE, false);
 
-	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"),  Mode.VIEW);
+	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"),  Mode.VIEW, false);
+	
+	JButton btnSwitchContract = createEditContractBtn(message("subscription.form.switch"),  Mode.UPDATE, true);
 
 	JButton btnHistoryontract = createContractHistoryBtn(message("subscription.form.histroy"));
 	
@@ -116,6 +119,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	JPanel panel = new JPanel();
 	panel.add(btnAddContract);
 	panel.add(btnEditContract);
+	panel.add(btnSwitchContract);
 	panel.add(btnViewContract);
 	panel.add(btnHistoryontract);
 	panel.add(btnEditCounterHistory);
@@ -161,8 +165,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	return btnAddContract;
     }
 
-    private JButton createEditContractBtn(String title, Mode mode) {
-	JButton btnAddContract = new JButton(title, mode.getImage());
+    private JButton createEditContractBtn(String title, Mode mode, boolean switchSubscription) {
+	JButton btnAddContract = new JButton(title, switchSubscription ? ImageUtils.getSwapIcon() : mode.getImage());
 	btnAddContract.setToolTipText(btnAddContract.getText());
 	btnAddContract.addActionListener(e -> {
 	    int selectedRow = table.getSelectedRow();
@@ -170,8 +174,15 @@ public class SubscriberFilterTable extends CommonFilterTable {
 		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
 		if (valueAt instanceof Long) {
 		    Long id = (Long) valueAt;
-		    List<Contract> contracts = ServiceProvider.get().getSubscriberService()
-			    .getContractBySubscriberId(id);
+		    List<Contract> contracts = null;
+		    if(switchSubscription) {
+			contracts = ServiceProvider.get().getSubscriberService()
+			    .getActiveContractBySubscriberId(id);
+		    }else {
+			contracts = ServiceProvider.get().getSubscriberService()
+				    .getContractBySubscriberId(id);
+		    }
+		    
 		    if (contracts == null || contracts.isEmpty()) {
 			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noSubscription"));
 			return;
@@ -193,7 +204,9 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 				    panelBotton.removeAll();
 				    if (combo.getValue() != null) {
-					panelBotton.add(new ContractForm(combo.getValue(), mode));
+					panelBotton.add(
+						switchSubscription ? new ContractSwitchingForm(combo.getValue(), mode)
+							: new ContractForm(combo.getValue(), mode));
 				    }
 				    panelBotton.revalidate();
 				    panelBotton.repaint();
@@ -201,7 +214,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 				    Window owner = SwingUtilities.getWindowAncestor(panel);
 				    if (owner != null) {
 					WindowUtils.applyRtl(owner);
-					getOwner().pack();
+					owner.pack();
 				    }
 				}
 
@@ -211,7 +224,9 @@ public class SubscriberFilterTable extends CommonFilterTable {
 			WindowUtils.createDialog(getOwner(), title, panel);
 
 		    } else {
-			WindowUtils.createDialog(getOwner(), title, new ContractForm(contracts.get(0), mode));
+			WindowUtils.createDialog(getOwner(), title,
+				switchSubscription ? new ContractSwitchingForm(contracts.get(0), mode)
+					: new ContractForm(contracts.get(0), mode));
 		    }
 		}
 	    } else {

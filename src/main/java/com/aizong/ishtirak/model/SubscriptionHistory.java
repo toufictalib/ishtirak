@@ -23,6 +23,12 @@ public class SubscriptionHistory extends BaseEntity {
     @Column(name = "subscription_fees")
     private double subscriptionFees;
 
+    @Column(name = "previous_counter")
+    private Long previousCounter;
+    
+    @Column(name = "current_counter")
+    private Long currentCounter;
+    
     @Column(name = "consumption")
     private double consumption;
     
@@ -52,6 +58,22 @@ public class SubscriptionHistory extends BaseEntity {
 
     public void setSubscriptionFees(double subscriptionFees) {
 	this.subscriptionFees = subscriptionFees;
+    }
+
+    public Long getPreviousCounter() {
+        return previousCounter;
+    }
+
+    public void setPreviousCounter(Long previousCounter) {
+        this.previousCounter = previousCounter;
+    }
+
+    public Long getCurrentCounter() {
+        return currentCounter;
+    }
+
+    public void setCurrentCounter(Long currentCounter) {
+        this.currentCounter = currentCounter;
     }
 
     public double getConsumption() {

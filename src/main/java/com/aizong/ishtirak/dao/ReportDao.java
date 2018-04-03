@@ -17,5 +17,9 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getSubscriptionsHistory(Long contractId, String fromDate, String endDate, TransactionType transactionType);
 
+    List<Object[]> getActiveIshtirakInfo(List<Long> contractIds);
+
+    List<Long> getActiveContractWithoutReceipts();
+
     
 }

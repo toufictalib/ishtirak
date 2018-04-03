@@ -87,7 +87,7 @@ public class ReportServiceImpl implements ReportService {
 	    return new ReportTableModel(cols, rows, clazzes);
 	} else {
 	    List<SubscriptionBundle> list = subscriberService.getSubscriptionBundles();
-	    String[] cols = { "الرقم", "الاسم", "رسم الإشتراك", "سعر الكيلو", "كلفة إشتراك الشهر" };
+	    String[] cols = { "codeId", "description", "subscriptionFees", "kbPrice", "counterRenting" };
 	    List<Object[]> rows = new ArrayList<>();
 	    for (SubscriptionBundle object : list) {
 		Object[] row = { object.getId(), object.getName(), object.getSettlementFees(), object.getCostPerKb(),
@@ -253,7 +253,7 @@ public class ReportServiceImpl implements ReportService {
 	String[] cols = null;
 	Class<?>[] clazzes = null;
 	if(transactionType==TransactionType.COUNTER_PAYMENT) {
-	    cols = new String [] { "maintenanceId",  "amount", "transactionType","consumption","costPerKb","subtotal_kb_multiply_consumption",
+	    cols = new String [] { "maintenanceId",  "amount", "transactionType","consumption","previous_counter","current_counter","costPerKb","subtotal_kb_multiply_consumption",
 			"subscriptionFees", "insertDate" };
 	    clazzes = new Class[]{ Long.class, Double.class, String.class, Double.class, Double.class, Double.class,
 		    Double.class, Date.class };
@@ -266,4 +266,29 @@ public class ReportServiceImpl implements ReportService {
 	return new ReportTableModel(cols, rows, clazzes);
 
     }
+
+    @Override
+    public ReportTableModel getActiveIshtirakWithoutReceipts() {
+	List<Long> contractIds = reportDao.getActiveContractWithoutReceipts();
+	
+	return getActiveIshtirakInfo(contractIds);
+    }
+    @Override
+    public ReportTableModel getActiveIshtirakInfo(List<Long> contractIds) {
+	List<Object[]> rows = reportDao.getActiveIshtirakInfo(contractIds);
+
+	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "counterId", "bundle", "engine" };
+
+	Class<?>[] clazzes = new Class<?>[cols.length];
+	
+	int i=0;
+	
+	if (rows.size() > 0) {
+	    for (Object value : rows.get(0)) {
+		clazzes[i++] = value == null ? String.class : value.getClass();
+	    }
+	}
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+    
 }

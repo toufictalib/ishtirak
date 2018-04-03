@@ -42,7 +42,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, int currentMonth);
 
-    List<Contract> getContractBySubscriberId(Long subscriberId);
+    List<Contract> getContractBySubscriberId(Long subscriberId, Boolean active);
 
     CounterHistory getCounterHistoryByContractId(Long contractId, int month);
 

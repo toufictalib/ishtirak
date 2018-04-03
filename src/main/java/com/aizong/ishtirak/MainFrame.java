@@ -1,11 +1,13 @@
 package com.aizong.ishtirak;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -20,6 +22,7 @@ import javax.swing.SwingUtilities;
 
 import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 
+import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
@@ -37,6 +40,7 @@ import com.aizong.ishtirak.gui.table.OutExpensesFitlerTable;
 import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
+import com.aizong.ishtirak.model.Contract;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
@@ -122,8 +126,15 @@ public class MainFrame extends JRibbonFrame {
 	    boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر",
 		    "اصدار ايصالات");
 	    if (yes) {
-		ServiceProvider.get().getSubscriberService().generateReceipts();
-		MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+		List<Contract> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts();
+		if(!generateReceipts.isEmpty()) {
+		  DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
+		  builder.appendSeparator("");
+		  
+		}else {
+		    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+		}
+		
 	    }
 	});
 

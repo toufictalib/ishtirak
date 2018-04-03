@@ -24,7 +24,7 @@ public abstract class Bundle extends BaseEntity {
     protected String name;
 
     @Column(name = "settelment_fees")
-    protected Double settlementFees;
+    protected Integer settlementFees;
 
     public Bundle() {
 	super();
@@ -47,11 +47,11 @@ public abstract class Bundle extends BaseEntity {
 	this.name = name;
     }
 
-    public Double getSettlementFees() {
+    public Integer getSettlementFees() {
 	return settlementFees;
     }
 
-    public void setSettlementFees(Double settlementFees) {
+    public void setSettlementFees(Integer settlementFees) {
 	this.settlementFees = settlementFees;
     }
 

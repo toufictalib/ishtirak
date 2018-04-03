@@ -85,4 +85,8 @@ public class ImageUtils {
 	return ImageHelperCustom.get().getImageIcon("history.png"); 
     }
     
+    public static Icon getSwapIcon() {
+	return ImageHelperCustom.get().getImageIcon("swap.png"); 
+    }
+    
 }

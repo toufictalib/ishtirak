@@ -14,9 +14,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
 
 @SuppressWarnings("serial")
-public class ReportButtonsPanel extends BasicForm {
+public class GeneralReportButtonsPanel extends BasicForm {
 
-    public ReportButtonsPanel() {
+    public GeneralReportButtonsPanel() {
 	super();
 	initializePanel();
     }
@@ -32,7 +32,7 @@ public class ReportButtonsPanel extends BasicForm {
 	builder.setDefaultDialogBorder();
 	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "48px_customer.png");
 	btnMonthlyReports.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
+	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
 	        
 	        @Override
 	        public ReportTableModel getReportTableModel() {
@@ -44,7 +44,7 @@ public class ReportButtonsPanel extends BasicForm {
 	
 	JideButton btnMonthlyExpenses = button(message("reports.subscirption.expenses"), "48px_customer.png");
 	btnMonthlyExpenses.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
+	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
 	        
 	        @Override
 	        public ReportTableModel getReportTableModel() {
@@ -56,13 +56,13 @@ public class ReportButtonsPanel extends BasicForm {
 	
 	JideButton btnCounterHistory = button(message("reports.subscirption.counterHistory"), "48px_customer.png");
 	btnCounterHistory.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(), new CustomerSearchPanel());
+	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(), new CustomerSearchPanel());
 	   
 	});
 	
 	JideButton btnIshtirakReport = button(message("reports.subscirption.activeIshtirak"), "48px_customer.png");
 	btnIshtirakReport.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new ReportTablePanel(e.getActionCommand()) {
 
 			@Override
@@ -76,7 +76,7 @@ public class ReportButtonsPanel extends BasicForm {
 	
 	JideButton btnIshtirakReportWithoutReceipts = button(message("reports.subscirption.activeIshtirakWithoutReceipts"), "48px_customer.png");
 	btnIshtirakReportWithoutReceipts.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new ReportTablePanel(e.getActionCommand()) {
 
 			@Override

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
@@ -197,11 +198,11 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	if(!activeContracts.isEmpty()) {
 	    String sql = "select id_contract from transaction t "
 	    	+ "where month(t.insert_date) = :currentMonth "
-	    	+ "and t.id_contract in (:activeContracts)";
+	    	+ "and t.id_contract in (:activeContracts) and t.transaction_type <> :transactionType";
 	    
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
 	    sqlQuery.setParameterList("activeContracts", activeContracts)
-	    .setParameter("currentMonth", currentMonth);
+	    .setParameter("currentMonth", currentMonth).setParameter("transactionType", TransactionType.SETTELMENT_FEES.name());
 	    sqlQuery.addScalar("id_contract", StandardBasicTypes.LONG);
 	    return sqlQuery.list();
 	}
@@ -210,9 +211,15 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<Contract> getContractBySubscriberId(Long subscriberId) {
+    /**
+     * active : null means get all contract per subscriber
+     */
+    public List<Contract> getContractBySubscriberId(Long subscriberId, Boolean active) {
 	Criteria criteria = getsession().createCriteria(Contract.class);
 	criteria.add(Restrictions.eq("subscriberId", subscriberId));
+	if(active!=null) {
+	    criteria.add(Restrictions.eq("active", active));
+	}
 	return criteria.list();
     }
 

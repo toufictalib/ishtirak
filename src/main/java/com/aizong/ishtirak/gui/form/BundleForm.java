@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DoubleTextField;
+import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Bundle;
@@ -27,7 +28,7 @@ public class BundleForm extends BasicForm {
     private static final long serialVersionUID = 1L;
 
     private JTextField txtName;
-    private DoubleTextField txtSettelementFees;
+    private IntergerTextField txtSettelementFees;
     private DoubleTextField txtFullPackageFees;
     private DoubleTextField txtCostPerKb;
     private DoubleTextField txtCounterRentFees;
@@ -77,7 +78,7 @@ public class BundleForm extends BasicForm {
     @Override
     protected void initComponents() {
 	txtName = new JTextField();
-	txtSettelementFees = new DoubleTextField();
+	txtSettelementFees = new IntergerTextField();
 	txtFullPackageFees = new DoubleTextField();
 	txtCostPerKb = new DoubleTextField();
 	txtCounterRentFees = new DoubleTextField();
