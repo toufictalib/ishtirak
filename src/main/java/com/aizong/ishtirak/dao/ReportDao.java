@@ -3,13 +3,14 @@ package com.aizong.ishtirak.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.TransactionType;
 
 public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getSubscriptionsIncomeReport(Date startDate, Date endDate);
     
-    List<Object[]> getExpenses(Date startDate, Date endDate);
+    List<Object[]> getExpenses(ExpensesType expensesType, Date startDate, Date endDate);
 
     List<Object[]> getOutExpenses(Date startDate, Date endDate);
 
@@ -27,6 +28,8 @@ public interface ReportDao extends GenericDao<Object>{
      * @return
      */
     List<Object[]> getEmployeesPayments(Long employeeId, String fromDate, String endDate);
+
+    List<Object[]> getCounterHistory(Long subscriberId, String fromDate, String endDate);
 
     
 }

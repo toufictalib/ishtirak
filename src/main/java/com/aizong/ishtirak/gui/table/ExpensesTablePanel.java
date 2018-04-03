@@ -1,33 +1,32 @@
 package com.aizong.ishtirak.gui.table;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DateRange;
-import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.SearchPanel;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
-import com.aizong.ishtirak.model.Employee;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 @SuppressWarnings("serial")
-public class EmployeeTablePanel extends ReportTablePanel {
+public class ExpensesTablePanel extends ReportTablePanel {
 
-    public EmployeeTablePanel(String title) {
+    private ExpensesType expensesType;
+    
+    public ExpensesTablePanel(String title, ExpensesType expensesType) {
 	super();
 	this.title = title;
+	this.expensesType = expensesType;
 	start();
     }
 
@@ -35,10 +34,6 @@ public class EmployeeTablePanel extends ReportTablePanel {
     protected JPanel initUI() {
 
 	JButton btnSearch = ButtonFactory.createBtnSearch();
-
-	List<Employee> employees = ServiceProvider.get().getSubscriberService().getEmployees();
-	ExCombo<Employee> combo = new ExCombo<>(message("all"), true, employees);
-	combo.setPreferredSize(new Dimension(200, combo.getPreferredSize().height));
 
 	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
 	SearchPanel createDefault = SearchPanel.createDefault(startEndDateOfCurrentMonth.getStartDate(),
@@ -49,7 +44,7 @@ public class EmployeeTablePanel extends ReportTablePanel {
 	btnSearch.addActionListener(e -> {
 	    try {
 		ReportTableModel reportTableModel = ServiceProvider.get().getReportServiceImpl()
-			.getEmployeesPayments(combo.getValue()==null ? null : combo.getValue().getId(), createDefault.toSearchBean());
+			.getExpenses(expensesType, createDefault.toSearchBean());
 		fillTable(reportTableModel);
 	    } catch (Exception e1) {
 		e1.printStackTrace();
@@ -62,8 +57,6 @@ public class EmployeeTablePanel extends ReportTablePanel {
 	builder.appendSeparator(title);
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	panel.add(createDefault);
-	panel.add(new JLabel(message("empolyees")));
-	panel.add(combo);
 	panel.add(btnSearch);
 
 	builder.append(panel, builder.getColumnCount());

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -115,7 +116,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	JButton btnEditCounterHistory = createEditCounterHistoryBtn(message("counter.form.saveAndEdit"), "edit.png", Mode.UPDATE);
 
 	JButton btnViewCounterHistory = createEditCounterHistoryBtn(message("counter.form.view"), "view.png", Mode.VIEW);
-
+	
+	JButton btnHistoryCounter = showCounterHistory(message("counter.form.histroy"));
 	JPanel panel = new JPanel();
 	panel.add(btnAddContract);
 	panel.add(btnEditContract);
@@ -124,6 +126,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	panel.add(btnHistoryontract);
 	panel.add(btnEditCounterHistory);
 	panel.add(btnViewCounterHistory);
+	panel.add(btnHistoryCounter);
 	
 	
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
@@ -268,8 +271,23 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	return btnAddCounterHistory;
     }
 
+    interface Apply{
+	void action(String title, Subscriber subscriber);
+    }
+    
     private JButton createContractHistoryBtn(String title) {
-  	JButton btnAddCounterHistory = new JButton(title,ImageUtils.getHistoryIcon());
+  	return applyAction(title, ImageUtils.getHistoryIcon(),(title1, subscriber) -> WindowUtils.createDialog(getOwner(), title,
+		new SubscriptionHistoryTablePanel(title, subscriber.getId())));
+      }
+    
+    private JButton showCounterHistory(String title) {
+	return applyAction(title, ImageUtils.getHistoryIcon(),(title1, subscriber) -> WindowUtils.createDialog(getOwner(), title1,
+			new CounterHistoryTablePanel(title1, subscriber.getId())));
+	
+      }
+    
+    private JButton applyAction(String title, ImageIcon icon, Apply apply) {
+  	JButton btnAddCounterHistory = new JButton(title,icon);
   	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
   	btnAddCounterHistory.addActionListener(e -> {
   	    int selectedRow = table.getSelectedRow();
@@ -282,8 +300,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
   			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
   			return;
   		    }
-  		  WindowUtils.createDialog(getOwner(), title,
-				new SubscriptionHistoryTablePanel(btnAddCounterHistory.getText(), id));
+  		 apply.action(title, subscriber);
   		}
   	    } else {
   		warnNoSelectedRow();

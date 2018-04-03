@@ -44,14 +44,13 @@ public class ExpensesForm extends BasicForm {
     protected JTextArea txtNote;
     private IntergerTextField txtDieselQuantity;
     private ExCombo<Employee> comboEmployees;
-    
-    
+
     private SavingCallback callback;
     private Mode mode = Mode.NEW;
     private ExpensesLog expensesLog;
 
     private ExpensesType[] maintenanceTypeValues = ExpensesType.values();
-    
+
     public ExpensesForm() {
 	super();
 	initializePanel();
@@ -73,7 +72,7 @@ public class ExpensesForm extends BasicForm {
 	for (ExpensesType type : maintenanceTypeValues) {
 	    values.add(new SearchResult(type, enumMessage(type.name(), ExpensesType.class)));
 	}
-	
+
 	comboMaintenaceTypes = new ExCombo<>(values);
 	comboMaintenaceTypes.addItemListener(createComboDieselListener());
 	comboEngines = new ExCombo<>(true, ServiceProvider.get().getSubscriberService().getEngines());
@@ -87,15 +86,12 @@ public class ExpensesForm extends BasicForm {
 	txtDieselQuantity = new IntergerTextField();
     }
 
-
     private boolean isDiesel() {
-	return comboMaintenaceTypes.getValue() != null
-		&& comboMaintenaceTypes.getValue().type == ExpensesType.DIESEL;
+	return comboMaintenaceTypes.getValue() != null && comboMaintenaceTypes.getValue().type == ExpensesType.DIESEL;
     }
 
     private boolean isEmployee() {
-	return comboMaintenaceTypes.getValue() != null
-		&& comboMaintenaceTypes.getValue().type == ExpensesType.EMPLOYEE;
+	return comboMaintenaceTypes.getValue() != null && comboMaintenaceTypes.getValue().type == ExpensesType.EMPLOYEE;
     }
 
     private void reset() {
@@ -137,6 +133,18 @@ public class ExpensesForm extends BasicForm {
 	if (expensesLog.getEmployeeId() != null) {
 	    if (comboEmployees == null) {
 		comboEmployees = new ExCombo<>(ServiceProvider.get().getSubscriberService().getActiveEmployees());
+		comboEmployees.addItemListener(new ItemListener() {
+
+		    @Override
+		    public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+			    if(comboEmployees.getValue()!=null) {
+				txtAmount.setValue(Double.valueOf(comboEmployees.getValue().getSalary()));
+			    }
+			}
+
+		    }
+		});
 	    }
 	    comboEmployees.setSelectedItem(new Employee(expensesLog.getEmployeeId()));
 	}
@@ -155,6 +163,18 @@ public class ExpensesForm extends BasicForm {
 	if (isEmployee()) {
 	    if (comboEmployees == null) {
 		comboEmployees = new ExCombo<>(ServiceProvider.get().getSubscriberService().getActiveEmployees());
+		comboEmployees.addItemListener(new ItemListener() {
+
+		    @Override
+		    public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+			    if(comboEmployees.getValue()!=null) {
+				txtAmount.setValue(Double.valueOf(comboEmployees.getValue().getSalary()));
+			    }
+			}
+
+		    }
+		});
 	    }
 	    builder.append(message("maintenance.form.employee"), comboEmployees);
 	    if (comboEmployees.getValue() != null) {
@@ -172,33 +192,31 @@ public class ExpensesForm extends BasicForm {
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
-	btnSave.addActionListener(e->save(false));
+	btnSave.addActionListener(e -> save(false));
 	JButton btnSaveAndNew = ButtonFactory.createBtnSaveAndNew();
-	btnSaveAndNew.addActionListener(e->save(true));
+	btnSaveAndNew.addActionListener(e -> save(true));
 	btnSaveAndNew.setActionCommand("saveAndNew");
-	
+
 	JButton btnClose = ButtonFactory.createBtnClose();
 	btnClose.addActionListener(e -> closeWindow());
-	
-	if(mode==Mode.VIEW) {
-	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose),
-			builder.getColumnCount());
-	}else {
+
+	if (mode == Mode.VIEW) {
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
+	} else {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSaveAndNew, btnSave),
-			builder.getColumnCount());
+		    builder.getColumnCount());
 	}
-	
+
 	return builder.getPanel();
     }
 
-    
     private void save(boolean saveAndNew) {
 	Optional<List<String>> validateInputs = validateInputs();
 	if (validateInputs.isPresent()) {
 	    MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
 	    return;
 	}
-	
+
 	ExpensesLog maintenaceLog = expensesLog == null ? new ExpensesLog() : expensesLog;
 	maintenaceLog.setDesc(txtDesc.getText());
 	maintenaceLog.setMaintenanceType(comboMaintenaceTypes.getValue().type);
@@ -236,71 +254,70 @@ public class ExpensesForm extends BasicForm {
 
     @Override
     protected Optional<List<String>> validateInputs() {
-        List<String> errors =new ArrayList<>();
-        
-        if(txtDesc.getText().isEmpty()) {
-            errors.add(errorPerfix("maintenance.form.name"));
-        }
-        
-        
-        if(isDiesel()) {
-            if(txtDieselQuantity.getValue()==null) {
-        	errors.add(errorPerfix("maintenance.form.dieselAmount"));
-            }
-        }
-        
-        if (isEmployee()) {
-            if(comboEmployees.getValue()==null) {
-        	errors.add(errorPerfix("maintenance.form.dieselAmount"));
-            }
-            
-            if(txtAmount.getValue()==null) {
-        	errors.add(errorPerfix("maintenance.form.salary"));
-            }
-        }else {
-            if(txtAmount.getValue()==null) {
-        	errors.add(errorPerfix("maintenance.form.amount"));
-            }
-            if(comboEngines.getValue()==null) {
-        	errors.add(errorPerfix("maintenance.form.engines"));
-            }
-        }
-        
-        return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+	List<String> errors = new ArrayList<>();
+
+	if (txtDesc.getText().isEmpty()) {
+	    errors.add(errorPerfix("maintenance.form.name"));
+	}
+
+	if (isDiesel()) {
+	    if (txtDieselQuantity.getValue() == null) {
+		errors.add(errorPerfix("maintenance.form.dieselAmount"));
+	    }
+	}
+
+	if (isEmployee()) {
+	    if (comboEmployees.getValue() == null) {
+		errors.add(errorPerfix("maintenance.form.dieselAmount"));
+	    }
+
+	    if (txtAmount.getValue() == null) {
+		errors.add(errorPerfix("maintenance.form.salary"));
+	    }
+	} else {
+	    if (txtAmount.getValue() == null) {
+		errors.add(errorPerfix("maintenance.form.amount"));
+	    }
+	    if (comboEngines.getValue() == null) {
+		errors.add(errorPerfix("maintenance.form.engines"));
+	    }
+	}
+
+	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
     }
+
     private ItemListener createComboDieselListener() {
-  	return new ItemListener() {
+	return new ItemListener() {
 
-  	    @Override
-  	    public void itemStateChanged(ItemEvent arg0) {
-  		if (arg0.getStateChange() == ItemEvent.SELECTED) {
-  		    SearchResult value = comboMaintenaceTypes.getValue();
-  		    if (value != null) {
-  			txtAmount.setValue(null);
-  			switch (value.type) {
-  			case DIESEL:
-  			    redrawPanel();
-  			    break;
-  			case EMPLOYEE:
-  			    redrawPanel();
-  			    break;
+	    @Override
+	    public void itemStateChanged(ItemEvent arg0) {
+		if (arg0.getStateChange() == ItemEvent.SELECTED) {
+		    SearchResult value = comboMaintenaceTypes.getValue();
+		    if (value != null) {
+			txtAmount.setValue(null);
+			switch (value.type) {
+			case DIESEL:
+			    redrawPanel();
+			    break;
+			case EMPLOYEE:
+			    redrawPanel();
+			    break;
 
-  			default:
-  			    redrawPanel();
-  			    break;
-  			}
-  		    }
-  		}
+			default:
+			    redrawPanel();
+			    break;
+			}
+		    }
+		}
 
-  	    }
-  	};
-      }
-    
+	    }
+	};
+    }
+
     static class SearchResult {
 	final ExpensesType type;
 	final String label;
 
-	
 	public SearchResult(ExpensesType type, String label) {
 	    super();
 	    this.type = type;

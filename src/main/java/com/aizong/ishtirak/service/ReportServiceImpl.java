@@ -187,7 +187,27 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportTableModel getExpenses() {
 	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	List<Object[]> rows = reportDao.getExpenses(startEndDateOfCurrentMonth.getStartDate(),
+	List<Object[]> rows = reportDao.getExpenses(null, startEndDateOfCurrentMonth.getStartDate(),
+		startEndDateOfCurrentMonth.getEndDate());
+
+	Object value = null;
+	for (Object[] row : rows) {
+	    value = row[4];
+	    if (value != null) {
+		row[4] = message.getEnumLabel(value.toString(), ExpensesType.class);
+	    }
+	}
+	String[] cols = { "maintenanceId", "engine", "amount", "description", "maintenanceType", "insertDate" };
+
+	Class<?>[] clazzes = { Long.class, String.class, Double.class, String.class, String.class, Date.class };
+
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+    
+    @Override
+    public ReportTableModel getExpenses(ExpensesType expensesType, SearchBean searchBean) {
+	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	List<Object[]> rows = reportDao.getExpenses(expensesType, startEndDateOfCurrentMonth.getStartDate(),
 		startEndDateOfCurrentMonth.getEndDate());
 
 	Object value = null;
@@ -304,6 +324,16 @@ public class ReportServiceImpl implements ReportService {
 	List<Object[]> rows = reportDao.getEmployeesPayments(employeeId, searchBean.getFromDate(), searchBean.getEndDate());
 
 	String[] cols = { "codeId", "job","name", "lastName", "amount", "insert_date" };
+
+	Class<?>[] clazzes = clazzes(rows, cols);
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+
+    @Override
+    public ReportTableModel getCounterHistory(Long subscriberId, SearchBean searchBean) {
+	List<Object[]> rows = reportDao.getCounterHistory(subscriberId, searchBean.getFromDate(), searchBean.getEndDate());
+
+	String[] cols = { "codeId", "counter","engine", "counterAmount", "insert_date" };
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);

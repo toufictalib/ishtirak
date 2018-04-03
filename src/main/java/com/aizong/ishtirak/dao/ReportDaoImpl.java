@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.utils.SQLUtils;
 import com.ss.rlib.concurrent.atomic.AtomicInteger;
@@ -52,19 +53,31 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Object[]> getExpenses(Date startDate, Date endDate) {
+    public List<Object[]> getExpenses(ExpensesType expensesType, Date startDate, Date endDate) {
 	String sql = "select m.id, e.name 'engine', m.amount, m.description,m.maintenace_type,m.insert_date "
 		+ "from expenses_log m "
 		+ "left join engine e on e.id = m.engine "
-		+ "where m.insert_date >=:startDate and m.insert_date <=:endDate order by m.insert_date desc";
+		+ "where m.insert_date >=:startDate and m.insert_date <=:endDate ";
+	
+	if(expensesType!=null) {
+	    sql+=" and m.maintenace_type = :expensesType ";
+	}
+	
+	sql+=" order by m.insert_date desc";
 	NativeQuery<Object[]> createSQLQuery = getsession().createSQLQuery(sql);
 	createSQLQuery.setParameter("startDate",startDate).setParameter("endDate", endDate);
+	if (expensesType != null) {
+	    createSQLQuery.setParameter("expensesType", expensesType.name());
+	}
+
 	createSQLQuery.addScalar("id",StandardBasicTypes.LONG).
 	addScalar("engine",StandardBasicTypes.STRING).
 	addScalar("amount",StandardBasicTypes.DOUBLE).
 	addScalar("description",StandardBasicTypes.STRING).
 	addScalar("maintenace_type",StandardBasicTypes.STRING).
 	addScalar("insert_date",StandardBasicTypes.DATE);
+	
+	
 	return createSQLQuery.list();
     }
 
@@ -229,7 +242,13 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	return toList(sql);
     }
     
-    
+    @Override
+    public List<Object[]> getCounterHistory(Long subscriberId, String fromDate, String endDate) {
+
+	String sql = SQLUtils.sql("counterHistoryReport.sql");
+	sql = MessageFormat.format(sql, subscriberId, "\"" + fromDate + "\"", "\"" + endDate + "\"");
+	return toList(sql);
+    }
     
 
 }
