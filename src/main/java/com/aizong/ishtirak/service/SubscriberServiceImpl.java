@@ -290,7 +290,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    transaction.setAmount(
 			    subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * consumption);
 		    transaction.setContractId(contract.getId());
-		    transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
+		    transaction.setTransactionType(TransactionType.COUNTER_PAYMENT);
 		    transactions.add(transaction);
 
 		    SubscriptionHistory subscriptionHistory = new SubscriptionHistory();

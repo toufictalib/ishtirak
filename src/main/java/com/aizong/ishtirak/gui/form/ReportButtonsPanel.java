@@ -51,8 +51,15 @@ public class ReportButtonsPanel extends BasicForm {
 	   
 	});
 	
+	JideButton btnCounterHistory = button(message("reports.subscirption.expenses"), "48px_customer.png");
+	btnCounterHistory.addActionListener(e -> {
+	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(), new CustomerSearchPanel());
+	   
+	});
+	
 	builder.append(btnMonthlyReports);
 	builder.append(btnMonthlyExpenses);
+	builder.append(btnCounterHistory);
 	return builder.getPanel();
     }
 

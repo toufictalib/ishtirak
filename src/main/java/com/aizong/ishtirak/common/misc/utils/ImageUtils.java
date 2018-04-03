@@ -5,6 +5,7 @@
  */
 package com.aizong.ishtirak.common.misc.utils;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
@@ -78,6 +79,10 @@ public class ImageUtils {
      
      public static ImageIcon getLoginIcon() {
 	 return ImageHelperCustom.get().getImageIcon("login.png");
+    }
+
+    public static Icon getHistoryIcon() {
+	return ImageHelperCustom.get().getImageIcon("history.png"); 
     }
     
 }

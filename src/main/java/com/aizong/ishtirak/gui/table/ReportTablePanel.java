@@ -46,6 +46,10 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
     private TableFilterHeader filterHeader;
 
+    public ReportTablePanel() {
+	
+	
+    }
     public ReportTablePanel(String title) {
 
 	this.title = title;
@@ -53,7 +57,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
     }
 
-    private void start() {
+    protected void start() {
 	initComponents();
 	fillTable();
 	add(initUI());
@@ -143,6 +147,12 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
     private void fillTable() {
 	ReportTableModel reportTableModel = getReportTableModel();
+	fillTable(reportTableModel);
+	
+	// sumAmount(table);
+    }
+
+    protected void fillTable(ReportTableModel reportTableModel) {
 	String[] columns = reportTableModel.getCols();
 
 	Object[] internalisationCols = new Object[reportTableModel.getCols().length];
@@ -186,8 +196,6 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	filterHeader.updateUI();
 	filterHeader.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-	
-	// sumAmount(table);
     }
 
     @SuppressWarnings("unused")
@@ -204,8 +212,11 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     }
 
     private void applyRenderer() {
-	TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
-	column.setMinWidth(150);
+	
+	if (table.getModel().getColumnCount() > 0) {
+	    TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
+	    column.setMinWidth(150);
+	}
 
 	// table.setDefaultRenderer(Boolean.class, new );
 

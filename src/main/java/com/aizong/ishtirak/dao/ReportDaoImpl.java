@@ -1,7 +1,10 @@
 package com.aizong.ishtirak.dao;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +13,9 @@ import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.aizong.ishtirak.bean.TransactionType;
+import com.ss.rlib.concurrent.atomic.AtomicInteger;
 
 @Repository
 @Transactional
@@ -79,6 +85,70 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	addScalar("maintenace_type",StandardBasicTypes.STRING).
 	addScalar("insert_date",StandardBasicTypes.DATE);
 	return createSQLQuery.list();
+    }
+
+
+    @Override
+    public List<Object[]> getSubscribers() {
+	String sql = "select s.id,s.name,s.father_name,s.last_name, s.identifier, si.main_phone,v.name 'village',si.address "
+		+ "from subscriber s,subscriber_information si,village v where s.id = si.id and si.id_village = v.id;";
+	@SuppressWarnings("unchecked")
+	NativeQuery<Object[]> createSQLQuery = getsession().createNativeQuery(sql);
+	createSQLQuery.addScalar("id",StandardBasicTypes.LONG).
+	addScalar("name",StandardBasicTypes.STRING).
+	addScalar("father_name",StandardBasicTypes.STRING).
+	addScalar("last_name",StandardBasicTypes.STRING).
+	addScalar("identifier",StandardBasicTypes.STRING).
+	addScalar("main_phone",StandardBasicTypes.STRING).
+	addScalar("village",StandardBasicTypes.STRING).
+	addScalar("address",StandardBasicTypes.STRING);
+	return createSQLQuery.list();
+    }
+
+
+    @Override
+    public List<Object[]> getSubscriptionsHistory(Long contractId, String fromDate, String endDate, TransactionType transactionType) {
+	String sql="SELECT " + 
+		"    t.id," + 
+		"    t.amount 'total'," + 
+		"    t.transaction_type," + 
+		"    sh.consumption," + 
+		"    sh.cost_per_kb," + 
+		"    sh.consumption * sh.cost_per_kb 'subtotal'," + 
+		"    sh.subscription_fees," + 
+		"     t.insert_date "+ 
+		"FROM" + 
+		"    transaction t" + 
+		"        LEFT JOIN" + 
+		"    subscription_history sh ON sh.transaction = t.id " + 
+		"WHERE" + 
+		"    t.id_contract = {2} " + 
+		"        AND t.insert_date >= \"{0}\"" + 
+		"        AND t.insert_date <= \"{1}\";";
+	
+	String sql1="SELECT " + 
+		"    t.id," + 
+		"    t.amount 'total'," + 
+		"    t.transaction_type," + 
+		"     t.insert_date " + 
+		"FROM" + 
+		"    transaction t WHERE" + 
+		"    t.id_contract = {2} " + 
+		"        AND t.insert_date >= \"{0}\"" + 
+		"        AND t.insert_date <= \"{1}\";";
+	
+	sql = MessageFormat.format(sql, fromDate, endDate, contractId);
+	sql1 = MessageFormat.format(sql1, fromDate, endDate, contractId);
+	List<Map<String,Object>> rows = jdbcTemplate.queryForList(transactionType==TransactionType.COUNTER_PAYMENT ? sql :sql1);
+	return rows.stream().map(e->{
+	    Object[] row = new Object[e.size()];
+	    try(AtomicInteger counter = new AtomicInteger()){
+	    e.entrySet().forEach(v->{
+		row[counter.getAndIncrement()] = v.getValue();
+	    });
+	    }
+	    return row;
+	}).collect(Collectors.toList());
     }
 
 }

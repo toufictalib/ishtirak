@@ -20,6 +20,7 @@ import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
@@ -106,6 +107,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"),  Mode.VIEW);
 
+	JButton btnHistoryontract = createContractHistoryBtn(message("subscription.form.histroy"));
+	
 	JButton btnEditCounterHistory = createEditCounterHistoryBtn(message("counter.form.saveAndEdit"), "edit.png", Mode.UPDATE);
 
 	JButton btnViewCounterHistory = createEditCounterHistoryBtn(message("counter.form.view"), "view.png", Mode.VIEW);
@@ -114,6 +117,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	panel.add(btnAddContract);
 	panel.add(btnEditContract);
 	panel.add(btnViewContract);
+	panel.add(btnHistoryontract);
 	panel.add(btnEditCounterHistory);
 	panel.add(btnViewCounterHistory);
 	
@@ -249,6 +253,31 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	return btnAddCounterHistory;
     }
 
+    private JButton createContractHistoryBtn(String title) {
+  	JButton btnAddCounterHistory = new JButton(title,ImageUtils.getHistoryIcon());
+  	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
+  	btnAddCounterHistory.addActionListener(e -> {
+  	    int selectedRow = table.getSelectedRow();
+  	    if (selectedRow >= 0) {
+  		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
+  		if (valueAt instanceof Long) {
+  		    Long id = (Long) valueAt;
+  		    Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
+  		    if (subscriber == null) {
+  			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
+  			return;
+  		    }
+  		  WindowUtils.createDialog(getOwner(), title,
+				new SubscriptionHistoryTablePanel(btnAddCounterHistory.getText(), id));
+  		}
+  	    } else {
+  		warnNoSelectedRow();
+  	    }
+  	});
+  	return btnAddCounterHistory;
+      }
+    
+    
     @Override
     protected String getAddTooltip() {
 	return message(message("subscriber.form.add"));
