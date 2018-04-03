@@ -21,5 +21,12 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Long> getActiveContractWithoutReceipts();
 
+    /**
+     * 
+     * @param employeeId in case the value is null, get all employees
+     * @return
+     */
+    List<Object[]> getEmployeesPayments(Long employeeId, String fromDate, String endDate);
+
     
 }

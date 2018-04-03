@@ -1,6 +1,5 @@
 package com.aizong.ishtirak;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -30,6 +29,7 @@ import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.demo.ExampleRibbonFrame;
 import com.aizong.ishtirak.gui.form.ExpensesForm;
+import com.aizong.ishtirak.gui.form.GeneralReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
@@ -145,7 +145,7 @@ public class MainFrame extends JRibbonFrame {
 
 	JideButton btnReports = button("تقارير", "48px-Crystal_Clear_app_kthememgr.png");
 	btnReports.addActionListener(e -> {
-	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
+	    openWindow(e.getActionCommand(), new GeneralReportButtonsPanel());
 	});
 	
 	JideButton btnOutOfExpenses = button("مسحوبات المدير والموظفين", "48px-Crystal_Clear_app_kthememgr.png");

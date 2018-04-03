@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.aizong.ishtirak.bean.TransactionType;
+import com.aizong.ishtirak.common.misc.utils.SQLUtils;
 import com.ss.rlib.concurrent.atomic.AtomicInteger;
 
 @Repository
@@ -212,5 +213,23 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	createSQLQuery.addScalar("id",StandardBasicTypes.LONG);
 	return createSQLQuery.list();
     }
+
+
+    @Override
+    public List<Object[]> getEmployeesPayments(Long employeeId, String fromDate, String endDate) {
+	
+	String file = employeeId!=null ? "EmployeeWithdrawalInfoSpecific.sql" : "EmployeeWithdrawalInfo.sql";
+	String sql = SQLUtils.sql(file);
+	
+	if(employeeId!=null) {
+	    sql = MessageFormat.format(sql, employeeId,"\""+fromDate+"\"", "\""+endDate+"\"");
+	}else {
+	    sql = MessageFormat.format(sql, "\""+fromDate+"\"", "\""+endDate+"\"");
+	}
+	return toList(sql);
+    }
+    
+    
+    
 
 }

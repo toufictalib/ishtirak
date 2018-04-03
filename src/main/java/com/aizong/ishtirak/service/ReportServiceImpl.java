@@ -1,6 +1,7 @@
 package com.aizong.ishtirak.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -279,6 +280,11 @@ public class ReportServiceImpl implements ReportService {
 
 	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "counterId", "bundle", "engine" };
 
+	Class<?>[] clazzes = clazzes(rows, cols);
+	return new ReportTableModel(cols, rows, clazzes);
+    }
+
+    private Class<?>[] clazzes(List<Object[]> rows, String[] cols) {
 	Class<?>[] clazzes = new Class<?>[cols.length];
 	
 	int i=0;
@@ -287,7 +293,19 @@ public class ReportServiceImpl implements ReportService {
 	    for (Object value : rows.get(0)) {
 		clazzes[i++] = value == null ? String.class : value.getClass();
 	    }
+	}else {
+	    Arrays.fill(clazzes, String.class);
 	}
+	return clazzes;
+    }
+
+    @Override
+    public ReportTableModel getEmployeesPayments(Long employeeId, SearchBean searchBean) {
+	List<Object[]> rows = reportDao.getEmployeesPayments(employeeId, searchBean.getFromDate(), searchBean.getEndDate());
+
+	String[] cols = { "codeId", "job","name", "lastName", "amount", "insert_date" };
+
+	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);
     }
     
