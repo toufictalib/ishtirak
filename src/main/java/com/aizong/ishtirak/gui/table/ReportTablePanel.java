@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Date;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,6 +26,7 @@ import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
+import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
@@ -43,6 +45,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     protected JTextField txtFE;
     protected JLabel txtRowCount;
     protected JLabel txtTotal;
+    protected JButton btnExportExcel;
 
     private TableFilterHeader filterHeader;
 
@@ -116,6 +119,8 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	filterHeader = new TableFilterHeader(table, AutoChoices.ENABLED);
 	filterHeader.setRowHeightDelta(10);
+	
+	btnExportExcel = ButtonFactory.createBtnExportExcel();
 
     }
 

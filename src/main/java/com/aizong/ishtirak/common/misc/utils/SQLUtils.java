@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 public class SQLUtils {
 
     public static String sql(String file) {
-
 	file ="sql/"+file;
 	ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 	URL resource = classloader.getResource(file);

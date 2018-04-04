@@ -103,6 +103,10 @@ public class ButtonFactory {
     public static JButton createBtnHistory() {
    	return new JButton(message("login"), ImageUtils.getHistoryIcon());
     }
+
+    public static JButton createBtnExportExcel() {
+	return new JButton(message("exportExcel"), ImageUtils.getExportExcel());
+    }
     
     
 }

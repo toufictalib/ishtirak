@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
+import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
@@ -25,19 +27,26 @@ public class ReceiptDesign {
 
     ReceiptBean bean = ReceiptBean.create();
 
+    StyleBuilder STYLE_RTL;
+
     public JasperReportBuilder build() throws DRException {
+	STYLE_RTL = stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE);
 	JasperReportBuilder report = report();
 
 	HorizontalListBuilder text = cmp.horizontalList().add(cmp.text("title1"))
 		.setBackgroundComponent(cmp.rectangle());
 	report.setTemplate(Templates.reportTemplate).title(createTitleComponent(bean.getTitle()),
-		cmp.horizontalList().setStyle(stl.style(10)).setGap(10).add(
-			cmp.hListCell(createCounterComponent("معلومات العداد", bean.getFullName())).heightFixedOnTop(),
-			cmp.hListCell(createCustomerComponent("المنطقة", bean.getVillage())).heightFixedOnTop()
-			),
+		cmp.horizontalList().add(rtlText("توفيق طالب"), rtlText("وصلنا من السيد ")).newRow()
+			.add(rtlText("ألسفيرة-البغلة"), rtlText("عنوانه")).newRow()
+			.add(rtlText(bean.getAmountToPay()), rtlText("مبلغ وقدره")).newRow()
+			.add(rtlText(bean.getDate()), rtlText("وذلك بدل اشتراك كهرباء عن شهر")),
 		cmp.verticalGap(10));
 
 	return report;
+    }
+
+    private TextFieldBuilder<String> rtlText(String text) {
+	return cmp.text(text).setStyle(STYLE_RTL);
     }
 
     private ComponentBuilder<?, ?> createCustomerComponent(String label, String text) {
@@ -68,16 +77,24 @@ public class ReceiptDesign {
 
     private void addCustomerAttribute(HorizontalListBuilder list, String label, Object value) {
 	if (value != null) {
-	    list.add(cmp.text(value.toString()).setStyle(stl.style().setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE)),
+	    list.add(
+		    cmp.text(value.toString()).setStyle(
+			    stl.style().setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE)),
 		    cmp.text(label).setFixedColumns(8).setStyle(Templates.columnTitleStyle)).newRow();
 	}
     }
 
     public static ComponentBuilder<?, ?> createTitleComponent(String label) {
-	return cmp.verticalList().add(
+	return cmp.horizontalList(
+		cmp.verticalList().add(cmp.text("رقم الصيانة").setStyle(Templates.bold12CenteredStyle),
+			cmp.text("76 619869").setStyle(Templates.bold12CenteredStyle)),
 
-		cmp.text(label).setStyle(Templates.bold18CenteredStyle),
-		cmp.text("وصل تحصيل").setStyle(Templates.bold12CenteredStyle));
+		cmp.verticalList().add(
+
+			cmp.text(label).setStyle(Templates.bold22CenteredStyle),
+			cmp.text("وصل تحصيل").setStyle(Templates.bold12CenteredStyle)),
+		cmp.verticalList().add(cmp.text("رقم الصيانة").setStyle(Templates.bold12CenteredStyle),
+			cmp.text("76 619869").setStyle(Templates.bold12CenteredStyle)));
     }
 
     public static void main(String[] args) {
