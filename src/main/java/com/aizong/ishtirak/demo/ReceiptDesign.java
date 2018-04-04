@@ -1,29 +1,19 @@
 package com.aizong.ishtirak.demo;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
-import static net.sf.dynamicreports.report.builder.DynamicReports.col;
-import static net.sf.dynamicreports.report.builder.DynamicReports.exp;
-import static net.sf.dynamicreports.report.builder.DynamicReports.grid;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
-import static net.sf.dynamicreports.report.builder.DynamicReports.sbt;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
-import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
 import java.math.BigDecimal;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
-import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
-import net.sf.dynamicreports.report.constant.VerticalAlignment;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
-import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.exception.DRException;
 
 /**
@@ -41,10 +31,10 @@ public class ReceiptDesign {
 	HorizontalListBuilder text = cmp.horizontalList().add(cmp.text("title1"))
 		.setBackgroundComponent(cmp.rectangle());
 	report.setTemplate(Templates.reportTemplate).title(createTitleComponent(bean.getTitle()),
-		cmp.verticalList().setStyle(stl.style(10)).setGap(5).add(
-			
-			cmp.vListCell(createCustomerComponent("المنطقة", bean.getVillage())).heightFixed(),
-			cmp.vListCell(createCounterComponent("معلومات العداد", bean.getFullName())).heightFixed()),
+		cmp.horizontalList().setStyle(stl.style(10)).setGap(10).add(
+			cmp.hListCell(createCounterComponent("معلومات العداد", bean.getFullName())).heightFixedOnTop(),
+			cmp.hListCell(createCustomerComponent("المنطقة", bean.getVillage())).heightFixedOnTop()
+			),
 		cmp.verticalGap(10));
 
 	return report;
@@ -78,7 +68,7 @@ public class ReceiptDesign {
 
     private void addCustomerAttribute(HorizontalListBuilder list, String label, Object value) {
 	if (value != null) {
-	    list.add(cmp.text(value.toString()),
+	    list.add(cmp.text(value.toString()).setStyle(stl.style().setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE)),
 		    cmp.text(label).setFixedColumns(8).setStyle(Templates.columnTitleStyle)).newRow();
 	}
     }
@@ -94,7 +84,7 @@ public class ReceiptDesign {
 	ReceiptDesign design = new ReceiptDesign();
 	try {
 	    JasperReportBuilder report = design.build();
-	    report.setPageFormat(PageType.A6);
+	    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
 	    report.show();
 	} catch (DRException e) {
 	    e.printStackTrace();
