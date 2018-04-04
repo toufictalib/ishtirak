@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,7 +40,6 @@ import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
 import com.aizong.ishtirak.model.Contract;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.debug.FormDebugPanel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
 
@@ -63,55 +63,55 @@ public class MainFrame extends JFrame {
 
     private void buildPanel() {
 
-	JideButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
+	JButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
 	btnSubscriberManagement.addActionListener(e -> {
 	    SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand());
 	    subscriberFilterTable.setPreferredSize(ComponentUtils.getDimension(90, 90));
 	    openWindow(e.getActionCommand(), subscriberFilterTable);
 	});
 
-	JideButton btnEngineManagement = button("إدارة المولدات", "engine.png");
+	JButton btnEngineManagement = button("إدارة المولدات", "engine.png");
 	btnEngineManagement.addActionListener(e -> {
 	    JPanel innerPanel = new EngineFitlerTable(e.getActionCommand());
 	    innerPanel.setPreferredSize(ComponentUtils.getDimension(90, 90));
 	    openWindow(e.getActionCommand(), innerPanel);
 	});
-	JideButton btnVillage = button("إدارة القرى", "village.png");
+	JButton btnVillage = button("إدارة القرى", "village.png");
 	btnVillage.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new VillageFilterTable(e.getActionCommand()));
 	});
 
-	JideButton btnSubscriptionBundle = button("إضافة إشتراك عداد", "add.png");
+	JButton btnSubscriptionBundle = button("إضافة إشتراك عداد", "add.png");
 	btnSubscriptionBundle.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new SubscriptionBundleFilterTable(e.getActionCommand()));
 	});
 
-	JideButton btnMonthlyBundle = button("إضافة إشتراك مقطوعية", "add.png");
+	JButton btnMonthlyBundle = button("إضافة إشتراك مقطوعية", "add.png");
 	btnMonthlyBundle.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new MonthlyBundleFilterTable(e.getActionCommand()));
 	});
 
-	JideButton btnEmployee = button("إدارة الموظفين", "employee.png");
+	JButton btnEmployee = button("إدارة الموظفين", "employee.png");
 	btnEmployee.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new EmployeeFilterTable(e.getActionCommand()));
 	});
 
-	JideButton btnEmployeeJob = button("إدارة الوظائف", "employees.png");
+	JButton btnEmployeeJob = button("إدارة الوظائف", "employees.png");
 	btnEmployeeJob.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new EmployeeTypeFilterTable(e.getActionCommand()));
 	});
 
-	JideButton btnExpenses = button("إضافة  مصاريف", "add.png");
+	JButton btnExpenses = button("إضافة  مصاريف", "add.png");
 	btnExpenses.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ExpensesForm());
 	});
 
-	JideButton btnExpensesManagement = button("إدارة  مصاريف", "expenses.png");
+	JButton btnExpensesManagement = button("إدارة  مصاريف", "expenses.png");
 	btnExpensesManagement.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ExpensesFitlerTable(e.getActionCommand()));
 	});
 
-	JideButton btnReceipts = button("إنشاء كل الايصالات", "receipts.png");
+	JButton btnReceipts = button("إنشاء كل الايصالات", "receipts.png");
 	btnReceipts.addActionListener(e -> {
 	    boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر",
 		    "اصدار ايصالات");
@@ -128,17 +128,17 @@ public class MainFrame extends JFrame {
 	    }
 	});
 
-	JideButton btnMonthlyReports = button("تقارير شهرية", "reports.png");
+	JButton btnMonthlyReports = button("تقارير شهرية", "reports.png");
 	btnMonthlyReports.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
 	});
 
-	JideButton btnReports = button("تقارير", "reports.png");
+	JButton btnReports = button("تقارير", "reports.png");
 	btnReports.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new GeneralReportButtonsPanel());
 	});
 
-	JideButton btnOutOfExpenses = button("مسحوبات المدير والموظفين", "reports.png");
+	JButton btnOutOfExpenses = button("مسحوبات المدير والموظفين", "reports.png");
 	btnOutOfExpenses.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
 	});
@@ -165,8 +165,7 @@ public class MainFrame extends JFrame {
 
 	JPanel topPanel = createTopPanel();
 
-	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "100dlu,p"),
-		new FormDebugPanel());
+	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "130dlu,p"));
 	mainBuilder.append(topPanel);
 
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER,15,0));
@@ -233,9 +232,11 @@ public class MainFrame extends JFrame {
 	return ImageHelperCustom.get().getImageIcon("menus/" + imagePath);
     }
 
-    private JideButton button(String text, String imagePath) {
-	JideButton btnEngineManagement = new JideButton(text,
+    private JButton button(String text, String imagePath) {
+	JideButton btn = new JideButton(text,
 		ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
-	return btnEngineManagement;
+		btn.setHorizontalAlignment(SwingConstants.RIGHT);
+		btn.setButtonStyle(JideButton.TOOLBOX_STYLE);
+	return btn;
     }
 }
