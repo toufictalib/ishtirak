@@ -4,7 +4,7 @@ SELECT
     s.last_name,
     v.name 'Village',
     si.main_phone,
-    c.counter_id,
+    c.contract_unique_code,
     b.name 'Bundle',
     e.name 'Engine'
 FROM

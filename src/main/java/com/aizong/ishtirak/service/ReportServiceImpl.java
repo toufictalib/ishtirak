@@ -2,6 +2,8 @@ package com.aizong.ishtirak.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.dao.ReportDao;
-import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.Employee;
 import com.aizong.ishtirak.model.EmployeeType;
@@ -126,18 +127,25 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportTableModel getVillages() {
 	List<Village> employees = subscriberService.getVillages();
+	Collections.sort(employees, new Comparator<Village>() {
 
-	String[] cols = { "الرقم", "الاسم" };
+	    @Override
+	    public int compare(Village o1, Village o2) {
+		return o1.getOrderIndex() - o2.getOrderIndex();
+	    }
+	});
+	String[] cols = { "number", "name", "order" };
 
+	
 	List<Object[]> rows = new ArrayList<>();
 	for (Village employee : employees) {
 
-	    Object[] row = { employee.getId(), employee.getName() };
+	    Object[] row = { employee.getId(), employee.getName(),employee.getOrderIndex() };
 
 	    rows.add(row);
 	}
 
-	Class<?>[] clazzes = { Long.class, String.class };
+	Class<?>[] clazzes = clazzes(rows, cols);
 
 	return new ReportTableModel(cols, rows, clazzes);
     }
@@ -253,37 +261,34 @@ public class ReportServiceImpl implements ReportService {
 	if (contractById == null) {
 	    throw new Exception("subscriber.noSubscription");
 	}
-
-	Bundle bundle = subscriberService.getBundleById(contractById.getBundleId());
-	if (bundle == null) {
-	    throw new Exception("bundle.notFound");
-	}
-
-	TransactionType transactionType = (bundle instanceof SubscriptionBundle) ? TransactionType.COUNTER_PAYMENT : TransactionType.MONTHLY_PAYMENT;
-	List<Object[]> rows = reportDao.getSubscriptionsHistory(contractId, searchBean.getFromDate(),
-		searchBean.getEndDate(),transactionType );
+	
+	
+	boolean isCounter = reportDao.hasCounterBundle(contractById.getContractUniqueCode());
+	
+	List<Object[]> rows = reportDao.getSubscriptionsHistory(contractById.getContractUniqueCode(), searchBean.getFromDate(),
+		searchBean.getEndDate(),isCounter ? TransactionType.COUNTER_PAYMENT : TransactionType.MONTHLY_PAYMENT);
 
 	Object value = null;
 	for (Object[] row : rows) {
-	    value = row[2];
-	    if (value != null) {
-		row[2] = message.getEnumLabel(value.toString(), TransactionType.class);
+	    value = row[3];
+	    if (value!=null) {
+		row[3] = message.getEnumLabel(value.toString(), TransactionType.class);
 	    }
 	}
 	
 	String[] cols = null;
 	Class<?>[] clazzes = null;
-	if(transactionType==TransactionType.COUNTER_PAYMENT) {
-	    cols = new String [] { "maintenanceId",  "amount", "transactionType","consumption","previous_counter","current_counter","costPerKb","subtotal_kb_multiply_consumption",
-			"subscriptionFees", "insertDate" };
-	    clazzes = new Class[]{ Long.class, Double.class, String.class, Double.class, Double.class, Double.class,
-		    Double.class, Date.class };
-	}else {
-	    cols =  new String [] { "maintenanceId",  "amount", "transactionType", "insertDate" };
-	    clazzes = new Class[]{ Long.class, Double.class, String.class,Date.class };
+	if(isCounter) {
+	    cols = new String [] { "maintenanceId",  "amount", "subscriptionBundle",
+		    "transactionType","consumption","previous_counter","current_counter",
+		    "costPerKb","subtotal_kb_multiply_consumption",
+			"counterRenting", "insertDate" };
+	    
+	}else{
+	    cols = new String [] { "maintenanceId",  "amount", "subscriptionBundle",
+		    "transactionType","insertDate" };
 	}
-
-
+	clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);
 
     }

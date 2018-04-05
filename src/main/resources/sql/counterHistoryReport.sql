@@ -1,7 +1,7 @@
 
 SELECT 
     c.id,
-    c.counter_id,
+    c.contract_unique_code,
     e.name 'engine',
     ch.consumption,
     ch.insert_date

@@ -209,15 +209,16 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, int currentMonth) {
+    public List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, String fromDate, String toDate) {
 
 	if (!activeContracts.isEmpty()) {
-	    String sql = "select id_contract from transaction t " + "where month(t.insert_date) = :currentMonth "
+	    String sql = "select id_contract from transaction t " + "where insert_date>=:fromDate and insert_date<=toDate " 
 		    + "and t.id_contract in (:activeContracts) and t.transaction_type <> :transactionType";
 
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
-	    sqlQuery.setParameterList("activeContracts", activeContracts).setParameter("currentMonth", currentMonth)
-		    .setParameter("transactionType", TransactionType.SETTELMENT_FEES.name());
+	    sqlQuery.setParameterList("activeContracts", activeContracts).setParameter("fromDate", fromDate)
+		    .setParameter("transactionType", TransactionType.SETTELMENT_FEES.name())
+		    .setParameter("toDate", toDate);
 	    sqlQuery.addScalar("id_contract", StandardBasicTypes.LONG);
 	    return sqlQuery.list();
 	}
@@ -239,19 +240,23 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public CounterHistory getCounterHistoryByContractId(Long contractId, int month) {
-	String sql = "select * from counter_history where contract_id = :contractId and month(insert_date) = :month";
+    public CounterHistory getCounterHistoryByContractId(Long contractId, String fromDate, String toDate) {
+	String sql = "select * from counter_history "
+		+ "where contract_id = :contractId "
+		+ "and insert_date >= :fromDate "
+		+ "and insert_date <= :toDate";
 	NativeQuery<CounterHistory> sqlQuery = getsession().createNativeQuery(sql);
-	sqlQuery.setParameter("contractId", contractId).setParameter("month", month).addEntity(CounterHistory.class);
+	sqlQuery.setParameter("contractId", contractId).setParameter("fromDate", fromDate).
+	setParameter("toDate", toDate).addEntity(CounterHistory.class);
 	return sqlQuery.uniqueResult();
     }
 
     @Override
     public void updateCounterHistory(CounterHistory history) {
-	String sql = "update counter_history set consumption = :consumption where contract_id = :contractId";
+	String sql = "update counter_history set consumption = :consumption where id = :id";
 	NativeQuery<Void> sqlQuery = getsession().createNativeQuery(sql);
-	sqlQuery.setParameter("consumption", history.getConsumption()).setParameter("contractId",
-		history.getContractId());
+	sqlQuery.setParameter("consumption", history.getConsumption()).setParameter("id",
+		history.getId());
 	sqlQuery.executeUpdate();
 
     }

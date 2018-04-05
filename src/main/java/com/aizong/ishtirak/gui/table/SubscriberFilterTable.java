@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
@@ -83,14 +84,14 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		/*boolean yes = MessageUtils.showConfirmationMessage(owner, message("deleteRow.confirmation"),
-			message("delete"));
-		if (yes) {
-		    List<Long> ids = new ArrayList<>();
-		    ids.add(id);
-		    ServiceProvider.get().getSubscriberService().deleteSubscribers(ids);
-		    refreshTableInterface.refreshTable();
-		}*/
+		/*
+		 * boolean yes = MessageUtils.showConfirmationMessage(owner,
+		 * message("deleteRow.confirmation"), message("delete")); if
+		 * (yes) { List<Long> ids = new ArrayList<>(); ids.add(id);
+		 * ServiceProvider.get().getSubscriberService().
+		 * deleteSubscribers(ids); refreshTableInterface.refreshTable();
+		 * }
+		 */
 		MessageUtils.showWarningMessage(owner, message("delete.forbidden"));
 	    }
 	});
@@ -262,13 +263,12 @@ public class SubscriberFilterTable extends CommonFilterTable {
     }
 
     private JButton createContractHistoryBtn(String title) {
-	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> WindowUtils
-		.createDialog(getOwner(), title, new SubscriptionHistoryTablePanel(title, subscriber.getId())));
+	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> MainFrame.openWindow(getOwner(), title, new SubscriptionHistoryTablePanel(title, subscriber.getId())));
     }
 
     private JButton showCounterHistory(String title) {
-	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> WindowUtils
-		.createDialog(getOwner(), title1, new CounterHistoryTablePanel(title1, subscriber.getId())));
+	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> MainFrame.openWindow(getOwner(),
+		title1, new CounterHistoryTablePanel(title1, subscriber.getId())));
 
     }
 

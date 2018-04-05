@@ -12,7 +12,8 @@ public class Village extends BaseEntity {
      */
     private static final long serialVersionUID = 7885874793830935824L;
     private String name;
-
+    private int orderIndex;
+    
     public Village() {
 	super();
     }
@@ -38,5 +39,15 @@ public class Village extends BaseEntity {
     public String toString() {
 	return name;
     }
+
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+    
+    
 
 }

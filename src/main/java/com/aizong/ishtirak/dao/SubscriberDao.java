@@ -43,11 +43,11 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     void deleteExpenses(List<Long> ids);
 
-    List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, int currentMonth);
+    List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, String fromDate, String toDate);
 
     List<Contract> getContractBySubscriberId(Long subscriberId, Boolean active);
 
-    CounterHistory getCounterHistoryByContractId(Long contractId, int month);
+    CounterHistory getCounterHistoryByContractId(Long contractId, String fromDate, String toDate);
 
     void updateCounterHistory(CounterHistory history);
 

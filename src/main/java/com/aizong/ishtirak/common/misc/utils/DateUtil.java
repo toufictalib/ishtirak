@@ -189,10 +189,18 @@ public class DateUtil {
 
     public static DateRange getStartEndDateOfCurrentMonth() {
 	LocalDate initial = LocalDate.now();
-	LocalDate start = initial.withDayOfMonth(1);
-	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth());
+	initial = initial.minusMonths(1);
+	LocalDate start = initial.withDayOfMonth(6);
+	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(5);
 
 	return new DateRange(fromLocalDate(start), fromLocalDate(end));
+    }
+    
+    public static void main(String[]args) {
+	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
+	System.out.println(startEndDateOfCurrentMonth.getStartDateAsString());
+	System.out.println(startEndDateOfCurrentMonth.getEndDateAsString());
+	
     }
 
     public static DateRange getStartEndDateOfLastMonth() {
@@ -204,13 +212,28 @@ public class DateUtil {
 	return new DateRange(fromLocalDate(start), fromLocalDate(end));
     }
 
-    public static int getCurrentMonth() {
+    /**
+     * month starts between 5 last month and 5 current month
+     * so if current day is smaller or equal 5 we should subtract the month by 1
+     * @return
+     */
+    /*public static MyDate getEffectiveCurrentMonth() {
 	LocalDateTime currentTime = LocalDateTime.now();
 	Month month = currentTime.getMonth();
 	int currentMonth = month.getValue();
-	return currentMonth;
+	if (currentTime.getDayOfMonth() < 5) {
+	    currentMonth--;
+	}
+	
+	int year = currentTime.getYear();
+	if(currentMonth==0) {
+	    currentMonth = 12;
+	    year--;
+	}
+	
+	return new MyDate(currentMonth, year);
     }
-
+    */
     public static String getMonthName(int month) {
 	try {
 	    if (monthes == null) {
@@ -224,6 +247,24 @@ public class DateUtil {
 	    e.printStackTrace();
 	}
 	return month+"";
+    }
+
+    /**
+     * effective month is between 6 of previous month and 5 of current month
+     * @return
+     */
+    public static int getEffectiveMonth() {
+	LocalDateTime currentTime = LocalDateTime.now();
+	Month month = currentTime.getMonth();
+	int currentMonth = month.getValue();
+	if (currentTime.getDayOfMonth() < 5) {
+	    currentMonth--;
+	}
+	
+	if(currentMonth==0) {
+	    currentMonth = 12;
+	}
+	return currentMonth;
     }
 
 }

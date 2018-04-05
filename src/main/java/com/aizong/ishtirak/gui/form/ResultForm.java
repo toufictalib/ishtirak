@@ -382,7 +382,7 @@ public class ResultForm extends BasicForm {
 	cell.setCellStyle(style(wb, font));
 
 	Formatter formatter = new Formatter(System.out, LoginForm.getCurrentLocale());
-	cell.setCellValue("نتيجة المدخول والنفقات لشهر " + DateUtil.getMonthName(DateUtil.getCurrentMonth()));
+	cell.setCellValue("نتيجة المدخول والنفقات لشهر " + DateUtil.getMonthName(DateUtil.getEffectiveMonth()));
 	formatter.close();
 	sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 2));
 

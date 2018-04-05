@@ -2,7 +2,10 @@ package com.aizong.ishtirak.gui.table;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -38,6 +41,18 @@ public class SubscriptionHistoryTablePanel extends ReportTablePanel {
 	
 	List<Contract> contracts = ServiceProvider.get().getSubscriberService()
 		    .getContractBySubscriberId(subscriberId);
+	
+	Set<String> values = new HashSet<>();
+	 Contract c = null;
+	Iterator<Contract> iterator = contracts.iterator();
+	while(iterator.hasNext()) {
+	   c = iterator.next();
+	   if(values.contains(c.getContractUniqueCode())) {
+	       iterator.remove();
+	   }else {
+	       values.add(c.getContractUniqueCode());
+	   }
+	}
 	ExCombo<Contract> combo = new ExCombo<>(contracts);
 	combo.setPreferredSize(new Dimension(200,combo.getPreferredSize().height));
 	

@@ -21,6 +21,7 @@ import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.PasswordUtils;
@@ -230,10 +231,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void saveCounterHistory(CounterHistory history) throws Exception {
-	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractId(), DateUtil.getCurrentMonth());
+	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractId(),effectiveCurrentMonth.getStartDateAsString(),effectiveCurrentMonth.getEndDateAsString() );
 	 if(counterHistoryByContractId==null) {
 	     subscriberDao.save(Arrays.asList(history));
 	 }else {
+	     history.setId(counterHistoryByContractId.getId());
 	     subscriberDao.updateCounterHistory(history);
 	 }
 
@@ -241,7 +244,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public CounterHistory getCounterHistoryByContractId(Long contractId) {
-	return subscriberDao.getCounterHistoryByContractId(contractId, DateUtil.getCurrentMonth());
+	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	return subscriberDao.getCounterHistoryByContractId(contractId, effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
     }
     
     @Override
@@ -282,8 +286,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 	// get active contracts
 	List<Contract> contracts = getActiveContracts();
 	
+	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
 	//create only the contracts already created yet
-	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(contracts, DateUtil.getCurrentMonth()));
+	Set<Long> alreadyCreatedContracts = new HashSet<>(
+		subscriberDao.getCreatedContractsForCurrentMonth(contracts,
+			dateRange.getStartDateAsString(), dateRange.getEndDateAsString()));
 
 	// get all bundles monthly and subscription types
 	List<Bundle> allBundles = getAllBundles();

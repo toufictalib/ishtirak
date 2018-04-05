@@ -4,29 +4,46 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
-import java.math.BigDecimal;
-
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
-import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 import net.sf.dynamicreports.report.builder.style.PenBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 
-/**
- * @author Ricardo Mariaca (r.mariaca@dynamicreports.org)
- */
 public class ReceiptDesign {
-    private InvoiceData data = new InvoiceData();
-    private AggregationSubtotalBuilder<BigDecimal> totalSum;
 
-    ReceiptBean bean = ReceiptBean.create();
+    private static final int VALUE_FONT_SIZE = 13;
+
+    private static final String RECEIPT_NUMBER = "وصل تحصيل";
+
+    private static final String MAINTENANCE_NUMBER = "رقم الصيانة";
+
+    private static final String OLD_COUNTER_VALUE = "عداد قديم";
+
+    private static final String NEW_COUNTER_VALUE = "عداد جديد ";
+
+    private static final String SIGNATURE = "التوقيع";
+
+    private static final String SUBSCRIPTION_TYPE = "مقطوعية";
+
+    private static final String MONTH = "وذلك بدل اشتراك عن شهر";
+
+    private static final String AMOUNT = "مبلغ وقدره";
+
+    private static final String ADDRESS = "عنوانه";
+
+    private static final String MR = "وصلنا من السيد ";
+
+    private static final String COUNTER_ID = "رقم العداد";
+
+    private static final String COUNTER_DIFFERENCE = "فارق العداد";
+
+    ReceiptBean bean = ReceiptBean.create(true);
 
     StyleBuilder STYLE_RTL;
 
@@ -46,30 +63,46 @@ public class ReceiptDesign {
     private HorizontalListBuilder createCustomerInfo() {
 	HorizontalListBuilder horizontalList = cmp.horizontalList();
 
-	addLine(horizontalList, "وصلنا من السيد ", "توفيق طالب");
-	addLine(horizontalList, "عنوانه", "ألسفيرة-البغلة");
-	addLine(horizontalList, "مبلغ وقدره", bean.getAmountToPay());
-	addLine(horizontalList, "وذلك بدل اشتراك كهرباء عن شهر", bean.getDate());
+	addLine(horizontalList, MR, bean.getName());
+	addLine(horizontalList, ADDRESS, bean.getAddress());
+	addLine(horizontalList, AMOUNT, bean.getAmountToPay());
+	addLine(horizontalList, MONTH, bean.getDate());
 
-	horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(counter()).heightFixedOnTop())).newRow()
-		.add(cmp.hListCell(counter2()).heightFixedOnTop()).newRow()
-		.add(cmp.line().setStyle(stl.style().setBorder(stl.penThin()))).newRow()
-		.add(cmp.text("التوقيع").setStyle(
-			stl.style().setFont(stl.fontArialBold()).setPadding(stl.padding().setLeft(100).setTop(5)).setBold(true)));
+	if (bean.isMonthlySubscription()) {
+	    horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(subscriptionAmp()).heightFixedOnTop()))
+		    .newRow().add(cmp.hListCell(cmp.horizontalList().add(cmp.text(""))).heightFixedOnTop()).newRow()
+		    .add(cmp.line().setStyle(stl.style().setBorder(stl.penThin()))).newRow()
+		    .add(cmp.text(SIGNATURE).setStyle(stl.style().setFont(stl.fontArialBold())
+			    .setPadding(stl.padding().setLeft(100).setTop(5)).setBold(true)));
+	} else {
+	    horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(counter()).heightFixedOnTop())).newRow()
+		    .add(cmp.horizontalList(counter2())).newRow()
+		    .add(cmp.line().setStyle(stl.style().setBorder(stl.penThin()))).newRow()
+		    .add(cmp.text(SIGNATURE).setStyle(stl.style().setFont(stl.fontArialBold())
+			    .setPadding(stl.padding().setLeft(100).setTop(5)).setBold(true)));
+	}
 	return horizontalList;
     }
 
     public ComponentBuilder<?, ?> counter() {
 	HorizontalListBuilder list = cmp.horizontalList();
-	addCounerLine(list, "فارق العداد", "600");
-	addCounerLine(list, "رقم العداد", "12050");
+
+	addCounerLine(list, COUNTER_DIFFERENCE, String.valueOf(bean.getNewCounter() - bean.getOldCounter()));
 	return cmp.verticalList(list);
     }
 
     public ComponentBuilder<?, ?> counter2() {
 	HorizontalListBuilder list = cmp.horizontalList();
-	addCounerLine(list, "عداد جديد ", "1800");
-	addCounerLine(list, "عداد قديم", "1200");
+	addCounerLine(list, NEW_COUNTER_VALUE, String.valueOf(bean.getNewCounter()), 5);
+	list.add(cmp.text("").setFixedColumns(10));
+	addCounerLine(list, OLD_COUNTER_VALUE, String.valueOf(bean.getOldCounter()), 6);
+
+	return cmp.verticalList(list);
+    }
+
+    public ComponentBuilder<?, ?> subscriptionAmp() {
+	HorizontalListBuilder list = cmp.horizontalList();
+	addCounerLine(list, SUBSCRIPTION_TYPE, String.valueOf(bean.getSubscriptionType()));
 	return cmp.verticalList(list);
     }
 
@@ -79,22 +112,33 @@ public class ReceiptDesign {
 		    cmp.text(value.toString())
 			    .setStyle(stl.style(STYLE_RTL)
 				    .setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE)
-				    .setBottomBorder(stl.penDotted()).setLeftPadding(10)),
-		    cmp.text(label).setFixedColumns(12).setStyle(stl.style(STYLE_RTL).bold().setFontSize(10))).newRow();
+				    .setBottomBorder(stl.penDotted()).setLeftPadding(10).setFontSize(VALUE_FONT_SIZE)
+				    .setFontName("Times New Roman").setBold(true)),
+		    cmp.text(label).setFixedColumns(12)
+			    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(VALUE_FONT_SIZE)))
+		    .newRow();
 	}
     }
 
     private void addCounerLine(HorizontalListBuilder list, String label, String value) {
+	addCounerLine(list, label, value, 12);
+    }
+
+    private void addCounerLine(HorizontalListBuilder list, String label, String value, int fixedCols) {
 	if (value != null) {
 
-	    StyleBuilder setTextAlignment = stl.style(STYLE_RTL).setTextAlignment(HorizontalTextAlignment.CENTER,
-		    VerticalTextAlignment.MIDDLE);
+	    StyleBuilder setTextAlignment = stl.style(STYLE_RTL)
+		    .setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE).setBold(true);
 	    setTextAlignment = border(setTextAlignment);
 
-	    list.add(cmp.horizontalList()
-		    .add(cmp.text(value.toString()).setStyle(setTextAlignment),
-			    cmp.text(label).setFixedColumns(12).setStyle(stl.style(STYLE_RTL).bold().setFontSize(10)))
-		    .newRow(5));
+	    list.add(
+		    cmp.horizontalList().add(
+			    cmp.text(value.toString())
+				    .setStyle(setTextAlignment.setFontSize(VALUE_FONT_SIZE)
+					    .setFontName("Times New Roman").setBold(true)),
+			    cmp.text(label).setFixedColumns(fixedCols)
+				    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(VALUE_FONT_SIZE)))
+			    .newRow(5));
 	}
     }
 
@@ -104,17 +148,17 @@ public class ReceiptDesign {
 		.setBottomBorder(penDouble);
     }
 
-    public static ComponentBuilder<?, ?> createTitleComponent(String label) {
+    public ComponentBuilder<?, ?> createTitleComponent(String label) {
 	return cmp.horizontalList(
-		cmp.verticalList().add(cmp.text("رقم الصيانة").setStyle(Templates.bold12CenteredStyle),
-			cmp.text("76 619869").setStyle(Templates.bold12CenteredStyle)),
+		cmp.verticalList().add(cmp.text(MAINTENANCE_NUMBER).setStyle(Templates.bold12CenteredStyle),
+			cmp.text(bean.getMaintenanceNumber()).setStyle(Templates.bold12CenteredStyle)),
 
 		cmp.verticalList().add(
 
-			cmp.text(label).setStyle(Templates.bold22CenteredStyle),
-			cmp.text("وصل تحصيل").setStyle(Templates.bold12CenteredStyle)),
-		cmp.verticalList().add(cmp.text("رقم الصيانة").setStyle(Templates.bold12CenteredStyle),
-			cmp.text("76 619869").setStyle(Templates.bold12CenteredStyle)));
+			cmp.text(label).setStyle(stl.style(Templates.boldCenteredStyle).setFontSize(20)),
+			cmp.text(RECEIPT_NUMBER).setStyle(Templates.bold12CenteredStyle)),
+		cmp.verticalList().add(cmp.text(COUNTER_ID).setStyle(Templates.bold12CenteredStyle),
+			cmp.text(bean.getCounterId()).setStyle(Templates.bold12CenteredStyle)));
     }
 
     public static void main(String[] args) {

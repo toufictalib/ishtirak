@@ -67,7 +67,6 @@ public class CounterHistoryForm extends BasicForm {
 		    if (comboContact.getValue() != null) {
 			CounterHistory counterHistroy = ServiceProvider.get().getSubscriberService()
 				.getCounterHistoryByContractId(comboContact.getValue().getId());
-			System.out.println("Conter Histroy"+counterHistroy);
 			    txtConsumption.setValueAsLong(counterHistroy!=null ? counterHistroy.getConsumption() : null);
 
 		    }

@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
@@ -17,7 +18,6 @@ import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.ss.rlib.ui.control.input.IntegerTextField;
 
 public class VillageForm extends BasicForm implements RefreshTableInterface {
 
@@ -27,7 +27,7 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
     private static final long serialVersionUID = 1L;
 
     private JTextField txtName;
-    private IntegerTextField txtOrder;
+    private IntergerTextField txtOrder;
 
     private SavingCallback callback;
     private Mode mode;
@@ -54,12 +54,14 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
 	if (oldVillage != null) {
 	    txtName.setText(oldVillage.getName());
+	    txtOrder.setValue(oldVillage.getOrderIndex());
 	}
     }
 
     @Override
     protected void initComponents() {
 	txtName = new JTextField();
+	txtOrder = new IntergerTextField();
     }
 
     @Override
@@ -67,6 +69,7 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 	builder.appendSeparator(message("village.form.seperator"));
 	builder.setDefaultDialogBorder();
 	builder.append(message("village.form.name"), txtName);
+	builder.append(message("village.form.order"), txtOrder);
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
@@ -74,14 +77,21 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
+		
 		if (txtName.getText().isEmpty()) {
 		    MessageUtils.showWarningMessage(getOwner(), errorPerfix("village.form.name"));
+		    return;
+		}
+		
+		if (txtOrder.getValue() == null) {
+		    MessageUtils.showWarningMessage(getOwner(), errorPerfix("village.form.order"));
 		    return;
 		}
 		
 		
 		Village village = oldVillage == null ? new Village() : oldVillage;
 		village.setName(txtName.getText());
+		village.setOrderIndex(txtOrder.getValue());
 
 		ServiceProvider.get().getSubscriberService().saveVillage(village);
 		closeWindow();

@@ -121,41 +121,12 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 
 
     @Override
-    public List<Object[]> getSubscriptionsHistory(Long contractId, String fromDate, String endDate, TransactionType transactionType) {
-	String sql="SELECT " + 
-		"    t.id," + 
-		"    t.amount 'total'," + 
-		"    t.transaction_type," + 
-		"    sh.previous_counter, "+
-		"    sh.current_counter, "+
-		"    sh.consumption," + 
-		"    sh.cost_per_kb," + 
-		"    sh.consumption * sh.cost_per_kb 'subtotal'," + 
-		"    sh.subscription_fees," + 
-		"     t.insert_date "+ 
-		"FROM" + 
-		"    transaction t" + 
-		"        LEFT JOIN" + 
-		"    subscription_history sh ON sh.transaction = t.id " + 
-		"WHERE" + 
-		"    t.id_contract = {2} " + 
-		"        AND t.insert_date >= \"{0}\"" + 
-		"        AND t.insert_date <= \"{1}\";";
+    public List<Object[]> getSubscriptionsHistory(String  contractUniqueCode, String fromDate, String endDate, TransactionType transactionType) {
 	
-	String sql1="SELECT " + 
-		"    t.id," + 
-		"    t.amount 'total'," + 
-		"    t.transaction_type," + 
-		"     t.insert_date " + 
-		"FROM" + 
-		"    transaction t WHERE" + 
-		"    t.id_contract = {2} " + 
-		"        AND t.insert_date >= \"{0}\"" + 
-		"        AND t.insert_date <= \"{1}\";";
+	String sql = SQLUtils.sql(transactionType==TransactionType.COUNTER_PAYMENT ? "contractCounterHistory.sql" :"contractHistory.sql");
 	
-	sql = MessageFormat.format(sql, fromDate, endDate, contractId);
-	sql1 = MessageFormat.format(sql1, fromDate, endDate, contractId);
-	return toList(transactionType==TransactionType.COUNTER_PAYMENT ? sql :sql1);
+	sql = MessageFormat.format(sql, contractUniqueCode, fromDate, endDate);
+	return toList(sql);
     }
     
     @Override
@@ -166,7 +137,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 		"    s.last_name,\n" + 
 		"    v.name 'Village',\n" + 
 		"    si.main_phone,\n" + 
-		"    c.counter_id,\n" + 
+		"    c.contract_unique_code,\n" + 
 		"    b.name 'Bundle',\n" + 
 		"    e.name 'Engine'\n" + 
 		"FROM\n" + 
@@ -248,6 +219,16 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	String sql = SQLUtils.sql("counterHistoryReport.sql");
 	sql = MessageFormat.format(sql, subscriberId, "\"" + fromDate + "\"", "\"" + endDate + "\"");
 	return toList(sql);
+    }
+    
+    @Override
+    public boolean hasCounterBundle(String contractUniqueCode) {
+	String sql ="select count(bundle_id) from contract "
+		+ "where contract_unique_code = ?  and bundle_id in \n" + 
+		"(select id from bundle where type=\"SubscriptionBundle\");";
+	
+	int count = jdbcTemplate.queryForObject(sql, new Object[] { contractUniqueCode }, Integer.class);
+	return count > 0;
     }
     
 }
