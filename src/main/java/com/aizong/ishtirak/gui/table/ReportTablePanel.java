@@ -2,11 +2,16 @@ package com.aizong.ishtirak.gui.table;
 
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.Date;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,9 +33,12 @@ import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
+import com.aizong.ishtirak.common.misc.utils.reporting.ReportUtils;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
 
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
@@ -46,13 +54,14 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     protected JLabel txtRowCount;
     protected JLabel txtTotal;
     protected JButton btnExportExcel;
+    protected JButton btnPrint;
 
     private TableFilterHeader filterHeader;
 
     public ReportTablePanel() {
-	
-	
+
     }
+
     public ReportTablePanel(String title) {
 
 	this.title = title;
@@ -63,7 +72,16 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     protected void start() {
 	initComponents();
 	fillTable();
-	add(initUI());
+
+	DefaultFormBuilder buidler = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,p"));
+	buidler.append(initUI());
+	buidler.appendSeparator();
+
+	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	panel.add(btnExportExcel);
+	panel.add(btnPrint);
+	buidler.append(panel);
+	add(buidler.getPanel());
     }
 
     private void initComponents() {
@@ -79,7 +97,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	    }
 	};
 	table.setPreferredScrollableViewportSize(table.getPreferredSize());
-	
+
 	table.setRowHeight(50);
 	table.setFillsViewportHeight(true);
 	table.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -97,7 +115,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	});
 	table.setRowSorter(sorter);
 	table.setSelectionMode(0);
-	
+
 	JTableHeader header = table.getTableHeader();
 	header.setDefaultRenderer(new HeaderRenderer(table));
 
@@ -119,10 +137,39 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	filterHeader = new TableFilterHeader(table, AutoChoices.ENABLED);
 	filterHeader.setRowHeightDelta(10);
-	
+
 	btnExportExcel = ButtonFactory.createBtnExportExcel();
+	btnExportExcel.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		JFileChooser fc = new JFileChooser();
+		fc.setSelectedFile(new File(title+".xls"));
+		int returnVal = fc.showSaveDialog(ReportTablePanel.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+		    File file = fc.getSelectedFile();
+		    try {
+			ReportUtils.writeToExcel(table, file.getPath(), title);
+			MessageUtils.showInfoMessage(ReportTablePanel.this,message("file.exported.success"));
+		    } catch (Exception e1) {
+			e1.printStackTrace();
+			MessageUtils.showErrorMessage(ReportTablePanel.this,message("file.exported.error"));
+		    }
+		}
+
+	    }
+	});
+	
+	btnPrint = ButtonFactory.createBtnPrint();
+         
+	btnPrint.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+               ReportUtils.printTable(table,ReportTablePanel.this.getOwner());
+            }
+        });
 
     }
+
 
     private void setTxtRowCount(int row) {
 	txtRowCount.setText(message("table.rowCount", row));
@@ -132,12 +179,12 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
 
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs,"p,fill:p:grow,p,p");
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,fill:p:grow,p,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);
 
-	//builder.append(txtFE, 3);
+	// builder.append(txtFE, 3);
 
 	JScrollPane scrollPane = new JScrollPane(table);
 	// scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
@@ -153,7 +200,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     private void fillTable() {
 	ReportTableModel reportTableModel = getReportTableModel();
 	fillTable(reportTableModel);
-	
+
 	// sumAmount(table);
     }
 
@@ -217,7 +264,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     }
 
     private void applyRenderer() {
-	
+
 	if (table.getModel().getColumnCount() > 0) {
 	    TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
 	    column.setMinWidth(150);

@@ -60,7 +60,7 @@ public class ButtonFactory {
     }
 
     public static JButton createBtnPrint() {
-	return new JButton(message("print"), ImageUtils.getInfoIcon());
+	return new JButton(message("print"), ImageUtils.getPrintIcon());
     }
 
     public static JButton createBtnSearch() {

@@ -94,8 +94,7 @@ public class ImageUtils {
     }
 
     public static Icon getExportExcel() {
-	// TODO Auto-generated method stub
-	return null;
+	return ImageHelperCustom.get().getImageIcon("excel.png");
     }
     
 }

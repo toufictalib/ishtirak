@@ -3,9 +3,9 @@ package com.aizong.ishtirak.gui.form;
 import java.awt.Component;
 import java.util.ArrayList;
 
+import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.table.ReportTablePanel;
@@ -30,7 +30,7 @@ public class ReportButtonsPanel extends BasicForm {
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder = new DefaultFormBuilder(new FormLayout(getLayoutSpecs()));
 	builder.setDefaultDialogBorder();
-	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "48px_customer.png");
+	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "subreport.png");
 	btnMonthlyReports.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
 	        
@@ -42,7 +42,7 @@ public class ReportButtonsPanel extends BasicForm {
 	   
 	});
 	
-	JideButton btnMonthlyExpenses = button(message("reports.subscirption.expenses"), "48px_customer.png");
+	JideButton btnMonthlyExpenses = button(message("reports.subscirption.expenses"), "subreport.png");
 	btnMonthlyExpenses.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
 	        
@@ -54,13 +54,13 @@ public class ReportButtonsPanel extends BasicForm {
 	   
 	});
 	
-	JideButton btnCounterHistory = button(message("reports.subscirption.counterHistory"), "48px_customer.png");
+	JideButton btnCounterHistory = button(message("reports.subscirption.counterHistory"), "subreport.png");
 	btnCounterHistory.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(), new CustomerSearchPanel());
 	   
 	});
 	
-	JideButton btnIshtirakReport = button(message("reports.subscirption.activeIshtirak"), "48px_customer.png");
+	JideButton btnIshtirakReport = button(message("reports.subscirption.activeIshtirak"), "subreport.png");
 	btnIshtirakReport.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new ReportTablePanel(e.getActionCommand()) {
@@ -74,7 +74,7 @@ public class ReportButtonsPanel extends BasicForm {
 
 	});
 	
-	JideButton btnIshtirakReportWithoutReceipts = button(message("reports.subscirption.activeIshtirakWithoutReceipts"), "48px_customer.png");
+	JideButton btnIshtirakReportWithoutReceipts = button(message("reports.subscirption.activeIshtirakWithoutReceipts"), "subreport.png");
 	btnIshtirakReportWithoutReceipts.addActionListener(e -> {
 	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new ReportTablePanel(e.getActionCommand()) {
@@ -97,9 +97,7 @@ public class ReportButtonsPanel extends BasicForm {
     }
 
     private JideButton button(String text, String imagePath) {
-   	JideButton btnEngineManagement = new JideButton(text,
-   		ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
-   	return btnEngineManagement;
+   	return (JideButton) MainFrame.button(text, imagePath);
        }
     @Override
     protected String getLayoutSpecs() {

@@ -4,9 +4,9 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.table.EmployeeTablePanel;
 import com.aizong.ishtirak.gui.table.ExpensesTablePanel;
@@ -31,7 +31,7 @@ public class GeneralReportButtonsPanel extends BasicForm {
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder = new DefaultFormBuilder(new FormLayout(getLayoutSpecs()));
 	builder.setDefaultDialogBorder();
-	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "48px_customer.png");
+	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "subreport.png");
 	btnMonthlyReports.addActionListener(e -> {
 	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new EmployeeTablePanel(btnMonthlyReports.getActionCommand()));
@@ -40,7 +40,7 @@ public class GeneralReportButtonsPanel extends BasicForm {
 
 	builder.append(btnMonthlyReports);
 	for (ExpensesType expensesType : ExpensesType.values()) {
-	    JideButton button = new JideButton(enumMessage(expensesType.name(), ExpensesType.class));
+	    JideButton button = button(enumMessage(expensesType.name(), ExpensesType.class),"subreport.png");
 	    button.addActionListener(new ActionListener() {
 
 		@Override
@@ -56,9 +56,7 @@ public class GeneralReportButtonsPanel extends BasicForm {
     }
 
     private JideButton button(String text, String imagePath) {
-	JideButton btnEngineManagement = new JideButton(text,
-		ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
-	return btnEngineManagement;
+	return (JideButton) MainFrame.button(text, imagePath);
     }
 
     @Override

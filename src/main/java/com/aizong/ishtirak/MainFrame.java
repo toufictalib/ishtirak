@@ -2,6 +2,7 @@ package com.aizong.ishtirak;
 
 import java.awt.Color;
 import java.awt.ComponentOrientation;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -198,15 +199,24 @@ public class MainFrame extends JFrame {
 	JLabel lblTitle = new JLabel(message("title"),
 		ImageHelperCustom.get().getImageIcon("logo_talaco.jpg"), SwingConstants.CENTER);
 	lblTitle.setFont(new Font("Serif", Font.BOLD, 50));
-
 	lblTitle.setVerticalTextPosition(JLabel.TOP);
 	lblTitle.setHorizontalTextPosition(JLabel.CENTER);
 
 	int gap = 15;
 	lblTitle.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+	
+	JLabel lbtPhone = new JLabel(message("76 619869"), SwingConstants.CENTER);
+	lbtPhone.setFont(new Font("Serif", Font.BOLD, 25));
+	lbtPhone.setVerticalTextPosition(JLabel.TOP);
+	lbtPhone.setHorizontalTextPosition(JLabel.CENTER);
+
+	gap = 15;
+	lblTitle.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+	
 	JPanel topPanel = new JPanel();
-	topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+	topPanel.setLayout(new GridLayout(0,1,10,10));
 	topPanel.add(lblTitle);
+	topPanel.add(lbtPhone);
 	return topPanel;
     }
 
@@ -232,11 +242,12 @@ public class MainFrame extends JFrame {
 	return ImageHelperCustom.get().getImageIcon("menus/" + imagePath);
     }
 
-    private JButton button(String text, String imagePath) {
+    public static  JButton button(String text, String imagePath) {
 	JideButton btn = new JideButton(text,
 		ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
 		btn.setHorizontalAlignment(SwingConstants.RIGHT);
 		btn.setButtonStyle(JideButton.TOOLBOX_STYLE);
+		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	return btn;
     }
 }
