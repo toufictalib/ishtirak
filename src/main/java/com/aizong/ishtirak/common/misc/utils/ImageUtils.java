@@ -97,4 +97,8 @@ public class ImageUtils {
 	return ImageHelperCustom.get().getImageIcon("excel.png");
     }
     
+    public static Icon getCompany() {
+	return ImageHelperCustom.get().getImageIcon("company.png");
+    }
+    
 }

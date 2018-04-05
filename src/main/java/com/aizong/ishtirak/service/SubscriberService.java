@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.model.Bundle;
+import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
@@ -109,5 +110,9 @@ public interface SubscriberService {
     void saveAndDeactivateContact(Contract contract, Integer settelementFees, Long oldContractId);
 
     List<Contract> getActiveContractBySubscriberId(Long subscriberId);
+
+    void saveCompany(Company newCompany);
+
+    Company getCompany();
     
 }

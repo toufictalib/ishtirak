@@ -25,6 +25,7 @@ import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.PasswordUtils;
 import com.aizong.ishtirak.dao.SubscriberDao;
 import com.aizong.ishtirak.model.Bundle;
+import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
@@ -468,5 +469,20 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void deleteOutExpenses(List<Long> ids) {
 	subscriberDao.deleteOutExpenses(ids);
 	
+    }
+
+    @Override
+    public void saveCompany(Company newCompany) {
+	if (newCompany.getId() != null) {
+	    subscriberDao.update(newCompany);
+	} else {
+	    subscriberDao.save(Arrays.asList(newCompany));
+	}
+    }
+
+    @Override
+    public Company getCompany() {
+	List<Company> companies = subscriberDao.findAll(Company.class);
+	return companies.isEmpty() ? null : companies.get(0);
     }
 }

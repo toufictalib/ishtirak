@@ -27,6 +27,7 @@ import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
+import com.aizong.ishtirak.gui.form.CompanyForm;
 import com.aizong.ishtirak.gui.form.ExpensesForm;
 import com.aizong.ishtirak.gui.form.GeneralReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
@@ -143,6 +144,11 @@ public class MainFrame extends JFrame {
 	btnOutOfExpenses.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
 	});
+	
+	JButton btnCompany = button(message("mainFrame.company"), "company.png");
+	btnCompany.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new CompanyForm());
+	});
 
 	setTitle(message("tite"));
 
@@ -163,6 +169,7 @@ public class MainFrame extends JFrame {
 	reportsMenu.add(btnOutOfExpenses);
 	miscMenu.add(btnEngineManagement);
 	miscMenu.add(btnVillage);
+	miscMenu.add(btnCompany);
 
 	JPanel topPanel = createTopPanel();
 
@@ -190,7 +197,9 @@ public class MainFrame extends JFrame {
 
     private JPanel createMenuPanel(String title) {
 	 JPanel jPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+	 
 	 jPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.black), title));
+	 jPanel.setPreferredSize(new Dimension(250, 300));
 	 return jPanel;
     }
 

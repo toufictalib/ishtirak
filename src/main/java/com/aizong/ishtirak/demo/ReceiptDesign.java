@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
-import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
+import net.sf.dynamicreports.report.builder.style.PenBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
@@ -30,58 +31,77 @@ public class ReceiptDesign {
     StyleBuilder STYLE_RTL;
 
     public JasperReportBuilder build() throws DRException {
-	STYLE_RTL = stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE);
+	STYLE_RTL = stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE)
+		.setPadding(7);
 	JasperReportBuilder report = report();
 
-	HorizontalListBuilder text = cmp.horizontalList().add(cmp.text("title1"))
-		.setBackgroundComponent(cmp.rectangle());
 	report.setTemplate(Templates.reportTemplate).title(createTitleComponent(bean.getTitle()),
-		cmp.horizontalList().add(rtlText("توفيق طالب"), rtlText("وصلنا من السيد ")).newRow()
-			.add(rtlText("ألسفيرة-البغلة"), rtlText("عنوانه")).newRow()
-			.add(rtlText(bean.getAmountToPay()), rtlText("مبلغ وقدره")).newRow()
-			.add(rtlText(bean.getDate()), rtlText("وذلك بدل اشتراك كهرباء عن شهر")),
-		cmp.verticalGap(10));
+		cmp.horizontalList().add(cmp.verticalGap(25)).add(createCustomerInfo()).newRow());
+
+	cmp.verticalGap(10);
 
 	return report;
     }
 
-    private TextFieldBuilder<String> rtlText(String text) {
-	return cmp.text(text).setStyle(STYLE_RTL);
+    private HorizontalListBuilder createCustomerInfo() {
+	HorizontalListBuilder horizontalList = cmp.horizontalList();
+
+	addLine(horizontalList, "وصلنا من السيد ", "توفيق طالب");
+	addLine(horizontalList, "عنوانه", "ألسفيرة-البغلة");
+	addLine(horizontalList, "مبلغ وقدره", bean.getAmountToPay());
+	addLine(horizontalList, "وذلك بدل اشتراك كهرباء عن شهر", bean.getDate());
+
+	horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(counter()).heightFixedOnTop())).newRow()
+		.add(cmp.hListCell(counter2()).heightFixedOnTop()).newRow()
+		.add(cmp.line().setStyle(stl.style().setBorder(stl.penThin()))).newRow()
+		.add(cmp.text("التوقيع").setStyle(
+			stl.style().setFont(stl.fontArialBold()).setPadding(stl.padding().setLeft(100).setTop(5)).setBold(true)));
+	return horizontalList;
     }
 
-    private ComponentBuilder<?, ?> createCustomerComponent(String label, String text) {
-	HorizontalListBuilder list = cmp.horizontalList()
-		.setBaseStyle(stl.style().setTopBorder(stl.pen1Point()).setLeftPadding(10));
-	addCustomerAttribute(list, "اسم المشترك", bean.getFullName());
-	addCustomerAttribute(list, "العنوان", bean.getAddress());
-	addCustomerAttribute(list, "المبلغ المستحق", bean.getAmountToPay());
-	addCustomerAttribute(list, "شهر", bean.getDate());
-	return cmp.verticalList(
-		cmp.text(label).setStyle(
-			stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE)),
-		list);
+    public ComponentBuilder<?, ?> counter() {
+	HorizontalListBuilder list = cmp.horizontalList();
+	addCounerLine(list, "فارق العداد", "600");
+	addCounerLine(list, "رقم العداد", "12050");
+	return cmp.verticalList(list);
     }
 
-    private ComponentBuilder<?, ?> createCounterComponent(String label, String text) {
-	HorizontalListBuilder list = cmp.horizontalList()
-		.setBaseStyle(stl.style().setTopBorder(stl.pen1Point()).setLeftPadding(10));
-	addCustomerAttribute(list, "رقم العداد", bean.getCounterId().toString());
-	addCustomerAttribute(list, "عداد قديم", bean.getOldCounter());
-	addCustomerAttribute(list, "عداد جديد", bean.getNewCounter());
-	addCustomerAttribute(list, "فارق العداد", bean.getNewCounter() - bean.getOldCounter());
-	return cmp.verticalList(
-		cmp.text(label).setStyle(
-			stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE)),
-		list);
+    public ComponentBuilder<?, ?> counter2() {
+	HorizontalListBuilder list = cmp.horizontalList();
+	addCounerLine(list, "عداد جديد ", "1800");
+	addCounerLine(list, "عداد قديم", "1200");
+	return cmp.verticalList(list);
     }
 
-    private void addCustomerAttribute(HorizontalListBuilder list, String label, Object value) {
+    private void addLine(HorizontalListBuilder list, String label, String value) {
 	if (value != null) {
 	    list.add(
-		    cmp.text(value.toString()).setStyle(
-			    stl.style().setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE)),
-		    cmp.text(label).setFixedColumns(8).setStyle(Templates.columnTitleStyle)).newRow();
+		    cmp.text(value.toString())
+			    .setStyle(stl.style(STYLE_RTL)
+				    .setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE)
+				    .setBottomBorder(stl.penDotted()).setLeftPadding(10)),
+		    cmp.text(label).setFixedColumns(12).setStyle(stl.style(STYLE_RTL).bold().setFontSize(10))).newRow();
 	}
+    }
+
+    private void addCounerLine(HorizontalListBuilder list, String label, String value) {
+	if (value != null) {
+
+	    StyleBuilder setTextAlignment = stl.style(STYLE_RTL).setTextAlignment(HorizontalTextAlignment.CENTER,
+		    VerticalTextAlignment.MIDDLE);
+	    setTextAlignment = border(setTextAlignment);
+
+	    list.add(cmp.horizontalList()
+		    .add(cmp.text(value.toString()).setStyle(setTextAlignment),
+			    cmp.text(label).setFixedColumns(12).setStyle(stl.style(STYLE_RTL).bold().setFontSize(10)))
+		    .newRow(5));
+	}
+    }
+
+    private StyleBuilder border(StyleBuilder builder) {
+	PenBuilder penDouble = stl.penDouble();
+	return builder.setTopBorder(penDouble).setLeftBorder(penDouble).setRightBorder(penDouble)
+		.setBottomBorder(penDouble);
     }
 
     public static ComponentBuilder<?, ?> createTitleComponent(String label) {
