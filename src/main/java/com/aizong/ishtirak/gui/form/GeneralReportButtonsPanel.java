@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.table.EmployeeTablePanel;
 import com.aizong.ishtirak.gui.table.ExpensesTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -33,19 +32,19 @@ public class GeneralReportButtonsPanel extends BasicForm {
 	builder.setDefaultDialogBorder();
 	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "subreport.png");
 	btnMonthlyReports.addActionListener(e -> {
-	    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+	    MainFrame.openWindow(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new EmployeeTablePanel(btnMonthlyReports.getActionCommand()));
 
 	});
 
 	builder.append(btnMonthlyReports);
 	for (ExpensesType expensesType : ExpensesType.values()) {
-	    JideButton button = button(enumMessage(expensesType.name(), ExpensesType.class),"subreport.png");
+	    JideButton button = button(enumMessage(expensesType.name(), ExpensesType.class), "subreport.png");
 	    button.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-		    WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+		    MainFrame.openWindow(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 			    new ExpensesTablePanel(e.getActionCommand(), expensesType));
 		}
 	    });

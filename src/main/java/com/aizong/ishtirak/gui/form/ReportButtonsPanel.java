@@ -1,7 +1,11 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+
+import javax.swing.JPanel;
 
 import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ReportTableModel;
@@ -32,37 +36,43 @@ public class ReportButtonsPanel extends BasicForm {
 	builder.setDefaultDialogBorder();
 	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "subreport.png");
 	btnMonthlyReports.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
-	        
-	        @Override
-	        public ReportTableModel getReportTableModel() {
-	    	return ServiceProvider.get().getReportServiceImpl().getSubscriptionsIncomeReport();
-	        }
-	    });
-	   
+	   openWindow( e.getActionCommand(),
+		    new ReportTablePanel(e.getActionCommand()) {
+
+			@Override
+			public ReportTableModel getReportTableModel() {
+			    return ServiceProvider.get().getReportServiceImpl().getSubscriptionsIncomeReport();
+			}
+		    });
+
 	});
-	
+
 	JideButton btnMonthlyExpenses = button(message("reports.subscirption.expenses"), "subreport.png");
 	btnMonthlyExpenses.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),new ReportTablePanel(e.getActionCommand()) {
-	        
-	        @Override
-	        public ReportTableModel getReportTableModel() {
-	    	return ServiceProvider.get().getReportServiceImpl().getExpenses();
-	        }
-	    });
-	   
+	   openWindow( e.getActionCommand(),
+		    new ReportTablePanel(e.getActionCommand()) {
+
+			@Override
+			public ReportTableModel getReportTableModel() {
+			    return ServiceProvider.get().getReportServiceImpl().getExpenses();
+			}
+		    });
+
 	});
-	
-	JideButton btnCounterHistory = button(message("reports.subscirption.counterHistory"), "subreport.png");
-	btnCounterHistory.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(), new CustomerSearchPanel());
-	   
-	});
-	
+
+	/*
+	 * JideButton btnCounterHistory =
+	 * button(message("reports.subscirption.counterHistory"),
+	 * "subreport.png"); btnCounterHistory.addActionListener(e -> {
+	 *openWindow(
+	 * e.getActionCommand(), new CustomerSearchPanel());
+	 * 
+	 * });
+	 */
+
 	JideButton btnIshtirakReport = button(message("reports.subscirption.activeIshtirak"), "subreport.png");
 	btnIshtirakReport.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+	   openWindow( e.getActionCommand(),
 		    new ReportTablePanel(e.getActionCommand()) {
 
 			@Override
@@ -73,32 +83,37 @@ public class ReportButtonsPanel extends BasicForm {
 		    });
 
 	});
-	
-	JideButton btnIshtirakReportWithoutReceipts = button(message("reports.subscirption.activeIshtirakWithoutReceipts"), "subreport.png");
+
+	JideButton btnIshtirakReportWithoutReceipts = button(
+		message("reports.subscirption.activeIshtirakWithoutReceipts"), "subreport.png");
 	btnIshtirakReportWithoutReceipts.addActionListener(e -> {
-	    WindowUtils.createDialog(ReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+	   openWindow( e.getActionCommand(),
 		    new ReportTablePanel(e.getActionCommand()) {
 
 			@Override
 			public ReportTableModel getReportTableModel() {
-			    return ServiceProvider.get().getReportServiceImpl()
-				    .getActiveIshtirakWithoutReceipts();
+			    return ServiceProvider.get().getReportServiceImpl().getActiveIshtirakWithoutReceipts();
 			}
 		    });
 
 	});
-	
+
 	builder.append(btnMonthlyReports);
 	builder.append(btnMonthlyExpenses);
-	builder.append(btnCounterHistory);
+	// builder.append(btnCounterHistory);
 	builder.append(btnIshtirakReport);
 	builder.append(btnIshtirakReportWithoutReceipts);
 	return builder.getPanel();
     }
 
+    private void openWindow(String text, JPanel component) {
+	MainFrame.openWindow(ReportButtonsPanel.this.getOwner(), text, component);
+    }
+
     private JideButton button(String text, String imagePath) {
-   	return (JideButton) MainFrame.button(text, imagePath);
-       }
+	return (JideButton) MainFrame.button(text, imagePath);
+    }
+
     @Override
     protected String getLayoutSpecs() {
 	return "p,30dlu,p";

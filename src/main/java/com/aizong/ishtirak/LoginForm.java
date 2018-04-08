@@ -1,6 +1,5 @@
 package com.aizong.ishtirak;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -43,6 +42,9 @@ public class LoginForm extends BasicForm {
 
     @Autowired
     Message message;
+    
+    @Autowired
+    ServiceProvider serviceProvider;
 
     public LoginForm() {
 	super();
@@ -76,7 +78,7 @@ public class LoginForm extends BasicForm {
 		    txtPassword.getPassword());
 	    if (login) {
 		closeWindow();
-		new MainFrame();
+		new MainFrame(message);
 	    } else {
 		MessageUtils.showErrorMessage(getOwner(), message("login.badCredentials"));
 	    }
@@ -117,10 +119,10 @@ public class LoginForm extends BasicForm {
     void onStart() {
 	BasicPanel.message = message;
 	EventQueue.invokeLater(() -> {
-	    /*
-	     * LoginForm.this.startGui(); WindowUtils.createDialog(null,
-	     * message.getMessage("login.form.title"), LoginForm.this);
-	     */
+
+	   // LoginForm.this.startGui();
+	   // WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
+
 	    try {
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		    if ("Nimbus".equals(info.getName())) {
@@ -144,8 +146,9 @@ public class LoginForm extends BasicForm {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	    }
-	    new MainFrame();
 	});
+	
+	
     }
 
     public MessageSource messageSource() {
@@ -157,9 +160,17 @@ public class LoginForm extends BasicForm {
 
     @Bean
     public Message createMessage() {
-	return new Message(new Locale("ar", "LB"), messageSource());
+	return new Message(getCurrentLocale(), messageSource());
     }
 
+    public static Locale getCurrentLocale() {
+	return new Locale("ar", "LB");
+    }
+    
+    public static boolean isRtl() {
+	return true;
+    }
+    
     public static void main(String[] args) {
 	// SpringApplication.run(LoginForm.class, args);
 	/*

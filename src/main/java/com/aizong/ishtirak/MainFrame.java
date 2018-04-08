@@ -1,5 +1,6 @@
 package com.aizong.ishtirak;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
@@ -8,22 +9,30 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 
+import org.springframework.stereotype.Component;
+
 import com.aizong.ishtirak.common.form.BasicForm;
+import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
+import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
@@ -31,12 +40,15 @@ import com.aizong.ishtirak.gui.form.CompanyForm;
 import com.aizong.ishtirak.gui.form.ExpensesForm;
 import com.aizong.ishtirak.gui.form.GeneralReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
+import com.aizong.ishtirak.gui.form.ResultForm;
+import com.aizong.ishtirak.gui.table.CommonFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
 import com.aizong.ishtirak.gui.table.EngineFitlerTable;
 import com.aizong.ishtirak.gui.table.ExpensesFitlerTable;
 import com.aizong.ishtirak.gui.table.MonthlyBundleFilterTable;
 import com.aizong.ishtirak.gui.table.OutExpensesFitlerTable;
+import com.aizong.ishtirak.gui.table.ReportTablePanel;
 import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
@@ -46,10 +58,17 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
 
 @SuppressWarnings("serial")
+
+@Component
 public class MainFrame extends JFrame {
 
-    public MainFrame() {
+    Message message;
+    public MainFrame(Message message) {
+	this.message =  message;
+    }
 
+    @PostConstruct
+    public void onStart() {
 	SwingUtilities.invokeLater(new Runnable() {
 	    @Override
 	    public void run() {
@@ -68,14 +87,12 @@ public class MainFrame extends JFrame {
 	JButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
 	btnSubscriberManagement.addActionListener(e -> {
 	    SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand());
-	    subscriberFilterTable.setPreferredSize(ComponentUtils.getDimension(90, 90));
 	    openWindow(e.getActionCommand(), subscriberFilterTable);
 	});
 
 	JButton btnEngineManagement = button("إدارة المولدات", "engine.png");
 	btnEngineManagement.addActionListener(e -> {
 	    JPanel innerPanel = new EngineFitlerTable(e.getActionCommand());
-	    innerPanel.setPreferredSize(ComponentUtils.getDimension(90, 90));
 	    openWindow(e.getActionCommand(), innerPanel);
 	});
 	JButton btnVillage = button("إدارة القرى", "village.png");
@@ -144,10 +161,17 @@ public class MainFrame extends JFrame {
 	btnOutOfExpenses.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
 	});
-	
+
 	JButton btnCompany = button(message("mainFrame.company"), "company.png");
 	btnCompany.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new CompanyForm());
+	});
+	
+	JButton btnResult = button("نتيجة المدخول والنفقات", "result.png");
+	btnResult.addActionListener(e -> {
+	    JPanel resultPanel = new ResultForm(btnResult.getActionCommand());
+	    resultPanel.setPreferredSize(ComponentUtils.getDimension(90, 80));
+	    WindowUtils.createDialog(MainFrame.this.getOwner(), e.getActionCommand(),resultPanel );
 	});
 
 	setTitle(message("tite"));
@@ -167,6 +191,7 @@ public class MainFrame extends JFrame {
 	reportsMenu.add(btnMonthlyReports);
 	reportsMenu.add(btnReports);
 	reportsMenu.add(btnOutOfExpenses);
+	reportsMenu.add(btnResult);
 	miscMenu.add(btnEngineManagement);
 	miscMenu.add(btnVillage);
 	miscMenu.add(btnCompany);
@@ -176,7 +201,8 @@ public class MainFrame extends JFrame {
 	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "130dlu,p"));
 	mainBuilder.append(topPanel);
 
-	JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER,15,0));
+	JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+	panel.setBorder(ComponentUtils.emptyBorder(15));
 	panel.add(ishtirakMenu);
 	panel.add(expensesMenu);
 	panel.add(reportsMenu);
@@ -196,41 +222,41 @@ public class MainFrame extends JFrame {
     }
 
     private JPanel createMenuPanel(String title) {
-	 JPanel jPanel = new JPanel(new GridLayout(4, 1, 15, 15));
-	 
-	 jPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.black), title));
-	 jPanel.setPreferredSize(new Dimension(250, 300));
-	 return jPanel;
+	JPanel jPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+
+	jPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.black), title));
+	jPanel.setPreferredSize(new Dimension(250, 300));
+	return jPanel;
     }
 
     private JPanel createTopPanel() {
 
-	JLabel lblTitle = new JLabel(message("title"),
-		ImageHelperCustom.get().getImageIcon("logo_talaco.jpg"), SwingConstants.CENTER);
+	int gap = 15;
+	
+	JLabel lblTitle = new JLabel(message("title"), ImageHelperCustom.get().getImageIcon("logo.png"),
+		SwingConstants.CENTER);
 	lblTitle.setFont(new Font("Serif", Font.BOLD, 50));
 	lblTitle.setVerticalTextPosition(JLabel.TOP);
 	lblTitle.setHorizontalTextPosition(JLabel.CENTER);
-
-	int gap = 15;
 	lblTitle.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
 	
-	JLabel lbtPhone = new JLabel(message("76 619869"), SwingConstants.CENTER);
+	JLabel lbtPhone = new JLabel(ServiceProvider.get().getCompany().getMainMobilePhone(), SwingConstants.CENTER);
 	lbtPhone.setFont(new Font("Serif", Font.BOLD, 25));
 	lbtPhone.setVerticalTextPosition(JLabel.TOP);
 	lbtPhone.setHorizontalTextPosition(JLabel.CENTER);
-
 	gap = 15;
-	lblTitle.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
 	
-	JPanel topPanel = new JPanel();
-	topPanel.setLayout(new GridLayout(0,1,10,10));
-	topPanel.add(lblTitle);
-	topPanel.add(lbtPhone);
+
+	JPanel topPanel = new JPanel(new BorderLayout());
+	topPanel.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black),BorderFactory.createEmptyBorder()));
+	
+	topPanel.add(lblTitle, BorderLayout.PAGE_START);
+	topPanel.add(lbtPhone, BorderLayout.PAGE_END);
 	return topPanel;
     }
 
     private String message(String text) {
-	return ServiceProvider.get().getMessage().getMessage(text);
+	return message.getMessage(text);
     }
 
     @SuppressWarnings("unused")
@@ -243,7 +269,18 @@ public class MainFrame extends JFrame {
     }
 
     private void openWindow(String text, JPanel component) {
-	WindowUtils.createDialog(MainFrame.this, text, component);
+	openWindow(MainFrame.this, text, component);
+    }
+    
+    public static void openWindow(Window owner, String text, JPanel component) {
+	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
+	    component.setPreferredSize(ComponentUtils.getDimension(90, 80));
+	}
+	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
+
+	if (!((component instanceof CommonFilterTable) || component instanceof ReportTablePanel) && component instanceof BasicPanel) {
+	    createDialog.setResizable(false);
+	}
     }
 
     @SuppressWarnings("unused")
@@ -251,12 +288,11 @@ public class MainFrame extends JFrame {
 	return ImageHelperCustom.get().getImageIcon("menus/" + imagePath);
     }
 
-    public static  JButton button(String text, String imagePath) {
-	JideButton btn = new JideButton(text,
-		ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
-		btn.setHorizontalAlignment(SwingConstants.RIGHT);
-		btn.setButtonStyle(JideButton.TOOLBOX_STYLE);
-		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    public static JButton button(String text, String imagePath) {
+	JideButton btn = new JideButton(text, ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
+	btn.setHorizontalAlignment(SwingConstants.RIGHT);
+	btn.setButtonStyle(JideButton.TOOLBOX_STYLE);
+	btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	return btn;
     }
 }

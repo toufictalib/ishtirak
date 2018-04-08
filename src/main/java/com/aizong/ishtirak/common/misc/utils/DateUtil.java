@@ -5,6 +5,7 @@
  */
 package com.aizong.ishtirak.common.misc.utils;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.aizong.ishtirak.LoginForm;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 
 /**
@@ -25,6 +27,8 @@ public class DateUtil {
     public static final String LONG_SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final SimpleDateFormat SHORT_FORMAT = new SimpleDateFormat(SHORT_SQL_DATE_FORMAT);
+
+    public static String[] monthes;
 
     public static Date addDays(Date date, int days) {
 	Calendar cal = Calendar.getInstance();
@@ -190,12 +194,36 @@ public class DateUtil {
 
 	return new DateRange(fromLocalDate(start), fromLocalDate(end));
     }
-    
+
+    public static DateRange getStartEndDateOfLastMonth() {
+	LocalDate initial = LocalDate.now();
+	initial = initial.minusMonths(1);
+	LocalDate start = initial.withDayOfMonth(1);
+	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth());
+
+	return new DateRange(fromLocalDate(start), fromLocalDate(end));
+    }
+
     public static int getCurrentMonth() {
 	LocalDateTime currentTime = LocalDateTime.now();
 	Month month = currentTime.getMonth();
 	int currentMonth = month.getValue();
 	return currentMonth;
+    }
+
+    public static String getMonthName(int month) {
+	try {
+	    if (monthes == null) {
+		monthes = ServiceProvider.get().getMessage().getMessage("monthes").split(",");
+	    }
+	    if (month < monthes.length) {
+		return monthes[month];
+	    }
+	    return DateFormatSymbols.getInstance(LoginForm.getCurrentLocale()).getMonths()[month];
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return month+"";
     }
 
 }

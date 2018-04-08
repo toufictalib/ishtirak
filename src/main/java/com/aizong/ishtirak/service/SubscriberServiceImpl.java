@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
+import com.aizong.ishtirak.bean.Tuple;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.PasswordUtils;
@@ -484,5 +485,10 @@ public class SubscriberServiceImpl implements SubscriberService {
     public Company getCompany() {
 	List<Company> companies = subscriberDao.findAll(Company.class);
 	return companies.isEmpty() ? null : companies.get(0);
+    }
+
+    @Override
+    public Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate) {
+	return subscriberDao.getResult(fromDate, endDate);
     }
 }

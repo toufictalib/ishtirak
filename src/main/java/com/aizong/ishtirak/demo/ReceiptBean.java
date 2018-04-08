@@ -1,10 +1,8 @@
 package com.aizong.ishtirak.demo;
 
-import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.Locale;
 
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
+import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 
 public class ReceiptBean {
 
@@ -83,21 +81,14 @@ public class ReceiptBean {
     }
 
     public String getAmountToPay() {
-	return formatCurrency(new Locale("ar", "LB"), 120000d);
+	return CurrencyUtils.formatCurrency(new Locale("ar", "LB"), 120000d);
     }
 
-    static public String formatCurrency(Locale currentLocale, Double value) {
-
-	Double currencyAmount = new Double(value);
-	NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(currentLocale);
-
-	return currencyFormatter.format(currencyAmount);
-    }
     
     public static void main(String[]args) {
 	
 	Locale locale = new Locale("ar", "LB");
-	formatCurrency(locale, 120000d);
+	CurrencyUtils.formatCurrency(locale, 120000d);
     }
 
 }

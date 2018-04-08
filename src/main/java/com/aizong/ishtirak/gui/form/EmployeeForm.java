@@ -133,14 +133,14 @@ public class EmployeeForm extends BasicForm {
 	builder.append(message("employee.form.salary"),txtSalary);
 	builder.append(message("employee.form.active"),cbActive);
 	builder.append(message("employee.form.employeeType"),comboEmployeeTypes);
-	builder.appendSeparator(message("subsriber.form.address"));
+	/*builder.appendSeparator(message("subsriber.form.address"));
 	builder.append(message("subsriber.form.village"), comboVillages);
 	builder.append(message("subsriber.form.region"), txtRegion);
 	builder.append(message("subsriber.form.address"), txtAddress);
 	builder.append(message("subsriber.form.landLine"), txtLandLine);
 	builder.append(message("subsriber.form.mainPhone"), txtPhone1);
 	builder.append(message("subsriber.form.alternativePhone"), txtPhone2);
-	builder.append(message("subsriber.form.email"), txtEmail);
+	builder.append(message("subsriber.form.email"), txtEmail);*/
 	builder.appendSeparator();
 
 	JButton btnSave = btnSave();
@@ -179,7 +179,7 @@ public class EmployeeForm extends BasicForm {
 	    errors.add(errorPerfix("employee.form.employeeType"));
 	}
 	
-	if (comboVillages.getValue() == null) {
+	/*if (comboVillages.getValue() == null) {
 	    errors.add(errorPerfix("subsriber.form.village"));
 	}
 	if (txtRegion.getText().isEmpty()) {
@@ -191,7 +191,7 @@ public class EmployeeForm extends BasicForm {
 	}
 	if (txtPhone1.getText().isEmpty()) {
 	    errors.add(errorPerfix("subsriber.form.mainPhone"));
-	}
+	}*/
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 
     }
@@ -214,7 +214,7 @@ public class EmployeeForm extends BasicForm {
 	if (employee != null && employee.getInformation() != null) {
 	    information.setId(employee.getInformation().getId());
 	}
-	information.setVillageId(comboVillages.getValue().getId());
+	information.setVillageId(comboVillages.getValue()!=null ? comboVillages.getValue().getId() : null);
 	information.setRegion(txtRegion.getText());
 	information.setDetailedAddress(txtAddress.getText());
 	information.setLandLine(txtLandLine.getText());

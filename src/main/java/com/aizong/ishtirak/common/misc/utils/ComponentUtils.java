@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -76,4 +77,9 @@ public class ComponentUtils {
         datePicker.setFormats("yyyy-MM-dd");
         return datePicker;
     }
+    
+    public static Border emptyBorder(int padding) {
+	return BorderFactory.createEmptyBorder(padding, padding, padding, padding);
+    }
+    
 }

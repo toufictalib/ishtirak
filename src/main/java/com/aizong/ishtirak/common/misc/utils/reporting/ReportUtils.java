@@ -18,12 +18,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.aizong.ishtirak.LoginForm;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 
 public class ReportUtils {
-    public static void writeToExcel(JTable table, String file, String title) throws FileNotFoundException, IOException {
+    public static void writeToExcel(TableModel model, String file, String title) throws FileNotFoundException, IOException {
 	file = file.trim();
 	if (!file.contains(".xls")) {
 	    String[] split = file.split(".");
@@ -32,8 +33,8 @@ public class ReportUtils {
 
 	XSSFWorkbook wb = new XSSFWorkbook();
 	Sheet sheet = wb.createSheet(title); // WorkSheet
+	sheet.setRightToLeft(LoginForm.isRtl());
 	Row row = sheet.createRow(2); // Row created at line 3
-	TableModel model = table.getModel(); // Table model
 
 	Row headerRow = sheet.createRow(0); // Create row at line 0
 	for (int headings = 0; headings < model.getColumnCount(); headings++) { // For
@@ -45,7 +46,7 @@ public class ReportUtils {
 
 	for (int rows = 0; rows < model.getRowCount(); rows++) { // For each
 								 // table row
-	    for (int cols = 0; cols < table.getColumnCount(); cols++) { // For
+	    for (int cols = 0; cols < model.getColumnCount(); cols++) { // For
 									// table
 		Object valueAt = model.getValueAt(rows, cols);
 		if (valueAt != null) {

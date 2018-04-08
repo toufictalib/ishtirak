@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 public class ExCombo<T> extends JComboBox {
     private static final long serialVersionUID = -8406426154902695060L;
     private String firstLabel = NONE;
-    public static final String NONE = "None";
+    public static final String NONE = "لا شيئ";
 
     public boolean withNone;
 

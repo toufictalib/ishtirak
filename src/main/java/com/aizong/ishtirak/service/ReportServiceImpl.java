@@ -73,7 +73,7 @@ public class ReportServiceImpl implements ReportService {
 	if (monthly) {
 	    List<MonthlyBundle> list = subscriberService.getMonthlyBundles();
 
-	    String[] cols = { "الرقم", "الاسم", "رسم الإشتراك", "قيمة الإشتراك" };
+	    String[] cols = { "codeId", "description", "settelmentFees", "subscription.monthly.amount" };
 
 	    List<Object[]> rows = new ArrayList<>();
 	    for (MonthlyBundle object : list) {
@@ -88,7 +88,7 @@ public class ReportServiceImpl implements ReportService {
 	    return new ReportTableModel(cols, rows, clazzes);
 	} else {
 	    List<SubscriptionBundle> list = subscriberService.getSubscriptionBundles();
-	    String[] cols = { "codeId", "description", "subscriptionFees", "kbPrice", "counterRenting" };
+	    String[] cols = { "codeId", "description", "settelmentFees", "kbPrice", "counterRenting" };
 	    List<Object[]> rows = new ArrayList<>();
 	    for (SubscriptionBundle object : list) {
 		Object[] row = { object.getId(), object.getName(), object.getSettlementFees(), object.getCostPerKb(),

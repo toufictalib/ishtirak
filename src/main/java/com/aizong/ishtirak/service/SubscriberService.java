@@ -1,8 +1,10 @@
 package com.aizong.ishtirak.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.bean.Tuple;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.model.Contract;
@@ -114,5 +116,7 @@ public interface SubscriberService {
     void saveCompany(Company newCompany);
 
     Company getCompany();
+    
+    Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
     
 }

@@ -17,6 +17,7 @@ import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.ss.rlib.ui.control.input.IntegerTextField;
 
 public class VillageForm extends BasicForm implements RefreshTableInterface {
 
@@ -26,6 +27,7 @@ public class VillageForm extends BasicForm implements RefreshTableInterface {
     private static final long serialVersionUID = 1L;
 
     private JTextField txtName;
+    private IntegerTextField txtOrder;
 
     private SavingCallback callback;
     private Mode mode;

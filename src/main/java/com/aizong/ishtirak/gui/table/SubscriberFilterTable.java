@@ -211,10 +211,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 						switchSubscription ? new ContractSwitchingForm(combo.getValue(), mode)
 							: new ContractForm(combo.getValue(), mode));
 				    }
-				    panelBotton.revalidate();
-				    panelBotton.repaint();
-
-				    Window owner = SwingUtilities.getWindowAncestor(panel);
+				    panelBotton.setPreferredSize(null);
+				    Window owner = SwingUtilities.getWindowAncestor(panelBotton);
 				    if (owner != null) {
 					WindowUtils.applyRtl(owner);
 					owner.pack();

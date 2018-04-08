@@ -2,7 +2,6 @@ package com.aizong.ishtirak.gui.table;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -60,33 +59,36 @@ public class SubscriptionHistoryTablePanel extends ReportTablePanel {
 		MessageUtils.showErrorMessage(getOwner(), e1.getMessage());
 	    }
 	});
+	JPanel panel = controlPanel(btnSearch, combo, createDefault);
+	
+	
 	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:p:grow,p");
 	builder.setDefaultDialogBorder();
-
 	
 	builder.appendSeparator(title);
-	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-	panel.add(createDefault);
-	panel.add(combo);
-	panel.add(btnSearch);
 	
 	builder.append(panel, builder.getColumnCount());
-	// builder.append(txtFE, 3);
 
-	JScrollPane scrollPane = new JScrollPane(table);
-	// scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
-	builder.append(scrollPane, builder.getColumnCount());
+	builder.append(new JScrollPane(table), builder.getColumnCount());
 
 	builder.append(txtRowCount, builder.getColumnCount());
 
 	//builder.append("المجموع", txtTotal);
 
 	return builder.getPanel();
+    }
+
+    private JPanel controlPanel(JButton btnSearch, ExCombo<Contract> combo, SearchPanel createDefault) {
+	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	panel.add(createDefault);
+	panel.add(combo);
+	panel.add(btnSearch);
+	return panel;
     };
 
     @Override
     public ReportTableModel getReportTableModel() {
-	return new ReportTableModel(new String[] {}, new ArrayList<Object[]>(), new Class[] {});
+	return null;
     }
 
 }

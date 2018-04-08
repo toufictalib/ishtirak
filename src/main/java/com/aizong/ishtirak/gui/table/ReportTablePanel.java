@@ -96,12 +96,15 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 		return comp;
 	    }
 	};
-	table.setPreferredScrollableViewportSize(table.getPreferredSize());
+	//table.setPreferredScrollableViewportSize(table.getPreferredSize());
 
 	table.setRowHeight(50);
 	table.setFillsViewportHeight(true);
 	table.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	table.setDefaultRenderer(Date.class, new DateCellRenderer());
+
+	table.setRowSorter(sorter);
+	table.setSelectionMode(0);
 
 	sorter = new TableRowSorter<TableModel>();
 	sorter.addRowSorterListener(new RowSorterListener() {
@@ -113,9 +116,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	    }
 	});
-	table.setRowSorter(sorter);
-	table.setSelectionMode(0);
-
+	
 	JTableHeader header = table.getTableHeader();
 	header.setDefaultRenderer(new HeaderRenderer(table));
 
@@ -144,32 +145,31 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		JFileChooser fc = new JFileChooser();
-		fc.setSelectedFile(new File(title+".xls"));
+		fc.setSelectedFile(new File(title + ".xls"));
 		int returnVal = fc.showSaveDialog(ReportTablePanel.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 		    File file = fc.getSelectedFile();
 		    try {
-			ReportUtils.writeToExcel(table, file.getPath(), title);
-			MessageUtils.showInfoMessage(ReportTablePanel.this,message("file.exported.success"));
+			ReportUtils.writeToExcel(table.getModel(), file.getPath(), title);
+			MessageUtils.showInfoMessage(ReportTablePanel.this, message("file.exported.success"));
 		    } catch (Exception e1) {
 			e1.printStackTrace();
-			MessageUtils.showErrorMessage(ReportTablePanel.this,message("file.exported.error"));
+			MessageUtils.showErrorMessage(ReportTablePanel.this, message("file.exported.error"));
 		    }
 		}
 
 	    }
 	});
-	
+
 	btnPrint = ButtonFactory.createBtnPrint();
-         
+
 	btnPrint.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-               ReportUtils.printTable(table,ReportTablePanel.this.getOwner());
-            }
-        });
+	    public void actionPerformed(ActionEvent ae) {
+		ReportUtils.printTable(table, ReportTablePanel.this.getOwner());
+	    }
+	});
 
     }
-
 
     private void setTxtRowCount(int row) {
 	txtRowCount.setText(message("table.rowCount", row));
@@ -199,12 +199,14 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
     private void fillTable() {
 	ReportTableModel reportTableModel = getReportTableModel();
-	fillTable(reportTableModel);
-
+        fillTable(reportTableModel);
 	// sumAmount(table);
     }
 
     protected void fillTable(ReportTableModel reportTableModel) {
+	
+	
+	if(reportTableModel!=null) {
 	String[] columns = reportTableModel.getCols();
 
 	Object[] internalisationCols = new Object[reportTableModel.getCols().length];
@@ -226,6 +228,9 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 		return super.getColumnClass(arg0);
 	    }
 	};
+	}else {
+	    model = new DefaultTableModel(5, 6);
+	}
 
 	table.setModel(model);
 	/*
@@ -244,7 +249,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	applyRenderer();
 
 	TableUtils.resizeColumnWidth(table);
-	table.setPreferredScrollableViewportSize(table.getPreferredSize());
+	
 
 	filterHeader.updateUI();
 	filterHeader.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);

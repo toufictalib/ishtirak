@@ -138,7 +138,7 @@ public class ExpensesForm extends BasicForm {
 		    @Override
 		    public void itemStateChanged(ItemEvent event) {
 			if (event.getStateChange() == ItemEvent.SELECTED) {
-			    if(comboEmployees.getValue()!=null) {
+			    if (comboEmployees.getValue() != null) {
 				txtAmount.setValue(Double.valueOf(comboEmployees.getValue().getSalary()));
 			    }
 			}
@@ -168,7 +168,7 @@ public class ExpensesForm extends BasicForm {
 		    @Override
 		    public void itemStateChanged(ItemEvent event) {
 			if (event.getStateChange() == ItemEvent.SELECTED) {
-			    if(comboEmployees.getValue()!=null) {
+			    if (comboEmployees.getValue() != null) {
 				txtAmount.setValue(Double.valueOf(comboEmployees.getValue().getSalary()));
 			    }
 			}
@@ -256,9 +256,9 @@ public class ExpensesForm extends BasicForm {
     protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
 
-	if (txtDesc.getText().isEmpty()) {
+	/*if (txtDesc.getText().isEmpty()) {
 	    errors.add(errorPerfix("maintenance.form.name"));
-	}
+	}*/
 
 	if (isDiesel()) {
 	    if (txtDieselQuantity.getValue() == null) {
@@ -278,12 +278,25 @@ public class ExpensesForm extends BasicForm {
 	    if (txtAmount.getValue() == null) {
 		errors.add(errorPerfix("maintenance.form.amount"));
 	    }
-	    if (comboEngines.getValue() == null) {
+	    if (mustHasEngineValue() && comboEngines.getValue() == null) {
 		errors.add(errorPerfix("maintenance.form.engines"));
 	    }
 	}
 
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
+    }
+
+    private boolean mustHasEngineValue() {
+	SearchResult value = comboMaintenaceTypes.getValue();
+	switch (value.type) {
+	case CHANGING_FIXING_ENGINE_PARTS:
+	case DIESEL:
+	case FILTER_OIL_CHANGING:
+	    return true;
+	default:
+	    break;
+	}
+	return false;
     }
 
     private ItemListener createComboDieselListener() {

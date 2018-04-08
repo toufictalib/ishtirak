@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.service.ReportServiceImpl;
 import com.aizong.ishtirak.service.SubscriberService;
 
@@ -19,6 +20,8 @@ public class ServiceProvider {
 
     @Autowired
     Message message;
+
+    private Company company;
 
     private static ServiceProvider serviceProvider;
 
@@ -41,6 +44,18 @@ public class ServiceProvider {
 
     public Message getMessage() {
 	return message;
+    }
+
+    public Company getCompany() {
+	if (company == null) {
+	    company = subscriberService.getCompany();
+	}
+	return company == null ? new Company() : company;
+    }
+
+    public void revalidate() {
+	company = null;
+	
     }
 
 }

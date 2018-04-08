@@ -250,5 +250,4 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	return toList(sql);
     }
     
-
 }

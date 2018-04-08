@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.aizong.ishtirak.common.misc.utils.Message;
-import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 
 public abstract class BasicPanel extends JPanel {
     /**

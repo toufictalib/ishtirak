@@ -210,13 +210,6 @@ public class ContractForm extends BasicForm {
 	if (comboVillages.getValue() == null) {
 	    errors.add(errorPerfix("subsriber.form.village"));
 	}
-	if (txtRegion.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.region"));
-	}
-
-	if (txtAddress.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.address"));
-	}
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 
     }

@@ -1,7 +1,6 @@
 package com.aizong.ishtirak.gui.table;
 
 import java.awt.FlowLayout;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -75,7 +74,7 @@ public class ExpensesTablePanel extends ReportTablePanel {
 
     @Override
     public ReportTableModel getReportTableModel() {
-	return new ReportTableModel(new String[] {}, new ArrayList<Object[]>(), new Class[] {});
+	return null;
     }
 
 }

@@ -2,7 +2,6 @@ package com.aizong.ishtirak.gui.table;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -82,7 +81,7 @@ public class EmployeeTablePanel extends ReportTablePanel {
 
     @Override
     public ReportTableModel getReportTableModel() {
-	return new ReportTableModel(new String[] {}, new ArrayList<Object[]>(), new Class[] {});
+	return null;
     }
 
 }

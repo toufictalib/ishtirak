@@ -1,9 +1,11 @@
 package com.aizong.ishtirak.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
+import com.aizong.ishtirak.bean.Tuple;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
@@ -51,4 +53,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     User getUserByName(String user);
 
     void deleteOutExpenses(List<Long> ids);
+
+    Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
 }

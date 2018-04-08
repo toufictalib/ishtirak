@@ -38,25 +38,43 @@ public class PrintUtils {
 
 	return dimg;
     }
+
+    public static boolean printLandscapeComponent(Component component) throws PrinterException {
+	return printComponent(component, PageFormat.LANDSCAPE);
+    }
     
-    public static void printComponent(Component component)
-    {
+    public static boolean printProtraitComponent(Component component) throws PrinterException {
+	return printComponent(component, PageFormat.PORTRAIT);
+    }
+    public static boolean printComponent(Component component, int orientation) throws PrinterException {
 	PrinterJob pj = PrinterJob.getPrinterJob();
 
 	PageFormat pf = pj.defaultPage();
 	Paper paper = new Paper();
-	double margin = 36; // half inch
-	paper.setImageableArea(margin, margin, paper.getWidth() - margin * 2, paper.getHeight()
-	    - margin * 2);
-	pf.setPaper(paper);
-	pj.setPrintable(new ComponentPrinter(component), pf);
-	if (pj.printDialog()) {
-	      try {
-	        pj.print();
-	      } catch (PrinterException e1) {
-	        System.out.println(e1);
-	      }
+	pf.setOrientation(orientation);
+	PageFormat postformat = pj.pageDialog(pf);
+	if (pf != postformat) {
+	    double margin = 36; // half inch
+	    paper.setImageableArea(margin, margin, paper.getWidth() - margin * 2, paper.getHeight() - margin * 2);
+	    pf.setPaper(paper);
+	    pj.setPrintable(new ComponentPrinter(component), pf);
+	    if (pj.printDialog()) {
+		pj.print();
+		return true;
 	    }
+	}
+	return false;
     }
-    
+
+    /*
+     * private void print() { PrinterJob pjob = PrinterJob.getPrinterJob();
+     * PageFormat preformat = pjob.defaultPage();
+     * preformat.setOrientation(PageFormat.LANDSCAPE); PageFormat postformat =
+     * pjob.pageDialog(preformat); //If user does not hit cancel then print. if
+     * (preformat != postformat) { //Set print component pjob.setPrintable(new
+     * ComponentPrinter(ResultForm.this), postformat); if (pjob.printDialog()) {
+     * try { pjob.print(); } catch (PrinterException e1) { // TODO
+     * Auto-generated catch block e1.printStackTrace(); } } } }
+     */
+
 }

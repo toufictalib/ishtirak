@@ -140,7 +140,7 @@ public class SubscriberForm extends BasicForm {
 	if (txtName.getText().isEmpty()) {
 	    errors.add(errorPerfix("subsriber.form.name"));
 	}
-	if (txtFatherName.getText().isEmpty()) {
+	if (txtLastName.getText().isEmpty()) {
 	    errors.add(errorPerfix("subsriber.form.lastName"));
 	}
 	if (txtPhone1.getText().isEmpty()) {
@@ -148,13 +148,6 @@ public class SubscriberForm extends BasicForm {
 	}
 	if (comboVillages.getValue() == null) {
 	    errors.add(errorPerfix("subsriber.form.village"));
-	}
-	if (txtRegion.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.region"));
-	}
-
-	if (txtAddress.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.address"));
 	}
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 

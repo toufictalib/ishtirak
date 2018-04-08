@@ -100,6 +100,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	newCompany.setMaintenanceNumber(txtMaintenanceNumber.getText());
 	newCompany.setOtherMobilePhone(txtOtherMobilePhone.getText());
 	ServiceProvider.get().getSubscriberService().saveCompany(newCompany);
+	ServiceProvider.get().revalidate();
 	closeWindow();
 
     }

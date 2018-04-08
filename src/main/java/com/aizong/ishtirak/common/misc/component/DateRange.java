@@ -2,6 +2,8 @@ package com.aizong.ishtirak.common.misc.component;
 
 import java.util.Date;
 
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
+
 public class DateRange {
 
     private final Date startDate;
@@ -20,5 +22,13 @@ public class DateRange {
     public Date getEndDate() {
 	return endDate;
     }
+    
+    public String getStartDateAsString() {
+	return DateUtil.formatShortSqlDate(getStartDate());
+    }
+    
+    public String getEndDateAsString() {
+   	return DateUtil.formatShortSqlDate(getEndDate());
+       }
 
 }
