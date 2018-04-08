@@ -16,8 +16,8 @@ public class Contract extends BaseEntity {
      */
     private static final long serialVersionUID = -6787533896757992742L;
 
-    @Column(name = "counter_id")
-    private String counterId;
+    @Column(name = "contract_unique_code")
+    private String contractUniqueCode;
 
     @Column(name = "subscriber_id")
     private long subscriberId;
@@ -34,12 +34,12 @@ public class Contract extends BaseEntity {
     @Embedded
     private Address address;
 
-    public String getCounterId() {
-	return counterId;
+    public String getContractUniqueCode() {
+	return contractUniqueCode;
     }
 
-    public void setCounterId(String counterId) {
-	this.counterId = counterId;
+    public void setContractUniqueCode(String contractUniqueCode) {
+	this.contractUniqueCode = contractUniqueCode;
     }
 
     public long getSubscriberId() {
@@ -81,10 +81,10 @@ public class Contract extends BaseEntity {
     public void setAddress(Address address) {
 	this.address = address;
     }
-    
+
     @Override
     public String toString() {
-        return counterId;
+	return contractUniqueCode;
     }
 
 }

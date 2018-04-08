@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -311,6 +313,31 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	map.put(Constant.EXPENSES, expensesList);
 	
 	return map;
+    }
+    
+    @Override
+    public Map<Long, Set<String>> getContractUniqueCodesByEngine(){
+	String sql = "select distinct engine_id,contract_unique_code from contract where is_active = 1";
+	
+	return jdbcTemplate.query(sql,new ResultSetExtractor<Map<Long, Set<String>>>(){
+
+	    @Override
+	    public Map<Long, Set<String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+		
+		Map<Long, Set<String>> map = new HashMap<>();
+		while(rs.next()) {
+		    Long key = rs.getLong("engine_id");
+		    Set<String> list = map.get(key);
+		    if(list==null) {
+			list = new HashSet<>();
+			map.put(key, list);
+		    }
+		    list.add(rs.getString("contract_unique_code"));
+		}
+		return map;
+	    }
+	    
+	});
     }
 
 }

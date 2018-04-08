@@ -2,6 +2,7 @@ package com.aizong.ishtirak.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
@@ -119,4 +120,5 @@ public interface SubscriberService {
     
     Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
     
+    public Map<Long, Set<String>> getContractUniqueCodesByEngine();    
 }

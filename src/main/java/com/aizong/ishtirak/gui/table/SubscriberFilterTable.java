@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,14 +83,15 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		boolean yes = MessageUtils.showConfirmationMessage(owner, message("deleteRow.confirmation"),
+		/*boolean yes = MessageUtils.showConfirmationMessage(owner, message("deleteRow.confirmation"),
 			message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
 		    ServiceProvider.get().getSubscriberService().deleteSubscribers(ids);
 		    refreshTableInterface.refreshTable();
-		}
+		}*/
+		MessageUtils.showWarningMessage(owner, message("delete.forbidden"));
 	    }
 	});
     }
@@ -182,7 +182,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 		}
 
 		if (contracts == null || contracts.isEmpty()) {
-		    MessageUtils.showWarningMessage(getOwner(), message("subscriber.noSubscription"));
+		    MessageUtils.showInfoMessage(getOwner(), message("subscriber.noSubscription"));
 		    return;
 		}
 		if (contracts.size() > 1) {

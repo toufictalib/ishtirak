@@ -2,6 +2,7 @@ package com.aizong.ishtirak.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
@@ -55,4 +56,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     void deleteOutExpenses(List<Long> ids);
 
     Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
+
+    Map<Long, Set<String>> getContractUniqueCodesByEngine();
 }

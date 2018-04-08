@@ -200,6 +200,7 @@ public class SubscriberServiceImpl implements SubscriberService {
      */
     @Override
     public void saveContract(Contract contract,Integer settelementFees) {
+	
 	if (contract.getId() != null) {
 	    subscriberDao.update(contract);
 	} else {
@@ -490,5 +491,10 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate) {
 	return subscriberDao.getResult(fromDate, endDate);
+    }
+
+    @Override
+    public Map<Long, Set<String>> getContractUniqueCodesByEngine() {
+	return subscriberDao.getContractUniqueCodesByEngine();
     }
 }

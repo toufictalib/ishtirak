@@ -4,8 +4,13 @@ import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,6 +20,7 @@ import javax.swing.UIManager;
 
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
+import com.aizong.ishtirak.common.misc.utils.AlphanumComparator;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
@@ -24,8 +30,6 @@ import com.aizong.ishtirak.model.Address;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.Engine;
-import com.aizong.ishtirak.model.MonthlyBundle;
-import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -52,26 +56,42 @@ public class ContractForm extends BasicForm {
 
     protected Mode mode = Mode.NEW;
 
+    protected Map<Long, Set<String>> counterPerEngine = new HashMap<>();
+
+    protected List<String> allKeys = new ArrayList<>();
+    
     public ContractForm(Long subscriberId) {
 	this.subscriberId = subscriberId;
-	initializePanel();
-	fillData();
+	init();
     }
 
     public ContractForm(Contract contract, Mode mode) {
 	this.contract = contract;
 	this.subscriberId = contract.getSubscriberId();
 	this.mode = mode;
+	init();
+    }
+
+    private void init() {
+	if (mode != Mode.VIEW) {
+	    counterPerEngine = ServiceProvider.get().getSubscriberService().getContractUniqueCodesByEngine();
+	    counterPerEngine.entrySet().forEach(e->allKeys.addAll(e.getValue()));
+	    Collections.sort(allKeys, new AlphanumComparator());
+	} else {
+	    allKeys = new ArrayList<>();
+	}
+
 	initializePanel();
 	fillData();
     }
 
     protected void fillData() {
+
 	if (contract == null) {
 	    return;
 	}
 
-	txtCounterId.setText(contract.getCounterId());
+	txtCounterId.setText(contract.getContractUniqueCode());
 	cbActive.setSelected(contract.isActive());
 
 	Bundle bundle = ServiceProvider.get().getSubscriberService().getBundleById(contract.getBundleId());
@@ -91,18 +111,30 @@ public class ContractForm extends BasicForm {
 
 	txtCounterId = new JTextField();
 	txtSettelementFees = new IntergerTextField();
-	
+
 	cbActive = new JCheckBox();
 	cbActive.setSelected(true);
 
 	comboEngines = new ExCombo<>(ServiceProvider.get().getSubscriberService().getEngines());
+	comboEngines.addItemListener(e -> {
+	    if (e.getStateChange() == ItemEvent.SELECTED) {
+		if (comboEngines.getValue() != null) {
+		    Set<String> set = counterPerEngine.get(comboEngines.getValue().getId());
+		    if (set != null && !set.isEmpty()) {
+			List<String> list = new ArrayList<>(set);
+			Collections.sort(list, new AlphanumComparator());
+			txtCounterId.setText(list.get(list.size() - 1));
+		    }
+		    
+		}
+	    }
+	});
 	comboBundles = new ExCombo<>(ServiceProvider.get().getSubscriberService().getAllBundles());
 	comboBundles.addItemListener(new ItemListener() {
 
 	    @Override
 	    public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
-		    enableTxtCounter(comboBundles.getValue() instanceof SubscriptionBundle);
 		    txtSettelementFees.setValue(comboBundles.getValue().getSettlementFees());
 		}
 
@@ -115,23 +147,16 @@ public class ContractForm extends BasicForm {
 
 	txtAddress.setBorder(UIManager.getBorder("TextField.border"));
 
-	enableTxtCounter(comboBundles.getValue() instanceof SubscriptionBundle);
-
 	if (mode == Mode.UPDATE) {
 	    allowEdit(false);
 	}
-	
+
 	ComponentUtils.fireCombobBoxItemListener(comboBundles);
+	ComponentUtils.fireCombobBoxItemListener(comboEngines);
     }
 
     protected void allowEdit(boolean allow) {
 	comboBundles.setEnabled(allow);
-	txtCounterId.setEditable(allow);
-	cbActive.setEnabled(allow);
-    }
-
-    private void enableTxtCounter(boolean isCounterSubscription) {
-	txtCounterId.setEnabled(isCounterSubscription);
     }
 
     protected Component buildPanel(DefaultFormBuilder builder) {
@@ -140,7 +165,7 @@ public class ContractForm extends BasicForm {
 	builder.append(message("contract.form.counter"), txtCounterId);
 	builder.append(message("contract.form.active"), cbActive);
 	builder.append(message("contract.form.bundle"), comboBundles);
-	if(mode==Mode.NEW) {
+	if (mode == Mode.NEW) {
 	    builder.append(message("bundle.form.settelementFees"), txtSettelementFees);
 	}
 	builder.append(message("contract.form.engine"), comboEngines);
@@ -181,8 +206,7 @@ public class ContractForm extends BasicForm {
 	contract.setAddress(address);
 
 	contract.setBundleId(comboBundles.getValue().getId());
-	contract.setCounterId((comboBundles.getValue() instanceof MonthlyBundle) ? comboBundles.getValue().getName()
-		: txtCounterId.getText());
+	contract.setContractUniqueCode(txtCounterId.getText());
 	contract.setEngineId(comboEngines.getValue().getId());
 	contract.setSubscriberId(subscriberId);
 
@@ -199,7 +223,7 @@ public class ContractForm extends BasicForm {
 	    errors.add(errorPerfix("contract.form.bundle"));
 	}
 
-	if ((comboBundles.getValue() instanceof SubscriptionBundle) && txtCounterId.getText().isEmpty()) {
+	if (txtCounterId.getText().isEmpty()) {
 	    errors.add(errorPerfix("contract.form.counter"));
 	}
 
@@ -210,6 +234,22 @@ public class ContractForm extends BasicForm {
 	if (comboVillages.getValue() == null) {
 	    errors.add(errorPerfix("subsriber.form.village"));
 	}
+
+	if (!txtCounterId.getText().isEmpty() && comboEngines.getValue() != null) {
+
+	    boolean checkCounter = true;
+	    if (mode == Mode.UPDATE && contract.getContractUniqueCode().equals(txtCounterId.getText())) {
+		checkCounter = false;
+	    }
+
+	    if (checkCounter) {
+		if (allKeys != null && new HashSet<>(allKeys).contains(txtCounterId.getText())) {
+		    errors.add(message("contractUniqueCode.redundant"));
+		}
+	    }
+
+	}
+
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
 
     }
