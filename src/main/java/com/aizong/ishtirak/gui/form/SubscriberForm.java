@@ -137,14 +137,8 @@ public class SubscriberForm extends BasicForm {
     @Override
     protected Optional<List<String>> validateInputs() {
 	List<String> errors = new ArrayList<>();
-	if (txtName.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.name"));
-	}
-	if (txtLastName.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.lastName"));
-	}
-	if (txtPhone1.getText().isEmpty()) {
-	    errors.add(errorPerfix("subsriber.form.mainPhone"));
+	if (txtIdentifier.getText().isEmpty()) {
+	    errors.add(errorPerfix("subsriber.form.identifier"));
 	}
 	if (comboVillages.getValue() == null) {
 	    errors.add(errorPerfix("subsriber.form.village"));

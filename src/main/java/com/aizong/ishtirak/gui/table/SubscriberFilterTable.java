@@ -7,6 +7,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -107,16 +108,18 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	JButton btnEditContract = createEditContractBtn(message("subscription.form.edit"), Mode.UPDATE, false);
 
-	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"),  Mode.VIEW, false);
-	
-	JButton btnSwitchContract = createEditContractBtn(message("subscription.form.switch"),  Mode.UPDATE, true);
+	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"), Mode.VIEW, false);
+
+	JButton btnSwitchContract = createEditContractBtn(message("subscription.form.switch"), Mode.UPDATE, true);
 
 	JButton btnHistoryontract = createContractHistoryBtn(message("subscription.form.histroy"));
-	
-	JButton btnEditCounterHistory = createEditCounterHistoryBtn(message("counter.form.saveAndEdit"), "edit.png", Mode.UPDATE);
 
-	JButton btnViewCounterHistory = createEditCounterHistoryBtn(message("counter.form.view"), "view.png", Mode.VIEW);
-	
+	JButton btnEditCounterHistory = createEditCounterHistoryBtn(message("counter.form.saveAndEdit"), "edit.png",
+		Mode.UPDATE);
+
+	JButton btnViewCounterHistory = createEditCounterHistoryBtn(message("counter.form.view"), "view.png",
+		Mode.VIEW);
+
 	JButton btnHistoryCounter = showCounterHistory(message("counter.form.histroy"));
 	JPanel panel = new JPanel();
 	panel.add(btnAddContract);
@@ -127,10 +130,9 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	panel.add(btnEditCounterHistory);
 	panel.add(btnViewCounterHistory);
 	panel.add(btnHistoryCounter);
-	
-	
+
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs,"p,p,p,fill:p:grow,p");
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,p,fill:p:grow,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);
@@ -146,24 +148,21 @@ public class SubscriberFilterTable extends CommonFilterTable {
     }
 
     private JButton createAddContractBtn(String title) {
-	JButton btnAddContract =ButtonFactory.createBtnAdd(title);
+	JButton btnAddContract = ButtonFactory.createBtnAdd(title);
 	btnAddContract.setToolTipText(btnAddContract.getText());
 	btnAddContract.addActionListener(e -> {
-	    int selectedRow = table.getSelectedRow();
-	    if (selectedRow >= 0) {
-		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
-		if (valueAt instanceof Long) {
-		    Long id = (Long) valueAt;
-		    Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
-		    if (subscriber == null) {
-			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
-			return;
-		    }
-		    WindowUtils.createDialog(getOwner(), title, new ContractForm(subscriber.getId()));
+
+	    Optional<Long> selectedRowId = getSelectedRowId();
+	    if (selectedRowId.isPresent()) {
+		Long id = selectedRowId.get();
+		Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
+		if (subscriber == null) {
+		    MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
+		    return;
 		}
-	    } else {
-		warnNoSelectedRow();
+		WindowUtils.createDialog(getOwner(), title, new ContractForm(subscriber.getId()));
 	    }
+
 	});
 	return btnAddContract;
     }
@@ -172,66 +171,59 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	JButton btnAddContract = new JButton(title, switchSubscription ? ImageUtils.getSwapIcon() : mode.getImage());
 	btnAddContract.setToolTipText(btnAddContract.getText());
 	btnAddContract.addActionListener(e -> {
-	    int selectedRow = table.getSelectedRow();
-	    if (selectedRow >= 0) {
-		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
-		if (valueAt instanceof Long) {
-		    Long id = (Long) valueAt;
-		    List<Contract> contracts = null;
-		    if(switchSubscription) {
-			contracts = ServiceProvider.get().getSubscriberService()
-			    .getActiveContractBySubscriberId(id);
-		    }else {
-			contracts = ServiceProvider.get().getSubscriberService()
-				    .getContractBySubscriberId(id);
-		    }
-		    
-		    if (contracts == null || contracts.isEmpty()) {
-			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noSubscription"));
-			return;
-		    }
-		    if (contracts.size() > 1) {
-
-			JPanel panel = new JPanel(new BorderLayout());
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			JPanel panelBotton = new JPanel();
-			panelBotton.setPreferredSize(new Dimension(400, 350));
-			ExCombo<Contract> combo = new ExCombo<>(true, contracts);
-			panel.add(combo, BorderLayout.PAGE_START);
-			panel.add(panelBotton, BorderLayout.CENTER);
-			combo.addItemListener(new ItemListener() {
-
-			    @Override
-			    public void itemStateChanged(ItemEvent arg0) {
-				if (arg0.getStateChange() == ItemEvent.SELECTED) {
-
-				    panelBotton.removeAll();
-				    if (combo.getValue() != null) {
-					panelBotton.add(
-						switchSubscription ? new ContractSwitchingForm(combo.getValue(), mode)
-							: new ContractForm(combo.getValue(), mode));
-				    }
-				    panelBotton.setPreferredSize(null);
-				    Window owner = SwingUtilities.getWindowAncestor(panelBotton);
-				    if (owner != null) {
-					WindowUtils.applyRtl(owner);
-					owner.pack();
-				    }
-				}
-
-			    }
-			});
-
-			WindowUtils.createDialog(getOwner(), title, panel);
-
-		    } else {
-			WindowUtils.createDialog(getOwner(), title,
-				switchSubscription ? new ContractSwitchingForm(contracts.get(0), mode)
-					: new ContractForm(contracts.get(0), mode));
-		    }
+	    Optional<Long> selectedRowId = getSelectedRowId();
+	    if (selectedRowId.isPresent()) {
+		Long id = selectedRowId.get();
+		List<Contract> contracts = null;
+		if (switchSubscription) {
+		    contracts = ServiceProvider.get().getSubscriberService().getActiveContractBySubscriberId(id);
+		} else {
+		    contracts = ServiceProvider.get().getSubscriberService().getActiveContractBySubscriberId(id);
 		}
-	    } else {
-		warnNoSelectedRow();
+
+		if (contracts == null || contracts.isEmpty()) {
+		    MessageUtils.showWarningMessage(getOwner(), message("subscriber.noSubscription"));
+		    return;
+		}
+		if (contracts.size() > 1) {
+
+		    JPanel panel = new JPanel(new BorderLayout());
+		    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		    JPanel panelBotton = new JPanel();
+		    panelBotton.setPreferredSize(new Dimension(400, 350));
+		    ExCombo<Contract> combo = new ExCombo<>(true, contracts);
+		    panel.add(combo, BorderLayout.PAGE_START);
+		    panel.add(panelBotton, BorderLayout.CENTER);
+		    combo.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+			    if (arg0.getStateChange() == ItemEvent.SELECTED) {
+
+				panelBotton.removeAll();
+				if (combo.getValue() != null) {
+				    panelBotton
+					    .add(switchSubscription ? new ContractSwitchingForm(combo.getValue(), mode)
+						    : new ContractForm(combo.getValue(), mode));
+				}
+				panelBotton.setPreferredSize(null);
+				Window owner = SwingUtilities.getWindowAncestor(panelBotton);
+				if (owner != null) {
+				    WindowUtils.applyRtl(owner);
+				    owner.pack();
+				}
+			    }
+
+			}
+		    });
+
+		    WindowUtils.createDialog(getOwner(), title, panel);
+
+		} else {
+		    WindowUtils.createDialog(getOwner(), title,
+			    switchSubscription ? new ContractSwitchingForm(contracts.get(0), mode)
+				    : new ContractForm(contracts.get(0), mode));
+		}
 	    }
 	});
 	return btnAddContract;
@@ -241,73 +233,63 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	JButton btnAddCounterHistory = new JButton(title, mode.getImage());
 	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
 	btnAddCounterHistory.addActionListener(e -> {
-	    int selectedRow = table.getSelectedRow();
-	    if (selectedRow >= 0) {
-		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
-		if (valueAt instanceof Long) {
-		    Long id = (Long) valueAt;
-		    Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
-		    if (subscriber == null) {
-			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
-			return;
-		    }
-		    JDialog createDialog = null;
-		    try {
-			createDialog = WindowUtils.createDialog(getOwner(), title,
-				new CounterHistoryForm(subscriber.getId(), mode));
-		    } catch (Exception e1) {
-			MessageUtils.showInfoMessage(getOwner(), message("counterHistory.noContract"));
-			if (createDialog != null) {
-			    createDialog.dispose();
-			}
+	    Optional<Long> selectedRowId = getSelectedRowId();
+	    if (selectedRowId.isPresent()) {
+		Long id = selectedRowId.get();
+		Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
+		if (subscriber == null) {
+		    MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
+		    return;
+		}
+		JDialog createDialog = null;
+		try {
+		    createDialog = WindowUtils.createDialog(getOwner(), title,
+			    new CounterHistoryForm(subscriber.getId(), mode));
+		} catch (Exception e1) {
+		    MessageUtils.showInfoMessage(getOwner(), message("counterHistory.noContract"));
+		    if (createDialog != null) {
+			createDialog.dispose();
 		    }
 		}
-	    } else {
-		warnNoSelectedRow();
+	    }
+
+	});
+	return btnAddCounterHistory;
+    }
+
+    interface Apply {
+	void action(String title, Subscriber subscriber);
+    }
+
+    private JButton createContractHistoryBtn(String title) {
+	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> WindowUtils
+		.createDialog(getOwner(), title, new SubscriptionHistoryTablePanel(title, subscriber.getId())));
+    }
+
+    private JButton showCounterHistory(String title) {
+	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> WindowUtils
+		.createDialog(getOwner(), title1, new CounterHistoryTablePanel(title1, subscriber.getId())));
+
+    }
+
+    private JButton applyAction(String title, ImageIcon icon, Apply apply) {
+	JButton btnAddCounterHistory = new JButton(title, icon);
+	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
+	btnAddCounterHistory.addActionListener(e -> {
+	    Optional<Long> selectedRowId = getSelectedRowId();
+	    if (selectedRowId.isPresent()) {
+		Long id = selectedRowId.get();
+		Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
+		if (subscriber == null) {
+		    MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
+		    return;
+		}
+		apply.action(title, subscriber);
 	    }
 	});
 	return btnAddCounterHistory;
     }
 
-    interface Apply{
-	void action(String title, Subscriber subscriber);
-    }
-    
-    private JButton createContractHistoryBtn(String title) {
-  	return applyAction(title, ImageUtils.getHistoryIcon(),(title1, subscriber) -> WindowUtils.createDialog(getOwner(), title,
-		new SubscriptionHistoryTablePanel(title, subscriber.getId())));
-      }
-    
-    private JButton showCounterHistory(String title) {
-	return applyAction(title, ImageUtils.getHistoryIcon(),(title1, subscriber) -> WindowUtils.createDialog(getOwner(), title1,
-			new CounterHistoryTablePanel(title1, subscriber.getId())));
-	
-      }
-    
-    private JButton applyAction(String title, ImageIcon icon, Apply apply) {
-  	JButton btnAddCounterHistory = new JButton(title,icon);
-  	btnAddCounterHistory.setToolTipText(btnAddCounterHistory.getText());
-  	btnAddCounterHistory.addActionListener(e -> {
-  	    int selectedRow = table.getSelectedRow();
-  	    if (selectedRow >= 0) {
-  		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
-  		if (valueAt instanceof Long) {
-  		    Long id = (Long) valueAt;
-  		    Subscriber subscriber = ServiceProvider.get().getSubscriberService().getSubscriberById(id);
-  		    if (subscriber == null) {
-  			MessageUtils.showWarningMessage(getOwner(), message("subscriber.noOneSelected"));
-  			return;
-  		    }
-  		 apply.action(title, subscriber);
-  		}
-  	    } else {
-  		warnNoSelectedRow();
-  	    }
-  	});
-  	return btnAddCounterHistory;
-      }
-    
-    
     @Override
     protected String getAddTooltip() {
 	return message(message("subscriber.form.add"));

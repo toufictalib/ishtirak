@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
@@ -325,5 +326,19 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     }
 
     public abstract ReportTableModel getReportTableModel();
+    
+    protected Optional<Long> getSelectedRowId() {
+	int selectedRow = table.getSelectedRow();
+	if (selectedRow >= 0) {
+	    Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
+	    if (valueAt instanceof Long) {
+		return Optional.of((Long) valueAt);
+	    }
+	} else {
+	    warnNoSelectedRow();
+	}
+	return Optional.empty();
+    }
+    
 
 }
