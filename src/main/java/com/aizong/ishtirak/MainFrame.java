@@ -283,6 +283,12 @@ public class MainFrame extends JFrame {
 	}
     }
 
+    public static JDialog openWindowAsFrame(Window owner, String text, JPanel component) {
+	component.setPreferredSize(ComponentUtils.getDimension(90, 80));
+	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
+	return createDialog;
+    }
+    
     @SuppressWarnings("unused")
     private ImageIcon icon(String imagePath) {
 	return ImageHelperCustom.get().getImageIcon("menus/" + imagePath);

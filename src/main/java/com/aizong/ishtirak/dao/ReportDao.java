@@ -10,7 +10,7 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getSubscriptionsIncomeReport(Date startDate, Date endDate);
     
-    List<Object[]> getExpenses(ExpensesType expensesType, Date startDate, Date endDate);
+    List<Object[]> getExpenses(ExpensesType expensesType, String startDate, String endDate);
 
     List<Object[]> getOutExpenses(Date startDate, Date endDate);
 
@@ -32,6 +32,14 @@ public interface ReportDao extends GenericDao<Object>{
     List<Object[]> getCounterHistory(Long subscriberId, String fromDate, String endDate);
 
     boolean hasCounterBundle(String contractUniqueCode);
+
+    List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate);
+
+    List<Object[]> getExpensesPerEngine(String engine, String fromDate, String toDate);
+
+    List<Object[]> getConsumptionPerEngine(String engine, String fromDate, String toDate);
+
+    List<Object[]> getIncomePerEngine(String engine, String fromDate, String toDate);
 
     
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SearchBean;
+import com.aizong.ishtirak.bean.SummaryBean;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
@@ -195,8 +196,8 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportTableModel getExpenses() {
 	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	List<Object[]> rows = reportDao.getExpenses(null, startEndDateOfCurrentMonth.getStartDate(),
-		startEndDateOfCurrentMonth.getEndDate());
+	List<Object[]> rows = reportDao.getExpenses(null, startEndDateOfCurrentMonth.getStartDateAsString(),
+		startEndDateOfCurrentMonth.getEndDateAsString());
 
 	Object value = null;
 	for (Object[] row : rows) {
@@ -214,9 +215,8 @@ public class ReportServiceImpl implements ReportService {
     
     @Override
     public ReportTableModel getExpenses(ExpensesType expensesType, SearchBean searchBean) {
-	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	List<Object[]> rows = reportDao.getExpenses(expensesType, startEndDateOfCurrentMonth.getStartDate(),
-		startEndDateOfCurrentMonth.getEndDate());
+	List<Object[]> rows = reportDao.getExpenses(expensesType, searchBean.getFromDate(),
+		searchBean.getEndDate());
 
 	Object value = null;
 	for (Object[] row : rows) {
@@ -342,6 +342,13 @@ public class ReportServiceImpl implements ReportService {
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);
+    }
+
+    @Override
+    public SummaryBean getSummaryResult(String fromDate, String toDate) {
+	String engine = null;
+	return new SummaryBean(subscriberService.getEngines(), reportDao.getExpensesPerEngine(engine, fromDate, toDate),
+		reportDao.getConsumptionPerEngine(engine, fromDate, toDate), reportDao.getIncomePerEngine(engine, fromDate, toDate));
     }
     
 }

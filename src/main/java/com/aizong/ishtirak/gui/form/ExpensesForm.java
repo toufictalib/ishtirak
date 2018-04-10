@@ -89,6 +89,10 @@ public class ExpensesForm extends BasicForm {
     private boolean isDiesel() {
 	return comboMaintenaceTypes.getValue() != null && comboMaintenaceTypes.getValue().type == ExpensesType.DIESEL;
     }
+    
+    private boolean isOil() {
+	return comboMaintenaceTypes.getValue() != null && comboMaintenaceTypes.getValue().type == ExpensesType.FILTER_OIL_CHANGING;
+    }
 
     private boolean isEmployee() {
 	return comboMaintenaceTypes.getValue() != null && comboMaintenaceTypes.getValue().type == ExpensesType.EMPLOYEE;
@@ -129,7 +133,11 @@ public class ExpensesForm extends BasicForm {
 	if (expensesLog.getDieselConsupmtion() != null) {
 	    txtDieselQuantity.setText(String.valueOf(expensesLog.getDieselConsupmtion()));
 	}
-
+	
+	if (isOil()) {
+	    txtDieselQuantity.setValue(txtDieselQuantity.getValue());
+	}
+	
 	if (expensesLog.getEmployeeId() != null) {
 	    if (comboEmployees == null) {
 		comboEmployees = new ExCombo<>(ServiceProvider.get().getSubscriberService().getActiveEmployees());
@@ -159,6 +167,11 @@ public class ExpensesForm extends BasicForm {
 	if (isDiesel()) {
 	    builder.append(message("maintenance.form.dieselAmount"), txtDieselQuantity);
 	}
+	
+	if(isOil()) {
+	    builder.append(message("maintenance.form.oil"), txtDieselQuantity);
+	}
+	
 
 	if (isEmployee()) {
 	    if (comboEmployees == null) {
@@ -229,9 +242,9 @@ public class ExpensesForm extends BasicForm {
 	    maintenaceLog.setEngineId(null);
 	}
 
-	if (isDiesel()) {
-	    maintenaceLog.setDieselConsupmtion(txtDieselQuantity.getValue());
-	}
+	maintenaceLog.setDieselConsupmtion(isDiesel() ? txtDieselQuantity.getValue() : null);
+	 
+	maintenaceLog.setOilConsumption(isOil() ? txtDieselQuantity.getValue() : null);
 
 	ServiceProvider.get().getSubscriberService().saveMaintenanceLog(maintenaceLog);
 
@@ -260,10 +273,12 @@ public class ExpensesForm extends BasicForm {
 	    errors.add(errorPerfix("maintenance.form.name"));
 	}*/
 
-	if (isDiesel()) {
-	    if (txtDieselQuantity.getValue() == null) {
+	if (isDiesel() && txtDieselQuantity.getValue() == null) {
 		errors.add(errorPerfix("maintenance.form.dieselAmount"));
-	    }
+	}
+	
+	if (isOil() && txtDieselQuantity.getValue() == null) {
+		errors.add(errorPerfix("maintenance.form.oil"));
 	}
 
 	if (isEmployee()) {

@@ -24,11 +24,11 @@ public class DateRange {
     }
     
     public String getStartDateAsString() {
-	return DateUtil.formatShortSqlDate(getStartDate());
+	return DateUtil.formatShortSqlDate(getStartDate())+" 00:00:00";
     }
     
     public String getEndDateAsString() {
-   	return DateUtil.formatShortSqlDate(getEndDate());
+   	return DateUtil.formatShortSqlDate(getEndDate())+" 23:59:59";
        }
 
 }

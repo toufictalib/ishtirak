@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Object[]> getExpenses(ExpensesType expensesType, Date startDate, Date endDate) {
+    public List<Object[]> getExpenses(ExpensesType expensesType, String startDate, String endDate) {
 	String sql = "select m.id, e.name 'engine', m.amount, m.description,m.maintenace_type,m.insert_date "
 		+ "from expenses_log m "
 		+ "left join engine e on e.id = m.engine "
@@ -179,6 +180,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Long> getActiveContractWithoutReceipts() {
 	String sql = "SELECT \n" + 
@@ -230,5 +232,39 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	int count = jdbcTemplate.queryForObject(sql, new Object[] { contractUniqueCode }, Integer.class);
 	return count > 0;
     }
+    
+    @Override
+    public List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate) {
+	
+	boolean isAllContract = StringUtils.isBlank(uniqueContractId);
+	
+	String sql = SQLUtils.sql(isAllContract ? "all_contract_history.sql" : "contract_history.sql");
+	
+	if(isAllContract) {
+	    sql = MessageFormat.format(sql, fromDate,toDate);
+	}else {
+	    sql = MessageFormat.format(sql, uniqueContractId, fromDate, toDate);
+	}
+	return toList(sql);
+    }
+    
+    @Override
+    public List<Object[]> getExpensesPerEngine(String engine, String fromDate, String toDate) {
+	String sql = SQLUtils.sql("expenses_summary_per_engine.sql", fromDate, toDate);
+	return toList(sql);
+    }
+
+    @Override
+    public List<Object[]> getConsumptionPerEngine(String engine, String fromDate, String toDate) {
+	String sql = SQLUtils.sql("consumption_summary_per_engine.sql", fromDate, toDate);
+	return toList(sql);
+    }
+
+    @Override
+    public List<Object[]> getIncomePerEngine(String engine, String fromDate, String toDate) {
+	String sql = SQLUtils.sql("income_per_engine.sql", fromDate, toDate);
+	return toList(sql);
+    }
+    
     
 }

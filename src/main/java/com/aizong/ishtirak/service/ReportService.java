@@ -5,6 +5,7 @@ import java.util.List;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SearchBean;
+import com.aizong.ishtirak.bean.SummaryBean;
 
 public interface ReportService {
 
@@ -35,4 +36,6 @@ public interface ReportService {
     ReportTableModel getCounterHistory(Long subscriberId,  SearchBean searchBean);
 
     ReportTableModel getExpenses(ExpensesType expensesType, SearchBean searchBean);
+    
+    SummaryBean getSummaryResult(String fromDate, String toDate);
 }

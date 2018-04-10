@@ -42,7 +42,7 @@ public abstract class BasicPanel extends JPanel {
 	return code;
     }
     
-    protected String enumMessage(String code, Class<?> enumClazz,Object... params) {
+    protected static String enumMessage(String code, Class<?> enumClazz,Object... params) {
 	if(message!=null) {
 	    return message.getEnumLabel(code, enumClazz);
 	}

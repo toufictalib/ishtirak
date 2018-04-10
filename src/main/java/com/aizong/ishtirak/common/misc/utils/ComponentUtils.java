@@ -6,6 +6,7 @@
 package com.aizong.ishtirak.common.misc.utils;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -82,4 +84,9 @@ public class ComponentUtils {
 	return BorderFactory.createEmptyBorder(padding, padding, padding, padding);
     }
     
+    public static JScrollPane createScrollPane(Component component) {
+	JScrollPane scrollPane = new JScrollPane(component);
+	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+	return scrollPane;
+    }
 }

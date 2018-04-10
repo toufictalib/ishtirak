@@ -43,7 +43,7 @@ public class ReceiptDesign {
 
     private static final String COUNTER_DIFFERENCE = "فارق العداد";
 
-    ReceiptBean bean = ReceiptBean.create(true);
+    ReceiptBean bean = ReceiptBean.create(false);
 
     StyleBuilder STYLE_RTL;
 

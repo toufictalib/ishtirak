@@ -145,7 +145,9 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 	builder.append(txtFE, btnAdd);
 
-	builder.append(new JScrollPane(table), 3);
+	JScrollPane scrollPane = new JScrollPane(table);
+	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+	builder.append(scrollPane, 3);
 
 	builder.append(txtRowCount);
 

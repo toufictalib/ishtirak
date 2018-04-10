@@ -187,6 +187,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	// builder.append(txtFE, 3);
 
 	JScrollPane scrollPane = new JScrollPane(table);
+	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 	// scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
 	builder.append(scrollPane, 3);
 

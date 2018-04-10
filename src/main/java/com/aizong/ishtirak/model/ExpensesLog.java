@@ -32,7 +32,10 @@ public class ExpensesLog extends BaseEntity {
     private Long employeeId;
     
     @Column(name="diesel_consumption")
-    private Integer dieselConsupmtion;    
+    private Integer dieselConsupmtion;   
+    
+    @Column(name="oil_consumption")
+    private Integer oilConsumption;   
 
     @Lob
     @Column(name = "note")
@@ -93,6 +96,16 @@ public class ExpensesLog extends BaseEntity {
     public void setDieselConsupmtion(Integer dieselConsupmtion) {
         this.dieselConsupmtion = dieselConsupmtion;
     }
+
+    public Integer getOilConsumption() {
+        return oilConsumption;
+    }
+
+    public void setOilConsumption(Integer oilConsumption) {
+        this.oilConsumption = oilConsumption;
+    }
+    
+    
 
     
 }

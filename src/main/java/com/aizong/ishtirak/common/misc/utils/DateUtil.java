@@ -182,6 +182,10 @@ public class DateUtil {
     public static String formatShortSqlDate(Date date) {
 	return SHORT_FORMAT.format(date);
     }
+    
+    public static String formatTimestampSqlDate(Date date) {
+   	return new SimpleDateFormat(LONG_SQL_DATE_FORMAT).format(date);
+       }
 
     public static Date fromLocalDate(LocalDate localDate) {
 	return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -203,14 +207,6 @@ public class DateUtil {
 	
     }
 
-    public static DateRange getStartEndDateOfLastMonth() {
-	LocalDate initial = LocalDate.now();
-	initial = initial.minusMonths(1);
-	LocalDate start = initial.withDayOfMonth(1);
-	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth());
-
-	return new DateRange(fromLocalDate(start), fromLocalDate(end));
-    }
 
     /**
      * month starts between 5 last month and 5 current month

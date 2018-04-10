@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.common.form.BasicForm;
+import com.aizong.ishtirak.gui.SummaryTablePanel;
 import com.aizong.ishtirak.gui.table.EmployeeTablePanel;
 import com.aizong.ishtirak.gui.table.ExpensesTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -37,7 +38,16 @@ public class GeneralReportButtonsPanel extends BasicForm {
 
 	});
 
+	JideButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
+	btnSummary.addActionListener(e -> {
+	    MainFrame.openWindowAsFrame(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+		    new SummaryTablePanel(btnMonthlyReports.getActionCommand()));
+
+	});
+	
 	builder.append(btnMonthlyReports);
+	builder.append(btnSummary);
+	
 	for (ExpensesType expensesType : ExpensesType.values()) {
 	    JideButton button = button(enumMessage(expensesType.name(), ExpensesType.class), "subreport.png");
 	    button.addActionListener(new ActionListener() {
