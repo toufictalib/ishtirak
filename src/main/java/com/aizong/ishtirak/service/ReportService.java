@@ -38,4 +38,6 @@ public interface ReportService {
     ReportTableModel getExpenses(ExpensesType expensesType, SearchBean searchBean);
     
     SummaryBean getSummaryResult(String fromDate, String toDate);
+    
+    ReportTableModel getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate, Boolean paid);
 }

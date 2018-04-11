@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 import java.io.File;
@@ -14,12 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.atomic.DoubleAdder;
 
 import javax.swing.BorderFactory;
@@ -30,8 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -40,6 +38,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jfree.chart.ChartFactory;
@@ -63,82 +63,70 @@ import com.aizong.ishtirak.common.misc.utils.Constant;
 import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
+import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
 import com.aizong.ishtirak.common.misc.utils.PrintUtils;
+import com.aizong.ishtirak.common.misc.utils.ProgressAction;
+import com.aizong.ishtirak.common.misc.utils.SearchMonthPanel;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class ResultForm extends BasicForm {
+public class ResultForm extends BasicForm implements ActionListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
 
-    private Map<String, List<Tuple<String, Double>>> result;
+    private SearchMonthPanel searchMonthPanel;
+
+    private JButton btnSearch;
 
     private String title;
 
-    DateRange startEndDateOfCurrentMonth;
+    private JPanel panel;
+
+    private Map<String, List<Tuple<String, Double>>> result;
+
+    private Double profit = null;
 
     public ResultForm(String title) {
 
 	this.title = title;
-	startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	result = ServiceProvider.get().getSubscriberService().getResult(
-		startEndDateOfCurrentMonth.getStartDateAsString(), startEndDateOfCurrentMonth.getEndDateAsString());
 
 	initializePanel();
     }
 
     @Override
     protected void initComponents() {
+	btnSearch = ButtonFactory.createBtnSearch();
+	btnSearch.addActionListener(this);
+
+	DateRange dataRange = DateUtil.getStartEndDateOfCurrentMonth();
+	// because we need to show only previous month that effevely between 5
+	// perv month
+	// and 5 current month
+	searchMonthPanel = SearchMonthPanel.createDefault(dataRange.getStartDate(), dataRange.getStartDate());
+
     }
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.setDefaultDialogBorder();
 
-	JPanel panel = new JPanel(new BorderLayout(10, 10));
-
-	JPanel incomePanel = createIncomeExpenses(message("income"), getIncomeResult(), TransactionType.class, false);
-
-	JPanel expensesPanel = createIncomeExpenses(message("expenses"), getExpensesResult(), ExpensesType.class, true);
-
-	JPanel panels = new JPanel(new BorderLayout());
-	panels.add(expensesPanel, BorderLayout.WEST);
-	panels.add(incomePanel, BorderLayout.EAST);
-
-	panel.add(createTopPanel(), BorderLayout.PAGE_START);
-
-	panel.add(panels, BorderLayout.CENTER);
+	panel = new JPanel(new BorderLayout(10, 10));
 
 	DefaultFormBuilder subBuilder = BasicForm.createBuilder("fill:p:grow", "p,p");
-	builder.append(panel);
 
-	subBuilder.append(panel);
 	JButton btnPrint = ButtonFactory.createBtnPrint();
 	btnPrint.addActionListener(print());
 
 	JButton btnExportExcel = ButtonFactory.createBtnExportExcel();
-	btnExportExcel.addActionListener(e -> {
-	    DefaultTableModel model = table();
+	btnExportExcel.addActionListener(exportAction());
 
-	    JFileChooser fc = new JFileChooser();
-	    fc.setSelectedFile(new File(title + ".xls"));
-	    int returnVal = fc.showSaveDialog(ResultForm.this);
-	    if (returnVal == JFileChooser.APPROVE_OPTION) {
-		File file = fc.getSelectedFile();
-		try {
-		    writeToExcel(model, file.getPath(), title);
-		    MessageUtils.showInfoMessage(ResultForm.this, message("file.exported.success"));
-		} catch (Exception e1) {
-		    e1.printStackTrace();
-		    MessageUtils.showErrorMessage(ResultForm.this, message("file.exported.error"));
-		}
-	    }
-
-	});
-	JPanel panel2 = new JPanel();
+	JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	panel2.add(searchMonthPanel);
+	panel2.add(btnSearch);
 	panel2.add(btnPrint);
 	panel2.add(btnExportExcel);
 
@@ -148,47 +136,26 @@ public class ResultForm extends BasicForm {
 	return subBuilder.getPanel();
     }
 
-    private DefaultTableModel table() {
-	Double profit = getProfit();
+    private ActionListener exportAction() {
+	return e -> {
 
-	Vector<Object[]> rows = new Vector<>();
-	addRow(rows, message("income"), "");
-
-	DoubleAdder total = new DoubleAdder();
-	getIncomeResult().forEach(e -> {
-	    addRow(rows, enumMessage(e.getKey(), TransactionType.class), e.getValue());
-	    total.add(e.getValue());
-	}
-
-	);
-	addRow(rows, message("total"), total.sum());
-	addRow(rows, "", "");
-	addRow(rows, message("expenses"), "");
-	total.reset();
-	getExpensesResult().forEach(e -> {
-	    addRow(rows, enumMessage(e.getKey(), ExpensesType.class), e.getValue());
-	    total.add(e.getValue());
-	});
-	addRow(rows, message("total"), total.sum());
-	addRow(rows, "", "");
-	addRow(rows, message(profit >= 0 ? "profit" : "loss"), profit);
-	Vector<Vector<Object>> data = new Vector<>();
-	for (Object[] row : rows) {
-	    data.add(new Vector<>(Arrays.asList(row)));
-
-	}
-
-	DefaultTableModel model = new DefaultTableModel(data, new Vector<>(Arrays.asList("", "")));
-	return model;
-
+	    JFileChooser fc = new JFileChooser();
+	    fc.setSelectedFile(new File(title + ".xls"));
+	    int returnVal = fc.showSaveDialog(ResultForm.this);
+	    if (returnVal == JFileChooser.APPROVE_OPTION) {
+		File file = fc.getSelectedFile();
+		try {
+		     writeToExcel(file.getPath(), title);
+		    MessageUtils.showInfoMessage(ResultForm.this, message("file.exported.success"));
+		} catch (Exception e1) {
+		    e1.printStackTrace();
+		    MessageUtils.showErrorMessage(ResultForm.this, message("file.exported.error"));
+		}
+	    }
+	};
     }
 
-    private void addRow(Vector<Object[]> rows, Object label, Object value) {
-	rows.add(new Object[] { label, value });
-    }
-
-    private JPanel createTopPanel() {
-	Double profit = getProfit();
+    private JPanel createTopPanel(Double profit) {
 
 	int padding = 10;
 
@@ -255,30 +222,12 @@ public class ResultForm extends BasicForm {
 	return panel1;
     }
 
-    private PieDataset createDataset() {
+    private PieDataset createDataset(List<Tuple<String, Double>> list) {
 	DefaultPieDataset dataset = new DefaultPieDataset();
-	getIncomeResult().forEach(e -> {
+	list.forEach(e -> {
 	    dataset.setValue(enumMessage(e.getKey(), TransactionType.class), e.getValue());
 	});
 	return dataset;
-    }
-
-    private Double getProfit() {
-	Double income = 0d;
-	Double expenses = 0d;
-
-	List<Tuple<String, Double>> values = getIncomeResult();
-	if (values != null) {
-	    income = values.stream().mapToDouble(e -> e.getValue()).sum();
-	}
-
-	values = getExpensesResult();
-	if (values != null) {
-	    expenses = values.stream().mapToDouble(e -> e.getValue()).sum();
-	}
-
-	return income - expenses;
-
     }
 
     private String toBold(String text) {
@@ -300,14 +249,6 @@ public class ResultForm extends BasicForm {
 	builder.append(label, txtField);
     }
 
-    private List<Tuple<String, Double>> getIncomeResult() {
-	return result.get(Constant.INCOME) == null ? new ArrayList<>() : result.get(Constant.INCOME);
-    }
-
-    private List<Tuple<String, Double>> getExpensesResult() {
-	return result.get(Constant.EXPENSES) == null ? new ArrayList<>() : result.get(Constant.EXPENSES);
-    }
-
     private ActionListener print() {
 	return e -> {
 	    try {
@@ -321,9 +262,9 @@ public class ResultForm extends BasicForm {
 	};
     }
 
-    private PieDataset createExpensesDataset() {
+    private PieDataset createExpensesDataset(List<Tuple<String, Double>> list) {
 	DefaultPieDataset dataset = new DefaultPieDataset();
-	getExpensesResult().forEach(e -> {
+	list.forEach(e -> {
 	    dataset.setValue(enumMessage(e.getKey(), ExpensesType.class), e.getValue());
 	});
 	return dataset;
@@ -344,8 +285,9 @@ public class ResultForm extends BasicForm {
 	return chart;
     }
 
-    private JPanel getChartPanel(boolean expenses) {
-	ChartPanel chartPanel = new ChartPanel(createChart(expenses ? createExpensesDataset() : createDataset()));
+    private JPanel getChartPanel(boolean expenses, List<Tuple<String, Double>> list) {
+	ChartPanel chartPanel = new ChartPanel(
+		createChart(expenses ? createExpensesDataset(list) : createDataset(list)));
 	chartPanel.setPreferredSize(new Dimension(250, 250));
 	return chartPanel;
     }
@@ -355,7 +297,7 @@ public class ResultForm extends BasicForm {
 	return "fill:p:grow";
     }
 
-    public void writeToExcel(TableModel model, String file, String title) throws FileNotFoundException, IOException {
+    public void writeToExcel(String file, String title) throws FileNotFoundException, IOException {
 	file = file.trim();
 	if (!file.contains(".xls")) {
 	    String[] split = file.split(".");
@@ -382,33 +324,108 @@ public class ResultForm extends BasicForm {
 	cell.setCellStyle(style(wb, font));
 
 	Formatter formatter = new Formatter(System.out, LoginForm.getCurrentLocale());
-	cell.setCellValue("نتيجة المدخول والنفقات لشهر " + DateUtil.getMonthName(DateUtil.getEffectiveMonth()));
+	cell.setCellValue("نتيجة المدخول والنفقات لشهر " + getMonthesLabel());
 	formatter.close();
-	sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 2));
+	sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
 
-	for (int rows = 0; rows < model.getRowCount(); rows++) { // For each
-								 // table row
-	    for (int cols = 0; cols < model.getColumnCount(); cols++) { // For
-									// table
-		Object valueAt = model.getValueAt(rows, cols);
-		if (valueAt != null) {
-		    Cell createCell = row.createCell(cols);
-		    createCell.setCellValue(valueAt.toString());
-		    if (rows == 0) {
-			createCell.setCellStyle(style(wb, font));
-		    } else {
 
-			row.createCell(cols).setCellValue(valueAt.toString()); // Write
-		    }
-		}
-
-		// value
-	    }
-
-	    // Set the row to the next one in the sequence
-	    row = sheet.createRow((rows + 3));
+	 Cell createCell = row.createCell(0);
+	 createCell.setCellValue(message("income"));
+	 createCell.setCellStyle(style(wb, font));
+	 
+	 sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 0, 1));
+	 
+	 int i=3;
+	 Row rowValues = sheet.createRow(i++);
+	
+	DoubleAdder total = new DoubleAdder();
+	
+	for (Tuple<String, Double> e : getIncomeResult()) {
+	    Cell cellz = rowValues.createCell(0);
+	    cellz.setCellValue(enumMessage(e.getKey(), TransactionType.class));
+	    
+	    cellz = rowValues.createCell(1);
+	    
+	    currencyFormat(wb, cellz);
+	    cellz.setCellValue(e.getValue());
+	    
+	    rowValues = sheet.createRow(i++);
+	    total.add(e.getValue()==null ? 0d:e.getValue());
 	}
+	
+	Cell createCell2 = row.createCell(3);
+	createCell2.setCellValue(message("expenses"));
+	createCell2.setCellStyle(style(wb, font));
+	
+	sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 3, 4));
+	
+	DoubleAdder total2 = new DoubleAdder();
+	
+	i=3;
+	rowValues = sheet.getRow(i++);
+	for (Tuple<String, Double> e : getExpensesResult()) {
+	    Cell cellz = rowValues.createCell(3);
+	    cellz.setCellValue(enumMessage(e.getKey(), ExpensesType.class));
+	    
+	    cellz = rowValues.createCell(4);
+	    currencyFormat(wb, cellz);
+	    cellz.setCellValue(e.getValue());
+	    
+	    rowValues = sheet.getRow(i);
+	    if(rowValues==null) {
+		rowValues = sheet.createRow(i);
+	    }
+	    i++;
+	    total2.add(e.getValue()==null ? 0d:e.getValue());
+	}
+	
+	int totalRow = Math.max(getIncomeResult().size(), getExpensesResult().size())+3;
+	Row createRow = sheet.createRow(totalRow);
+	
+	final Cell incomeLabelCell = createRow.createCell(0);
+	incomeLabelCell.setCellStyle(style(wb, font));
+	incomeLabelCell.setCellValue(message("total"));
+	final Cell incomeTotal = createRow.createCell(1);
+	currencyFormat(wb, incomeTotal);
+	incomeTotal.setCellValue(total.doubleValue());
+	final Cell expensesLabelCell = createRow.createCell(3);
+	expensesLabelCell.setCellStyle(style(wb, font));
+	expensesLabelCell.setCellValue(message("total"));
+	final Cell expensesTotal = createRow.createCell(4);
+	currencyFormat(wb, expensesTotal);
+	expensesTotal.setCellValue(total2.doubleValue());
+	
+	sheet.addMergedRegion(new CellRangeAddress(totalRow+2, totalRow+2, 0, 4));
+	final Cell resultCell1 = sheet.createRow(totalRow+2).createCell(0);
+	resultCell1.setCellStyle(style(wb, font));
+	resultCell1.setCellValue(message(profit>=0 ? "profit" : "loss"));
+	sheet.addMergedRegion(new CellRangeAddress(totalRow+3, totalRow+3, 0, 4));
+	final Cell resultCell2 = sheet.createRow(totalRow+3).createCell(0);
+	
+	XSSFDataFormat cf = wb.createDataFormat();
+	XSSFCellStyle currencyCellStyle = wb.createCellStyle();
+	currencyCellStyle.setDataFormat(cf.getFormat("#,##0"));
+	
+	resultCell2.setCellStyle(style(wb, font));
+	resultCell2.getCellStyle().setDataFormat(cf.getFormat("#,##0"));
+	resultCell2.setCellValue(profit);
+	
+        
 	wb.write(new FileOutputStream(file));// Save the file
+    }
+
+    private void currencyFormat(XSSFWorkbook wb, Cell cell) {
+	XSSFDataFormat cf = wb.createDataFormat();
+	XSSFCellStyle currencyCellStyle = wb.createCellStyle();
+	currencyCellStyle.setDataFormat(cf.getFormat("#,##0"));
+	cell.setCellStyle(currencyCellStyle);
+    }
+
+    private String getMonthesLabel() {
+	if (searchMonthPanel.getSelectedToMonth() != searchMonthPanel.getSelectedFromMonth()) {
+	    return searchMonthPanel.getFromMonthLabel() + "-" + searchMonthPanel.getToMonthLabel();
+	}
+	return searchMonthPanel.getFromMonthLabel();
     }
 
     private void c(XSSFWorkbook wb) {
@@ -416,7 +433,7 @@ public class ResultForm extends BasicForm {
 	XSSFFont defaultFont = wb.createFont();
 	defaultFont.setFontHeightInPoints((short) 10);
 	defaultFont.setFontName("Arial");
-	defaultFont.setColor(IndexedColors.BLACK.getIndex());
+	defaultFont.setColor(IndexedColors.LIGHT_GREEN.getIndex());
 	defaultFont.setBold(false);
 	defaultFont.setItalic(false);
 
@@ -424,11 +441,100 @@ public class ResultForm extends BasicForm {
 
     private CellStyle style(Workbook wb, XSSFFont font) {
 	CellStyle style = wb.createCellStyle();
-	style.setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+	style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
 	style.setFillPattern(CellStyle.SOLID_FOREGROUND);
 	style.setAlignment(CellStyle.ALIGN_CENTER);
 	style.setFont(font);
+	font.setBold(true);
+	font.setFontHeight(12);
 	return style;
+    }
+
+    private List<Tuple<String, Double>> getIncomeResult() {
+	return result.get(Constant.INCOME) == null ? new ArrayList<>() : result.get(Constant.INCOME);
+    }
+
+    private List<Tuple<String, Double>> getExpensesResult() {
+	return result.get(Constant.EXPENSES) == null ? new ArrayList<>() : result.get(Constant.EXPENSES);
+    }
+
+    private Double getProfit() {
+	    Double income = 0d;
+	    Double expenses = 0d;
+
+	    List<Tuple<String, Double>> values = getIncomeResult();
+	    if (values != null) {
+		income = values.stream().mapToDouble(e -> e.getValue()).sum();
+	    }
+
+	    values = getExpensesResult();
+	    if (values != null) {
+		expenses = values.stream().mapToDouble(e -> e.getValue()).sum();
+	    }
+
+	    return income - expenses;
+
+	}
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+	if (e.getSource() == btnSearch) {
+	    profit = null;
+	    MySwingWorker.execute(new ProgressAction<Map<String, List<Tuple<String, Double>>>>() {
+
+		@Override
+		public Map<String, List<Tuple<String, Double>>> action() {
+		    LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
+			    searchMonthPanel.getSelectedFromMonth(), 5);
+		    DateRange fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
+
+		    LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
+			    searchMonthPanel.getSelectedToMonth(), 5);
+		    DateRange toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
+
+		    return ServiceProvider.get().getSubscriberService().getResult(fromDateRange.getStartDateAsString(),
+			    toDateRange.getEndDateAsString());
+		}
+
+		@Override
+		public void success(Map<String, List<Tuple<String, Double>>> results) {
+
+		    result = results;
+		    panel.removeAll();
+		    JPanel incomePanel = createIncomeExpenses(message("income"), getIncomeResult(),
+			    TransactionType.class, false);
+
+		    JPanel expensesPanel = createIncomeExpenses(message("expenses"), getExpensesResult(),
+			    ExpensesType.class, true);
+
+		    JPanel panels = new JPanel(new BorderLayout());
+		    panels.add(expensesPanel, BorderLayout.WEST);
+		    panels.add(incomePanel, BorderLayout.EAST);
+
+		    panel.add(createTopPanel(getProfit()), BorderLayout.PAGE_START);
+
+		    panel.add(panels, BorderLayout.CENTER);
+
+		    profit = getProfit();
+
+		    panel.revalidate();
+		    panel.repaint();
+
+		    if (getOwner() != null) {
+			WindowUtils.applyRtl(getOwner());
+			getOwner().pack();
+		    }
+		}
+
+		
+
+		@Override
+		public void failure(Exception e) {
+
+		}
+	    });
+	}
+
     }
 
 }

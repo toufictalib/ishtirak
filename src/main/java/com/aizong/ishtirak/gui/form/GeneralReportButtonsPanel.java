@@ -10,6 +10,7 @@ import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.gui.SummaryTablePanel;
 import com.aizong.ishtirak.gui.table.EmployeeTablePanel;
 import com.aizong.ishtirak.gui.table.ExpensesTablePanel;
+import com.aizong.ishtirak.gui.table.SubscriberHistoryTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
@@ -45,8 +46,14 @@ public class GeneralReportButtonsPanel extends BasicForm {
 
 	});
 	
+	JideButton btnSubscription = button(message("reports.subscirption.subscription"), "subreport.png");
+	btnSubscription.addActionListener(e->{
+	    MainFrame.openWindow(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
+	});
+	
 	builder.append(btnMonthlyReports);
 	builder.append(btnSummary);
+	builder.append(btnSubscription);
 	
 	for (ExpensesType expensesType : ExpensesType.values()) {
 	    JideButton button = button(enumMessage(expensesType.name(), ExpensesType.class), "subreport.png");
@@ -70,7 +77,7 @@ public class GeneralReportButtonsPanel extends BasicForm {
 
     @Override
     protected String getLayoutSpecs() {
-	return "p,30dlu,p";
+	return "p,30dlu,p,30dlu,p";
     }
 
 }

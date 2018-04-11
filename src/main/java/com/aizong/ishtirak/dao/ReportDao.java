@@ -33,7 +33,7 @@ public interface ReportDao extends GenericDao<Object>{
 
     boolean hasCounterBundle(String contractUniqueCode);
 
-    List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate);
+    List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate, Boolean paid);
 
     List<Object[]> getExpensesPerEngine(String engine, String fromDate, String toDate);
 

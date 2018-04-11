@@ -120,5 +120,6 @@ public interface SubscriberService {
     
     Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
     
-    public Map<Long, Set<String>> getContractUniqueCodesByEngine();    
+    public Map<Long, Set<String>> getContractUniqueCodesByEngine();  
+    
 }

@@ -234,7 +234,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     }
     
     @Override
-    public List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate) {
+    public List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate, Boolean paid) {
 	
 	boolean isAllContract = StringUtils.isBlank(uniqueContractId);
 	
@@ -244,6 +244,10 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	    sql = MessageFormat.format(sql, fromDate,toDate);
 	}else {
 	    sql = MessageFormat.format(sql, uniqueContractId, fromDate, toDate);
+	}
+	
+	if(paid!=null) {
+	    sql+=" and is_paid = "+paid;
 	}
 	return toList(sql);
     }

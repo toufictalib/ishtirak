@@ -1,10 +1,10 @@
 SELECT 
-    c.contract_unique_code, CONCAT(s.name, '  ', s.last_name) 'Full Name',
+    c.contract_unique_code, CONCAT(s.name, " ", s.last_name) "Full Name",
     t.amount,
     t.is_paid,
     t.transaction_type,
-    b.name 'Bundle',
-    e.name 'Engine',
+    b.name "Bundle",
+    e.name "Engine",
     v.name,
     t.insert_date
     

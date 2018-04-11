@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -81,7 +80,7 @@ public class SearchMonthPanel extends JPanel {
 
     public SearchMonthPanel addDatePickerFrom() {
 	datePickerFrom = monthCombo();
-	datePickerYearFrom = new JComboBox<>(YEARS);
+	datePickerYearFrom = yearsCombo();
 	add(new JLabel("من شهر :"));
 	add(datePickerFrom);
 	add(datePickerYearFrom);
@@ -91,7 +90,9 @@ public class SearchMonthPanel extends JPanel {
     }
 
     private JComboBox<String> monthCombo() {
-	return new JComboBox<>(ServiceProvider.get().getMessage().getMessage("monthes").split(","));
+	JComboBox<String> jComboBox = new JComboBox<>(ServiceProvider.get().getMessage().getMessage("monthes").split(","));
+	jComboBox.setPreferredSize(new Dimension(135,jComboBox.getPreferredSize().height));
+	return jComboBox;
     }
 
     public SearchMonthPanel addDatePickerTo() {
@@ -119,6 +120,13 @@ public class SearchMonthPanel extends JPanel {
 	return get(datePickerYearFrom);
     }
 
+    public String getFromMonthLabel() {
+	return datePickerFrom.getSelectedItem().toString();
+    }
+    public String getToMonthLabel() {
+	return datePickerTo.getSelectedItem().toString();
+    }
+    
     public Integer getSelectedToMonth() {
 	return getString(datePickerTo);
     }

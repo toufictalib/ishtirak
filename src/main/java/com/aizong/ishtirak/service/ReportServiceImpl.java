@@ -350,5 +350,22 @@ public class ReportServiceImpl implements ReportService {
 	return new SummaryBean(subscriberService.getEngines(), reportDao.getExpensesPerEngine(engine, fromDate, toDate),
 		reportDao.getConsumptionPerEngine(engine, fromDate, toDate), reportDao.getIncomePerEngine(engine, fromDate, toDate));
     }
+
+    @Override
+    public ReportTableModel getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate,
+	    String toDate, Boolean paid) {
+	String[] cols = {"contract_unique_code","fullName","amount","paid","transactionType","subscriptionBundle","engine","village","receiptCreationDate"};
+	List<Object[]> rows = reportDao.getContractHistoryPerContractOrALl(uniqueContractId, fromDate, toDate, paid);
+	
+	Object value = null;
+	for (Object[] row : rows) {
+	    value = row[4];
+	    if (value!=null) {
+		row[4] = message.getEnumLabel(value.toString(), TransactionType.class);
+	    }
+	}
+	
+	return new ReportTableModel(cols, rows, clazzes(rows, cols));
+    }
     
 }
