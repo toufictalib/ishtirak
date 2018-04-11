@@ -23,6 +23,8 @@ import com.aizong.ishtirak.common.misc.component.DateRange;
  */
 public class DateUtil {
 
+    private static final int DAYS_OF_NEXT_MONTH = 5;
+    private static final int START_MONTH = 6;
     public static final String SHORT_SQL_DATE_FORMAT = "yyyy-MM-dd";
     public static final String LONG_SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -125,6 +127,10 @@ public class DateUtil {
 
     }
 
+    public static LocalDate localDate(Date date) {
+	 return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+    
     public static Date toYearAndMonthOnly(Date date) {
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(toShortDate(date));
@@ -199,6 +205,14 @@ public class DateUtil {
 
 	return new DateRange(fromLocalDate(start), fromLocalDate(end));
     }
+    
+    public static DateRange getStartEndDateOfCurrentMonth(LocalDate initial) {
+	LocalDate start = initial.withDayOfMonth(START_MONTH);
+	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(DAYS_OF_NEXT_MONTH);
+
+	return new DateRange(fromLocalDate(start), fromLocalDate(end));
+      }
+    
     
     public static void main(String[]args) {
 	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();

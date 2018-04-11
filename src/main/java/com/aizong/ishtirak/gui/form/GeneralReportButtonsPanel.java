@@ -40,7 +40,7 @@ public class GeneralReportButtonsPanel extends BasicForm {
 
 	JideButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
 	btnSummary.addActionListener(e -> {
-	    MainFrame.openWindowAsFrame(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
+	    MainFrame.openFullWindow(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new SummaryTablePanel(btnMonthlyReports.getActionCommand()));
 
 	});

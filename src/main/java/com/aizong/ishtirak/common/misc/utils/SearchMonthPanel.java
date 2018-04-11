@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -81,10 +82,10 @@ public class SearchMonthPanel extends JPanel {
     public SearchMonthPanel addDatePickerFrom() {
 	datePickerFrom = monthCombo();
 	datePickerYearFrom = new JComboBox<>(YEARS);
-	add(new JLabel("من تاريخ :"));
+	add(new JLabel("من شهر :"));
 	add(datePickerFrom);
 	add(datePickerYearFrom);
-	datePickerFrom.setSelectedIndex(fromMonth-1);
+	datePickerFrom.setSelectedIndex(fromMonth - 1);
 	datePickerYearFrom.setSelectedItem(fromYear);
 	return this;
     }
@@ -96,34 +97,42 @@ public class SearchMonthPanel extends JPanel {
     public SearchMonthPanel addDatePickerTo() {
 	datePickerTo = monthCombo();
 	datePickerYearTo = yearsCombo();
-	add(new JLabel("إلى تاريخ :"));
+	add(new JLabel("إلى شهر :"));
 	add(datePickerTo);
 	add(datePickerYearTo);
-	datePickerTo.setSelectedIndex(toMonth-1);
+	datePickerTo.setSelectedIndex(toMonth - 1);
 	datePickerYearTo.setSelectedItem(toYear);
 	return this;
     }
 
     private JComboBox<Integer> yearsCombo() {
-	 JComboBox<Integer> jComboBox = new JComboBox<Integer>(YEARS);
-	 jComboBox.setPreferredSize(new Dimension(100,jComboBox.getPreferredSize().height));
-	 return jComboBox;
+	JComboBox<Integer> jComboBox = new JComboBox<Integer>(YEARS);
+	jComboBox.setPreferredSize(new Dimension(100, jComboBox.getPreferredSize().height));
+	return jComboBox;
     }
 
-    public int getFromMonth() {
-	return fromMonth;
+    public Integer getSelectedFromMonth() {
+	return getString(datePickerFrom);
     }
 
-    public int getFromYear() {
-	return fromYear;
+    public Integer getSelectedFromYear() {
+	return get(datePickerYearFrom);
     }
 
-    public int getToMonth() {
-	return toMonth;
+    public Integer getSelectedToMonth() {
+	return getString(datePickerTo);
     }
 
-    public int getToYear() {
-	return toYear;
+    public Integer getSelectedToYear() {
+	return get(datePickerYearTo);
+    }
+
+    private Integer get(JComboBox<Integer> combo) {
+	return (Integer) combo.getSelectedItem();
+    }
+
+    private Integer getString(JComboBox<String> combo) {
+	return combo.getSelectedIndex() + 1;
     }
 
 }

@@ -289,6 +289,12 @@ public class MainFrame extends JFrame {
 	return createDialog;
     }
     
+    public static JDialog openFullWindow(Window owner, String text, JPanel component) {
+   	component.setPreferredSize(ComponentUtils.getDimension(100, 100));
+   	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
+   	return createDialog;
+       }
+    
     @SuppressWarnings("unused")
     private ImageIcon icon(String imagePath) {
 	return ImageHelperCustom.get().getImageIcon("menus/" + imagePath);

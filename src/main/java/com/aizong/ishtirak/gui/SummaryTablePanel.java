@@ -5,22 +5,24 @@ import java.awt.ComponentOrientation;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.print.PrinterException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.SummaryBean;
+import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
@@ -28,17 +30,20 @@ import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
+import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
+import com.aizong.ishtirak.common.misc.utils.PrintUtils;
 import com.aizong.ishtirak.common.misc.utils.ProgressAction;
 import com.aizong.ishtirak.common.misc.utils.SearchMonthPanel;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
-import com.aizong.ishtirak.model.Engine;
+import com.aizong.ishtirak.gui.table.tablemodel.ConsumptionTableModel;
+import com.aizong.ishtirak.gui.table.tablemodel.ExpensesTableModel;
+import com.aizong.ishtirak.gui.table.tablemodel.IncomeTableModel;
+import com.aizong.ishtirak.gui.table.tablemodel.ResultTableModel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 @SuppressWarnings("serial")
 public class SummaryTablePanel extends BasicForm implements ActionListener {
-
-    private SummaryBean summaryBean;
 
     private SearchMonthPanel searchMonthPanel;
 
@@ -47,6 +52,8 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
     private JTable tableExpenses;
     private JTable tableConsumption;
     private JTable tableIncome;
+    private JTable tableResult;
+    private JButton btnPrint;
 
     public SummaryTablePanel(String title) {
 	super();
@@ -68,9 +75,13 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 	searchMonthPanel = SearchMonthPanel.createDefault(dataRange.getStartDate(), dataRange.getStartDate());
 
 	tableExpenses = createTable();
-	
-	tableConsumption = new JTable();
-	tableIncome = new JTable();
+
+	tableConsumption = createTable();
+	tableIncome = createTable();
+	tableResult = createTable();
+
+	btnPrint = ButtonFactory.createBtnPrint();
+	btnPrint.addActionListener(this);
     }
 
     private JTable createTable() {
@@ -86,18 +97,18 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 	};
 	JTableHeader header = table.getTableHeader();
 	header.setDefaultRenderer(new HeaderRenderer(table));
-	table.setRowHeight(50);
+	table.setRowHeight(20);
 	table.setFillsViewportHeight(true);
 	table.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	table.setDefaultRenderer(Date.class, new DateCellRenderer());
 	return table;
-	
+
     }
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
 
-	builder = createBuilder(getLayoutSpecs(), "p,p,p,p");
+	builder = createBuilder(getLayoutSpecs(), "p,p,p,100dlu,p,120dlu,50dlu,p,50dlu,p");
 	JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	controlPanel.add(searchMonthPanel);
 	controlPanel.add(btnSearch);
@@ -105,10 +116,18 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 	// starting build panel
 	builder.appendSeparator();
 	builder.append(controlPanel);
-	builder.appendSeparator();
+	builder.appendSeparator(message("income"));
 
+	builder.append(ComponentUtils.createScrollPane(tableIncome));
+	builder.appendSeparator(message("expenses"));
 	builder.append(ComponentUtils.createScrollPane(tableExpenses));
+	builder.append(ComponentUtils.createScrollPane(tableConsumption));
+	builder.appendSeparator(message("result"));
+	builder.append(ComponentUtils.createScrollPane(tableResult));
 
+	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	panel.add(btnPrint);
+	builder.append(panel);
 	return builder.getPanel();
     }
 
@@ -117,13 +136,12 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 	return "fill:p:grow";
     }
 
-    private void fillTableExpenses(List<Engine> engines, List<Object[]> rows) {
-
+    private Map<String, Map<String, Double>> getExpensesValues(List<Object[]> rows) {
 	Map<String, Map<String, Double>> map = new HashMap<>();
 	for (Object[] row : rows) {
 
-	    String engine = row[0]==null ? message("noEngine") : row[0].toString();
-	    String expensesType = enumMessage(row[1].toString(),ExpensesType.class);
+	    String engine = row[0] == null ? message("noEngine") : row[0].toString();
+	    String expensesType = enumMessage(row[1].toString(), ExpensesType.class);
 	    Double amount = (Double) row[2];
 	    Map<String, Double> values = map.get(engine);
 	    if (values == null) {
@@ -133,87 +151,52 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 
 	    values.put(expensesType, amount);
 	}
-	
-	tableExpenses.setModel(new MyTableModel(map));
+	return map;
+    }
+
+    private void fillTableConsumption(List<Object[]> rows) {
+
+	Map<String, Map<String, Double>> map = new HashMap<>();
+	for (Object[] row : rows) {
+
+	    String engine = row[0].toString();
+	    String expensesType = enumMessage(row[1].toString(), ExpensesType.class);
+	    if (row[2] instanceof Number) {
+		Number amount = (Number) row[2];
+		Map<String, Double> values = map.get(engine);
+		if (values == null) {
+		    values = new HashMap<>();
+		    map.put(engine, values);
+		}
+
+		values.put(expensesType, amount.doubleValue());
+	    } else {
+		System.out.println(row[2] + " is not a double");
+	    }
+	}
+
+	tableConsumption.setModel(new ConsumptionTableModel(map));
 
     }
 
-    private static class MyTableModel extends AbstractTableModel {
+    private Map<String, Map<String, Double>> getIncomeValues(List<Object[]> rows) {
+	Map<String, Map<String, Double>> map = new HashMap<>();
+	for (Object[] row : rows) {
 
-	Map<String, Map<String, Double>> map;
-
-	List<String> cols = new ArrayList<>();
-	public MyTableModel(Map<String, Map<String, Double>> map) {
-	    super();
-	    cols.add(message("expenses"));
-	    cols.addAll(map.keySet());
-	    cols.add(message("total"));
-	    this.map = map;
-	}
-
-	@Override
-	public int getColumnCount() {
-	    return cols.size();
-	}
-
-	@Override
-	public Class<?> getColumnClass(int columnIndex) {
-	    if(columnIndex!=0) {
-		return Double.class;
+	    String engine = row[0] == null ? message("noEngine") : row[0].toString();
+	    String expensesType = enumMessage(row[1].toString(), TransactionType.class);
+	    Double amount = (Double) row[2];
+	    Map<String, Double> values = map.get(engine);
+	    if (values == null) {
+		values = new HashMap<>();
+		map.put(engine, values);
 	    }
-	    return super.getColumnClass(columnIndex);
-	}
-	@Override
-	public String getColumnName(int column) {
-	    return cols.get(column);
+
+	    values.put(expensesType, amount);
 	}
 
-	@Override
-	public int getRowCount() {
-	    return ExpensesType.values().length + 1;
-	}
-
-	@Override
-	public Object getValueAt(int row, int col) {
-	    if (col == 0) {
-		if(row<getRowCount()-1) {
-		    
-		    return enumMessage(ExpensesType.values()[row].toString(),ExpensesType.class);
-		}
-		return message("total");
-	    }
-	    
-	    if(col == cols.size()-1) {
-		
-		Double total = null;
-		for(int i=1;i<cols.size()-1;i++) {
-		    if(getValueAt(row, i) instanceof Double) {
-			if(total==null) {
-			    total =0d;
-			}
-			total+=(Double)getValueAt(row, i);
-		    }
-		}
-		return total;
-	    }
-	    
-	    if(row == getRowCount()-1) {
-		Double total = null;
-		for(int i=0;i<getRowCount()-1;i++) {
-		    if(getValueAt(i, col) instanceof Double) {
-			if(total==null) {
-			   total = 0d;
-			}
-			 total+=(Double)getValueAt(i, col);
-		    }
-		}
-		return total;
-	    }
-	    Map<String, Double> map2 = map.get(getColumnName(col));
-	    Double double1 = map2.get(getValueAt(row, 0));
-	    return double1;
-	}
-
+	map.put(message("noEngine"), new HashMap<String, Double>());
+	return map;
     }
 
     @Override
@@ -223,14 +206,56 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 
 		@Override
 		public SummaryBean action() {
-		    DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
+
+		    LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
+			    searchMonthPanel.getSelectedFromMonth(), 5);
+		    DateRange fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
+
+		    LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
+			    searchMonthPanel.getSelectedToMonth(), 5);
+		    DateRange toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
+
 		    return ServiceProvider.get().getReportServiceImpl()
-			    .getSummaryResult(dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
+			    .getSummaryResult(fromDateRange.getStartDateAsString(), toDateRange.getEndDateAsString());
 		}
 
 		@Override
 		public void success(SummaryBean t) {
-		    fillTableExpenses(t.getEngines(), t.getExpenses());
+		    Map<String, Map<String, Double>> expensesValues = getExpensesValues(t.getExpenses());
+		    tableExpenses.setModel(new ExpensesTableModel(expensesValues));
+		    fillTableConsumption(t.getConsumptions());
+		    Map<String, Map<String, Double>> incomeValues = getIncomeValues(t.getIncome());
+		    tableIncome.setModel(new IncomeTableModel(incomeValues));
+		    fillResult(incomeValues, expensesValues);
+		}
+
+		private void fillResult(Map<String, Map<String, Double>> incomeValues,
+			Map<String, Map<String, Double>> expensesValues) {
+
+		    Map<String, Map<String, Double>> resutl = new HashMap<>();
+		    for (Entry<String, Map<String, Double>> entry : expensesValues.entrySet()) {
+			Map<String, Double> map = resutl.get(entry.getKey());
+			if (map == null) {
+			    map = new HashMap<>();
+			    resutl.put(entry.getKey(), map);
+			}
+
+			Double expensesTotal = 0d;
+			for (Double d : entry.getValue().values()) {
+			    expensesTotal += d;
+			}
+			Map<String, Double> map2 = incomeValues.get(entry.getKey());
+			Double incomeTotal = 0d;
+			if (map2 != null) {
+
+			    for (Double d : map2.values()) {
+				incomeTotal += d;
+			    }
+			}
+			map.put(message("result"), incomeTotal - expensesTotal);
+
+		    }
+		    tableResult.setModel(new ResultTableModel(resutl));
 		}
 
 		@Override
@@ -238,45 +263,17 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 
 		}
 	    });
+	} else if (btnPrint == e.getSource()) {
+	    try {
+		boolean printed = PrintUtils.printLandscapeComponent(SummaryTablePanel.this);
+		if (printed) {
+		    MessageUtils.showInfoMessage(getOwner(), message("printing.done"));
+		}
+	    } catch (PrinterException e1) {
+		MessageUtils.showErrorMessage(getOwner(), message("printing.failure", e1.getMessage()));
+	    }
 	}
 
     }
 
-    private static class Keys {
-	private String engineName;
-	private String expenseType;
-	private Double value;
-
-	public Keys(String engineName, String expenseType, Double value) {
-	    super();
-	    this.engineName = engineName;
-	    this.expenseType = expenseType;
-	    this.value = value;
-	}
-
-	public String getEngineName() {
-	    return engineName;
-	}
-
-	public void setEngineName(String engineName) {
-	    this.engineName = engineName;
-	}
-
-	public String getExpenseType() {
-	    return expenseType;
-	}
-
-	public void setExpenseType(String expenseType) {
-	    this.expenseType = expenseType;
-	}
-
-	public Double getValue() {
-	    return value;
-	}
-
-	public void setValue(Double value) {
-	    this.value = value;
-	}
-
-    }
-};
+}
