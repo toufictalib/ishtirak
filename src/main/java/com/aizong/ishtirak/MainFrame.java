@@ -36,6 +36,7 @@ import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
+import com.aizong.ishtirak.gui.ImportButtonsPanel;
 import com.aizong.ishtirak.gui.form.CompanyForm;
 import com.aizong.ishtirak.gui.form.ExpensesForm;
 import com.aizong.ishtirak.gui.form.GeneralReportButtonsPanel;
@@ -146,6 +147,11 @@ public class MainFrame extends JFrame {
 
 	    }
 	});
+	
+	JButton btnImport = button("إدخال المعلومات", "import.png");
+	btnImport.addActionListener(e->{
+	    openWindow(btnImport.getActionCommand(), new ImportButtonsPanel());
+	});
 
 	JButton btnMonthlyReports = button("تقارير شهرية", "reports.png");
 	btnMonthlyReports.addActionListener(e -> {
@@ -184,6 +190,7 @@ public class MainFrame extends JFrame {
 	ishtirakMenu.add(btnSubscriptionBundle);
 	ishtirakMenu.add(btnMonthlyBundle);
 	ishtirakMenu.add(btnReceipts);
+	ishtirakMenu.add(btnImport);
 	expensesMenu.add(btnEmployee);
 	expensesMenu.add(btnEmployeeJob);
 	expensesMenu.add(btnExpensesManagement);
@@ -222,10 +229,10 @@ public class MainFrame extends JFrame {
     }
 
     private JPanel createMenuPanel(String title) {
-	JPanel jPanel = new JPanel(new GridLayout(4, 1, 15, 15));
+	JPanel jPanel = new JPanel(new GridLayout(5, 1, 15, 15));
 
 	jPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.black), title));
-	jPanel.setPreferredSize(new Dimension(250, 300));
+	jPanel.setPreferredSize(new Dimension(250, 400));
 	return jPanel;
     }
 

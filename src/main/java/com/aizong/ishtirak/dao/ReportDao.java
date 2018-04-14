@@ -41,5 +41,7 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getIncomePerEngine(String engine, String fromDate, String toDate);
 
+    List<Object[]> getExportedFiles(String date);
+
     
 }

@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -366,6 +367,26 @@ public class ReportServiceImpl implements ReportService {
 	}
 	
 	return new ReportTableModel(cols, rows, clazzes(rows, cols));
+    }
+    
+    @Override
+    public ReportTableModel getExportedFiles(boolean counterInput) {
+        
+	
+	List<Object[]> rows = reportDao.getExportedFiles(DateUtil.getContractDate());
+	
+	List<String> cols = new ArrayList<>();
+	    cols.add("fullName");
+	    cols.add("contract_unique_code");
+	if(counterInput) {
+	    cols.add("counterAmount");
+	}else {
+	    cols.add("paid");
+	}
+	
+	
+	
+	return new ReportTableModel(cols.toArray(new String[0]), rows, clazzes(rows, cols.toArray(new String[0])));
     }
     
 }

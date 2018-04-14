@@ -232,7 +232,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void saveCounterHistory(CounterHistory history) throws Exception {
 	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractId(),effectiveCurrentMonth.getStartDateAsString(),effectiveCurrentMonth.getEndDateAsString() );
+	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractUniqueCode(),effectiveCurrentMonth.getStartDateAsString(),effectiveCurrentMonth.getEndDateAsString() );
 	 if(counterHistoryByContractId==null) {
 	     subscriberDao.save(Arrays.asList(history));
 	 }else {
@@ -243,9 +243,9 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public CounterHistory getCounterHistoryByContractId(Long contractId) {
+    public CounterHistory getCounterHistoryByContractId(String contractUniqueCode) {
 	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	return subscriberDao.getCounterHistoryByContractId(contractId, effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
+	return subscriberDao.getCounterHistoryByContractId(contractUniqueCode, effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
     }
     
     @Override
@@ -503,5 +503,15 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public Map<Long, Set<String>> getContractUniqueCodesByEngine() {
 	return subscriberDao.getContractUniqueCodesByEngine();
+    }
+
+    @Override
+    public void updateCounters(Map<String, Long> e, String startDate, String endDate) {
+	subscriberDao.updateCounters(e, startDate, endDate);
+    }
+
+    @Override
+    public void updatePaid(Map<String, Boolean> e, String startDate, String endDate) {
+	subscriberDao.updatePaid(e, startDate, endDate);
     }
 }

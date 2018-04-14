@@ -40,4 +40,6 @@ public interface ReportService {
     SummaryBean getSummaryResult(String fromDate, String toDate);
     
     ReportTableModel getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate, Boolean paid);
+    
+    ReportTableModel getExportedFiles(boolean counterInput);
 }

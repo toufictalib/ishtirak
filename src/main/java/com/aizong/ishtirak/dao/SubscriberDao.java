@@ -47,7 +47,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Contract> getContractBySubscriberId(Long subscriberId, Boolean active);
 
-    CounterHistory getCounterHistoryByContractId(Long contractId, String fromDate, String toDate);
+    CounterHistory getCounterHistoryByContractId(String contractUniqueCode, String fromDate, String toDate);
 
     void updateCounterHistory(CounterHistory history);
 
@@ -58,4 +58,8 @@ public interface SubscriberDao extends GenericDao<Object> {
     Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
 
     Map<Long, Set<String>> getContractUniqueCodesByEngine();
+
+    void updateCounters(Map<String, Long> e, String startDate, String endDate);
+
+    void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
 }

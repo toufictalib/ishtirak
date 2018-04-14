@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.aizong.ishtirak.common.misc.utils.BaseEntity;
@@ -12,8 +13,10 @@ public class Village extends BaseEntity {
      */
     private static final long serialVersionUID = 7885874793830935824L;
     private String name;
+
+    @Column(name = "order_index")
     private int orderIndex;
-    
+
     public Village() {
 	super();
     }
@@ -41,13 +44,11 @@ public class Village extends BaseEntity {
     }
 
     public int getOrderIndex() {
-        return orderIndex;
+	return orderIndex;
     }
 
     public void setOrderIndex(int orderIndex) {
-        this.orderIndex = orderIndex;
+	this.orderIndex = orderIndex;
     }
-    
-    
 
 }

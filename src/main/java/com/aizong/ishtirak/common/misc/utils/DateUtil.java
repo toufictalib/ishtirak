@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -275,6 +276,13 @@ public class DateUtil {
 	    currentMonth = 12;
 	}
 	return currentMonth;
+    }
+    
+    
+    public static String getContractDate() {
+	LocalDate now = LocalDate.now();
+	LocalDate date = LocalDate.of(now.getYear(), getEffectiveMonth(), 16);
+	return date.format(DateTimeFormatter.ofPattern(SHORT_SQL_DATE_FORMAT));
     }
 
 }

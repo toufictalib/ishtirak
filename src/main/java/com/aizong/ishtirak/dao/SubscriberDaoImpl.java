@@ -1,13 +1,16 @@
 package com.aizong.ishtirak.dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.hibernate.Criteria;
@@ -18,6 +21,7 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -209,10 +213,12 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, String fromDate, String toDate) {
+    public List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, String fromDate,
+	    String toDate) {
 
 	if (!activeContracts.isEmpty()) {
-	    String sql = "select id_contract from transaction t " + "where insert_date>=:fromDate and insert_date<=toDate " 
+	    String sql = "select id_contract from transaction t "
+		    + "where insert_date>=:fromDate and insert_date<=toDate "
 		    + "and t.id_contract in (:activeContracts) and t.transaction_type <> :transactionType";
 
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
@@ -240,14 +246,12 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public CounterHistory getCounterHistoryByContractId(Long contractId, String fromDate, String toDate) {
-	String sql = "select * from counter_history "
-		+ "where contract_id = :contractId "
-		+ "and insert_date >= :fromDate "
-		+ "and insert_date <= :toDate";
+    public CounterHistory getCounterHistoryByContractId(String contractUniqueCode, String fromDate, String toDate) {
+	String sql = "select * from counter_history " + "where contract_unique_code = :contractId "
+		+ "and insert_date >= :fromDate " + "and insert_date <= :toDate";
 	NativeQuery<CounterHistory> sqlQuery = getsession().createNativeQuery(sql);
-	sqlQuery.setParameter("contractId", contractId).setParameter("fromDate", fromDate).
-	setParameter("toDate", toDate).addEntity(CounterHistory.class);
+	sqlQuery.setParameter("contractId", contractUniqueCode).setParameter("fromDate", fromDate)
+		.setParameter("toDate", toDate).addEntity(CounterHistory.class);
 	return sqlQuery.uniqueResult();
     }
 
@@ -255,8 +259,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     public void updateCounterHistory(CounterHistory history) {
 	String sql = "update counter_history set consumption = :consumption where id = :id";
 	NativeQuery<Void> sqlQuery = getsession().createNativeQuery(sql);
-	sqlQuery.setParameter("consumption", history.getConsumption()).setParameter("id",
-		history.getId());
+	sqlQuery.setParameter("consumption", history.getConsumption()).setParameter("id", history.getId());
 	sqlQuery.executeUpdate();
 
     }
@@ -281,59 +284,65 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public Map<String, List<Tuple<String,Double>>> getResult(String fromDate, String endDate){
-	
+    public Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate) {
+
 	String income = SQLUtils.sql("income.sql");
 	income = MessageFormat.format(income, fromDate, endDate);
-	
+
 	String expenses = SQLUtils.sql("expenses.sql");
-	expenses = MessageFormat.format(expenses, fromDate,endDate);
-	
-	List<Tuple<String, Double>> incomeList = jdbcTemplate.query(income, new ResultSetExtractor<List<Tuple<String,Double>>>() {
+	expenses = MessageFormat.format(expenses, fromDate, endDate);
 
-	    @Override
-	    public List<Tuple<String, Double>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-		List<Tuple<String,Double>> list = new ArrayList<>();
-		while(resultSet.next()) {
-		    list.add(new Tuple<String, Double>(resultSet.getString("Transaction Type"),resultSet.getDouble("total")));
-		}
-		return list;
-	    }
-	});
-	
-	List<Tuple<String, Double>> expensesList = jdbcTemplate.query(expenses, new ResultSetExtractor<List<Tuple<String,Double>>>() {
+	List<Tuple<String, Double>> incomeList = jdbcTemplate.query(income,
+		new ResultSetExtractor<List<Tuple<String, Double>>>() {
 
-	    @Override
-	    public List<Tuple<String, Double>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-		List<Tuple<String,Double>> list = new ArrayList<>();
-		while(resultSet.next()) {
-		    list.add(new Tuple<String, Double>(resultSet.getString("Maintenance Type"),resultSet.getDouble("total")));
-		}
-		return list;
-	    }
-	});
-	
-	Map<String, List<Tuple<String,Double>>> map = new HashMap<>();
+		    @Override
+		    public List<Tuple<String, Double>> extractData(ResultSet resultSet)
+			    throws SQLException, DataAccessException {
+			List<Tuple<String, Double>> list = new ArrayList<>();
+			while (resultSet.next()) {
+			    list.add(new Tuple<String, Double>(resultSet.getString("Transaction Type"),
+				    resultSet.getDouble("total")));
+			}
+			return list;
+		    }
+		});
+
+	List<Tuple<String, Double>> expensesList = jdbcTemplate.query(expenses,
+		new ResultSetExtractor<List<Tuple<String, Double>>>() {
+
+		    @Override
+		    public List<Tuple<String, Double>> extractData(ResultSet resultSet)
+			    throws SQLException, DataAccessException {
+			List<Tuple<String, Double>> list = new ArrayList<>();
+			while (resultSet.next()) {
+			    list.add(new Tuple<String, Double>(resultSet.getString("Maintenance Type"),
+				    resultSet.getDouble("total")));
+			}
+			return list;
+		    }
+		});
+
+	Map<String, List<Tuple<String, Double>>> map = new HashMap<>();
 	map.put(Constant.INCOME, incomeList);
 	map.put(Constant.EXPENSES, expensesList);
-	
+
 	return map;
     }
-    
+
     @Override
-    public Map<Long, Set<String>> getContractUniqueCodesByEngine(){
+    public Map<Long, Set<String>> getContractUniqueCodesByEngine() {
 	String sql = "select distinct engine_id,contract_unique_code from contract where is_active = 1";
-	
-	return jdbcTemplate.query(sql,new ResultSetExtractor<Map<Long, Set<String>>>(){
+
+	return jdbcTemplate.query(sql, new ResultSetExtractor<Map<Long, Set<String>>>() {
 
 	    @Override
 	    public Map<Long, Set<String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
-		
+
 		Map<Long, Set<String>> map = new HashMap<>();
-		while(rs.next()) {
+		while (rs.next()) {
 		    Long key = rs.getLong("engine_id");
 		    Set<String> list = map.get(key);
-		    if(list==null) {
+		    if (list == null) {
 			list = new HashSet<>();
 			map.put(key, list);
 		    }
@@ -341,8 +350,92 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 		}
 		return map;
 	    }
-	    
+
 	});
     }
 
+    @Override
+    public void updateCounters(Map<String, Long> e, String startDate, String endDate) {
+	deleteCounterHistory(e.keySet(), startDate, endDate);
+
+	List<CounterHistory> counterHistories = new ArrayList<>();
+	for (Entry<String, Long> p : e.entrySet()) {
+	    CounterHistory counterHistory = new CounterHistory();
+	    counterHistory.setContractUniqueCode(p.getKey());
+	    counterHistory.setConsumption(p.getValue());
+
+	    counterHistories.add(counterHistory);
+	}
+
+	save(new ArrayList<>(counterHistories));
+    }
+    
+    @Override
+    public void updatePaid(Map<String, Boolean> updatedTransactionsMap, String startDate, String endDate) {
+
+	String sql = SQLUtils.sql("getNotPaidTransaction.sql", startDate, endDate);
+
+	// map contains as key unique counter id and as value a trasaction id
+	Map<String, Long> map = jdbcTemplate.query(sql, new ResultSetExtractor<Map<String, Long>>() {
+
+	    @Override
+	    public Map<String, Long> extractData(ResultSet rs) throws SQLException, DataAccessException {
+		Map<String, Long> map = new HashMap<>();
+		while (rs.next()) {
+		    try {
+		    map.put(rs.getString(2), rs.getLong(1));
+		    }catch (Exception e) {
+			System.err.println(e.getMessage());
+		    }
+		}
+		return map;
+	    }
+
+	});
+	
+	if (!map.isEmpty()) {
+	    List<Object[]> data = new ArrayList<>();
+	    for (Entry<String, Boolean> entry : updatedTransactionsMap.entrySet()) {
+		if (entry.getValue() != null && entry.getValue()) {
+		    Long id = map.get(entry.getKey());
+		    if (id != null) {
+			data.add(new Object[] { id, entry.getValue() });
+		    }
+
+		}
+	    }
+
+	    if (!data.isEmpty()) {
+		String batchSql = "update transaction set is_paid = ?,date_paid = now() where id = ?";
+		jdbcTemplate.batchUpdate(batchSql, new BatchPreparedStatementSetter() {
+		    public void setValues(PreparedStatement ps, int i) throws SQLException {
+			ps.setBoolean(1, (Boolean) data.get(i)[1]);
+			ps.setLong(2, (Long) data.get(i)[0]);
+		    }
+
+		    public int getBatchSize() {
+			return data.size();
+		    }
+		});
+	    }
+	}
+
+	
+
+    }
+
+    private void deleteCounterHistory(Collection<String> contractUniqueCodes, String startDate, String endDate) {
+	
+	if(contractUniqueCodes.size()>0) {
+	String sql = "delete from counter_history where contract_unique_code in (:ids) and insert_date >= :startDate  and "
+		+ "insert_date <=:endDate";
+	NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
+	createSQLQuery.setParameter("startDate", startDate);
+	createSQLQuery.setParameter("endDate", endDate);
+	createSQLQuery.setParameterList("ids", contractUniqueCodes);
+	createSQLQuery.executeUpdate();
+
+
+    }
+    }
 }

@@ -11,8 +11,8 @@ import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 @Table(name = "counter_history")
 public class CounterHistory extends BaseEntity {
 
-    @Column(name = "contract_id")
-    private Long contractId;
+    @Column(name = "contract_unique_code")
+    private String contractUniqueCode;
 
     @Column(name = "consumption")
     private Long consumption;
@@ -25,12 +25,12 @@ public class CounterHistory extends BaseEntity {
 	super(id);
     }
 
-    public Long getContractId() {
-        return contractId;
+    public String getContractUniqueCode() {
+        return contractUniqueCode;
     }
 
-    public void setContractId(Long contractId) {
-        this.contractId = contractId;
+    public void setContractUniqueCode(String contractUniqueCode) {
+        this.contractUniqueCode = contractUniqueCode;
     }
 
     public Long getConsumption() {

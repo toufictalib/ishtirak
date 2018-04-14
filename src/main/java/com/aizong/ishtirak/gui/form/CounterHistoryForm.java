@@ -66,7 +66,7 @@ public class CounterHistoryForm extends BasicForm {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 		    if (comboContact.getValue() != null) {
 			CounterHistory counterHistroy = ServiceProvider.get().getSubscriberService()
-				.getCounterHistoryByContractId(comboContact.getValue().getId());
+				.getCounterHistoryByContractId(comboContact.getValue().getContractUniqueCode());
 			    txtConsumption.setValueAsLong(counterHistroy!=null ? counterHistroy.getConsumption() : null);
 
 		    }
@@ -100,7 +100,7 @@ public class CounterHistoryForm extends BasicForm {
 		}
 		
 		CounterHistory history = new CounterHistory();
-		history.setContractId(comboContact.getValue().getId());
+		history.setContractUniqueCode(comboContact.getValue().getContractUniqueCode());
 		history.setConsumption(consumption);
 
 		try {

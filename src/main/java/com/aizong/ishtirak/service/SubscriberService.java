@@ -64,7 +64,7 @@ public interface SubscriberService {
 
     void saveCounterHistory(CounterHistory history) throws Exception;
     
-    List<Contract> getCounterContractBySubscriberId(Long subscriberId);
+    List<Contract> getCounterContractBySubscriberId(Long contractId);
 
     List<Contract> generateReceipts();
 
@@ -100,7 +100,7 @@ public interface SubscriberService {
 
     List<Contract> getContractBySubscriberId(Long id);
 
-    CounterHistory getCounterHistoryByContractId(Long contractId);
+    CounterHistory getCounterHistoryByContractId(String contractUniqueCode);
     
     boolean login(String user, char[] password);
 
@@ -121,5 +121,9 @@ public interface SubscriberService {
     Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate);
     
     public Map<Long, Set<String>> getContractUniqueCodesByEngine();  
+    
+    void updateCounters(Map<String, Long> e, String startDate, String endDate);
+
+    void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
     
 }
