@@ -59,11 +59,11 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     private TableFilterHeader filterHeader;
 
     public ReportTablePanel() {
-
+	super();
     }
 
     public ReportTablePanel(String title) {
-
+	super();
 	this.title = title;
 	start();
 
@@ -73,7 +73,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	initComponents();
 	fillTable();
 
-	DefaultFormBuilder buidler = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,p"));
+	DefaultFormBuilder buidler = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,p"), this);
 	buidler.append(initUI());
 	buidler.appendSeparator();
 
@@ -81,7 +81,6 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	panel.add(btnExportExcel);
 	panel.add(btnPrint);
 	buidler.append(panel);
-	add(buidler.getPanel());
     }
 
     private void initComponents() {

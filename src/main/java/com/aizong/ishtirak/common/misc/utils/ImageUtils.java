@@ -101,4 +101,8 @@ public class ImageUtils {
 	return ImageHelperCustom.get().getImageIcon("company.png");
     }
     
+    public static ImageIcon getSwitchPayment() {
+	return ImageHelperCustom.get().getImageIcon("switch_payment.png");
+    }
+    
 }

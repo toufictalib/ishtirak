@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class SQLUtils {
@@ -27,5 +28,15 @@ public class SQLUtils {
 	    e.printStackTrace();
 	}
 	return file;
+    }
+    
+    public static String toParameterList(List<?> uniqueContractIds) {
+	StringBuilder builder = new StringBuilder();
+	for(Object s:uniqueContractIds) {
+	builder.append("\""+s.toString()+"\",");
+	
+	}
+	String parameterList = builder.substring(0, builder.length()-",".length());
+	return parameterList;
     }
 }

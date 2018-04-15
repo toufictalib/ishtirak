@@ -7,7 +7,9 @@ package com.aizong.ishtirak.common.misc.utils;
 
 import java.awt.Cursor;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -108,5 +110,11 @@ public class ButtonFactory {
 	return new JButton(message("exportExcel"), ImageUtils.getExportExcel());
     }
     
+    public static JButton button(String text, ImageIcon imageIcon) {
+	JButton btn = new JButton(text, imageIcon);
+   	btn.setHorizontalAlignment(SwingConstants.RIGHT);
+   	btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+   	return btn;
+       }
     
 }

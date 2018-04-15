@@ -1,6 +1,5 @@
 package com.aizong.ishtirak.service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -353,16 +352,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ReportTableModel getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate,
+    public ReportTableModel getContractHistoryPerContractOrALl(List<String> uniqueContractIds, String fromDate,
 	    String toDate, Boolean paid) {
-	String[] cols = {"contract_unique_code","fullName","amount","paid","transactionType","subscriptionBundle","engine","village","receiptCreationDate"};
-	List<Object[]> rows = reportDao.getContractHistoryPerContractOrALl(uniqueContractId, fromDate, toDate, paid);
+	String[] cols = {"codeId","contract_unique_code","fullName","amount","paid","transactionType","subscriptionBundle","engine","village","receiptCreationDate"};
+	List<Object[]> rows = reportDao.getContractHistoryPerContractOrALl(uniqueContractIds, fromDate, toDate, paid);
 	
 	Object value = null;
 	for (Object[] row : rows) {
-	    value = row[4];
+	    value = row[5];
 	    if (value!=null) {
-		row[4] = message.getEnumLabel(value.toString(), TransactionType.class);
+		row[5] = message.getEnumLabel(value.toString(), TransactionType.class);
 	    }
 	}
 	

@@ -1,4 +1,5 @@
 SELECT 
+    t.id,
     c.contract_unique_code, CONCAT(s.name, "  ", s.last_name) "Full Name",
     t.amount,
     t.is_paid,
@@ -21,9 +22,10 @@ WHERE
     b.id = c.bundle_id and 
     e.id = c.engine_id and
     v.id = c.id_village and
-    c.contract_unique_code = "{0}" and
+    c.contract_unique_code in ({0}) and
     t.insert_date >= "{1}" and
     t.insert_date <= "{2}"
+    ORDER by c.contract_unique_code
     
     
     

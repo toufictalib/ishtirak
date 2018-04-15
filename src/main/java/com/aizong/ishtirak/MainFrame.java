@@ -39,6 +39,7 @@ import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.ImportButtonsPanel;
 import com.aizong.ishtirak.gui.form.CompanyForm;
 import com.aizong.ishtirak.gui.form.ExpensesForm;
+import com.aizong.ishtirak.gui.form.ExpensesReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.GeneralReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ResultForm;
@@ -51,6 +52,7 @@ import com.aizong.ishtirak.gui.table.MonthlyBundleFilterTable;
 import com.aizong.ishtirak.gui.table.OutExpensesFitlerTable;
 import com.aizong.ishtirak.gui.table.ReportTablePanel;
 import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
+import com.aizong.ishtirak.gui.table.SubscriberHistoryTablePanel;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
 import com.aizong.ishtirak.model.Contract;
@@ -179,7 +181,17 @@ public class MainFrame extends JFrame {
 	    resultPanel.setPreferredSize(ComponentUtils.getDimension(90, 80));
 	    WindowUtils.createDialog(MainFrame.this.getOwner(), e.getActionCommand(),resultPanel );
 	});
-
+	
+	JButton btnExpensesReport = button("تقارير المصاريف", "reports.png");
+	btnExpensesReport.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new ExpensesReportButtonsPanel());
+	});
+	
+	JButton btnSubscription = button("ادارة الإشتراكات", "subreport.png");
+	btnSubscription.addActionListener(e->{
+	    WindowUtils.createDialog(MainFrame.this.getOwner(), e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
+	});
+	
 	setTitle(message("tite"));
 
 	JPanel ishtirakMenu = createMenuPanel(message("subscritpions"));
@@ -187,8 +199,7 @@ public class MainFrame extends JFrame {
 	JPanel miscMenu = createMenuPanel(message("misc"));
 	JPanel reportsMenu = createMenuPanel(message("reports"));
 	ishtirakMenu.add(btnSubscriberManagement);
-	ishtirakMenu.add(btnSubscriptionBundle);
-	ishtirakMenu.add(btnMonthlyBundle);
+	ishtirakMenu.add(btnSubscription);
 	ishtirakMenu.add(btnReceipts);
 	ishtirakMenu.add(btnImport);
 	expensesMenu.add(btnEmployee);
@@ -197,9 +208,12 @@ public class MainFrame extends JFrame {
 	expensesMenu.add(btnExpenses);
 	reportsMenu.add(btnMonthlyReports);
 	reportsMenu.add(btnReports);
+	reportsMenu.add(btnExpensesReport);
 	reportsMenu.add(btnOutOfExpenses);
 	reportsMenu.add(btnResult);
 	miscMenu.add(btnEngineManagement);
+	miscMenu.add(btnMonthlyBundle);
+	miscMenu.add(btnSubscriptionBundle);
 	miscMenu.add(btnVillage);
 	miscMenu.add(btnCompany);
 
@@ -279,7 +293,7 @@ public class MainFrame extends JFrame {
 	openWindow(MainFrame.this, text, component);
     }
     
-    public static void openWindow(Window owner, String text, JPanel component) {
+    public static JDialog openWindow(Window owner, String text, JPanel component) {
 	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
 	    component.setPreferredSize(ComponentUtils.getDimension(90, 80));
 	}
@@ -288,6 +302,9 @@ public class MainFrame extends JFrame {
 	if (!((component instanceof CommonFilterTable) || component instanceof ReportTablePanel) && component instanceof BasicPanel) {
 	    createDialog.setResizable(false);
 	}
+	
+	return createDialog;
+	
     }
 
     public static JDialog openWindowAsFrame(Window owner, String text, JPanel component) {
@@ -308,10 +325,16 @@ public class MainFrame extends JFrame {
     }
 
     public static JButton button(String text, String imagePath) {
-	JideButton btn = new JideButton(text, ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
+	return button(text, ImageHelperCustom.get().getImageIcon("menus/" + imagePath));
+    }
+    
+    public static JButton button(String text, ImageIcon imageIcon) {
+	JideButton btn = new JideButton(text, imageIcon);
 	btn.setHorizontalAlignment(SwingConstants.RIGHT);
 	btn.setButtonStyle(JideButton.TOOLBOX_STYLE);
 	btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	return btn;
     }
+    
+   
 }

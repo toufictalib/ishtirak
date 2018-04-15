@@ -7,7 +7,6 @@ import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 public class ReceiptBean {
 
     private String name;
-    private String title;
     private String village;
     private String address;
     private String date;
@@ -15,22 +14,31 @@ public class ReceiptBean {
     private Long newCounter;
     private String subscriptionType;
     private boolean monthlySubscription;
-
+    private String counterCode;
     
+    public ReceiptBean() {
+	
+    }
+    public ReceiptBean(String name, String village, String address, String date, Long oldCounter,
+		       Long newCounter, String subscriptionType, boolean monthlySubscription, String counterCode) {
+	super();
+	this.name = name;
+	this.village = village;
+	this.address = address;
+	this.date = date;
+	this.oldCounter = oldCounter;
+	this.newCounter = newCounter;
+	this.subscriptionType = subscriptionType;
+	this.monthlySubscription = monthlySubscription;
+	this.counterCode = counterCode;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getTitle() {
-	return title;
-    }
-
-    public void setTitle(String title) {
-	this.title = title;
     }
 
     public String getVillage() {
@@ -42,7 +50,7 @@ public class ReceiptBean {
     }
 
     public String getAddress() {
-	return address;
+	return getVillage();
     }
 
     public void setAddress(String address) {
@@ -80,19 +88,15 @@ public class ReceiptBean {
 	receiptBean.setDate("كانون الثاني  2018");
 	receiptBean.setNewCounter(1555555L);
 	receiptBean.setOldCounter(150000L);
-	receiptBean.setTitle("اشتراكات الجرد");
 	receiptBean.setVillage("السفيرة");
 	receiptBean.setSubscriptionType("5 أمبير");
 	receiptBean.setMonthlySubscription(monthlySubscription);
+	receiptBean.setCounterCode("ب م 100");
 	return receiptBean;
     }
 
     public String getFullName() {
 	return "توفيق طالب";
-    }
-
-    public String getCounterId() {
-	return "ب م 150";
     }
 
     public String getAmountToPay() {
@@ -123,8 +127,12 @@ public class ReceiptBean {
 	return monthlySubscription;
     }
 
-    public String getMaintenanceNumber() {
-	return "76 619869";
+    public String getCounterCode() {
+        return counterCode;
+    }
+    public void setCounterCode(String counterCode) {
+        this.counterCode = counterCode;
     }
 
+    
 }

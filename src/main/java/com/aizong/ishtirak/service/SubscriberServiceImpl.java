@@ -26,6 +26,7 @@ import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.PasswordUtils;
 import com.aizong.ishtirak.dao.SubscriberDao;
+import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.model.Contract;
@@ -514,4 +515,33 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void updatePaid(Map<String, Boolean> e, String startDate, String endDate) {
 	subscriberDao.updatePaid(e, startDate, endDate);
     }
+
+    @Override
+    public Transaction getTransactionById(Long transactionId) {
+	return subscriberDao.find(Transaction.class, transactionId);
+    }
+
+    @Override
+    public void deleteTransactions(List<Long> ids) {
+	subscriberDao.deleteTransactions(ids);
+	
+	
+    }
+
+    @Override
+    public void updatePayment(List<Long> transactionIds, boolean paid) {
+	subscriberDao.updatePayment(transactionIds, paid);
+    }
+
+    @Override
+    public List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate) {
+	return subscriberDao.getReceipts(transactionIds, startDate, endDate);
+    }
+
+    @Override
+    public void updateTransaction(Transaction transaction) {
+	subscriberDao.update(transaction);
+	
+    }
+    
 }

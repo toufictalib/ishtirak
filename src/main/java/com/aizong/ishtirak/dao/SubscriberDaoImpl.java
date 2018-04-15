@@ -32,7 +32,9 @@ import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
 import com.aizong.ishtirak.common.misc.utils.Constant;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.SQLUtils;
+import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
@@ -185,11 +187,11 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public void deleteTransactions(List<Long> contractIds) {
-	if (contractIds.size() > 0) {
-	    String sql = "delete from transaction where id_contract  in :contractIds";
+    public void deleteTransactions(List<Long> ids) {
+	if (ids.size() > 0) {
+	    String sql = "delete from transaction where id  in :ids";
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
-	    sqlQuery.setParameterList("contractIds", contractIds);
+	    sqlQuery.setParameterList("ids", ids);
 	    sqlQuery.executeUpdate();
 	}
 
@@ -425,17 +427,59 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     private void deleteCounterHistory(Collection<String> contractUniqueCodes, String startDate, String endDate) {
+
+	if (contractUniqueCodes.size() > 0) {
+	    String sql = "delete from counter_history where contract_unique_code in (:ids) and insert_date >= :startDate  and "
+		    + "insert_date <=:endDate";
+	    NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
+	    createSQLQuery.setParameter("startDate", startDate);
+	    createSQLQuery.setParameter("endDate", endDate);
+	    createSQLQuery.setParameterList("ids", contractUniqueCodes);
+	    createSQLQuery.executeUpdate();
+
+	}
+    }
+
+    @Override
+    public void updatePayment(List<Long> transactionIds, boolean paid) {
+	if(!transactionIds.isEmpty()) {
+	    String sql = "UPDATE transaction t SET t.is_paid = 1,date_paid = now() WHERE id IN (:transactionIds)";
+		if(!paid) {
+		    sql = "UPDATE transaction t SET t.is_paid = 0,date_paid = null WHERE id IN (:transactionIds)";
+		}
+		
+		NativeQuery createNativeQuery = getsession().createNativeQuery(sql);
+		createNativeQuery.setParameterList("transactionIds", transactionIds);
+		createNativeQuery.executeUpdate();
+	}
+    }
+  
+    @Override
+    public List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate) {
+	String sql = SQLUtils.sql("receipt.sql", startDate, endDate);
 	
-	if(contractUniqueCodes.size()>0) {
-	String sql = "delete from counter_history where contract_unique_code in (:ids) and insert_date >= :startDate  and "
-		+ "insert_date <=:endDate";
-	NativeQuery createSQLQuery = getsession().createSQLQuery(sql);
-	createSQLQuery.setParameter("startDate", startDate);
-	createSQLQuery.setParameter("endDate", endDate);
-	createSQLQuery.setParameterList("ids", contractUniqueCodes);
-	createSQLQuery.executeUpdate();
+	if(transactionIds!=null && !transactionIds.isEmpty()) {
+	    String parameterList = SQLUtils.toParameterList(transactionIds);
+	    sql = SQLUtils.sql("receipt_selected_transactions.sql", startDate, endDate, parameterList);
+	}
+	return jdbcTemplate.query(sql, new ResultSetExtractor<List<ReceiptBean>>() {
 
-
+	    @Override
+	    public List<ReceiptBean> extractData(ResultSet rs) throws SQLException, DataAccessException {
+		List<ReceiptBean> receiptBeans = new ArrayList<>();
+		while (rs.next()) {
+		    
+		    
+		    ReceiptBean bean = new ReceiptBean(rs.getString("Full Name"), rs.getString("Village"),
+			    rs.getString("address"), DateUtil.getCurrentMonthLabel(), rs.getLong("previous_counter"),
+			    rs.getLong("current_counter"), rs.getString("Bundle"),
+			    !TransactionType.COUNTER_PAYMENT.name().equals(rs.getString("transaction_type")),
+			    rs.getString("contract_unique_code"));
+		    receiptBeans.add(bean);
+		}
+		return receiptBeans;
+	    }
+	});
     }
-    }
+    
 }

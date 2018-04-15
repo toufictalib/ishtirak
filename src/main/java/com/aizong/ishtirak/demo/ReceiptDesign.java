@@ -1,17 +1,20 @@
 package com.aizong.ishtirak.demo;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
+import static net.sf.dynamicreports.report.builder.DynamicReports.concatenatedReport;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.jasper.builder.export.Exporters;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.style.PenBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.dynamicreports.report.constant.PageOrientation;
-import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 
@@ -43,16 +46,20 @@ public class ReceiptDesign {
 
     private static final String COUNTER_DIFFERENCE = "فارق العداد";
 
-    ReceiptBean bean = ReceiptBean.create(false);
+    ReceiptBean bean;
 
     StyleBuilder STYLE_RTL;
+    
+    String maintenancePhone;
 
-    public JasperReportBuilder build() throws DRException {
+    public JasperReportBuilder build(ReceiptBean bean,String companyName,String maintenancePhone) throws DRException {
+	this.bean = bean;
+	this.maintenancePhone = maintenancePhone;
 	STYLE_RTL = stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE)
 		.setPadding(7);
 	JasperReportBuilder report = report();
 
-	report.setTemplate(Templates.reportTemplate).title(createTitleComponent(bean.getTitle()),
+	report.setTemplate(Templates.reportTemplate).title(createTitleComponent(companyName),
 		cmp.horizontalList().add(cmp.verticalGap(25)).add(createCustomerInfo()).newRow());
 
 	cmp.verticalGap(10);
@@ -151,22 +158,34 @@ public class ReceiptDesign {
     public ComponentBuilder<?, ?> createTitleComponent(String label) {
 	return cmp.horizontalList(
 		cmp.verticalList().add(cmp.text(MAINTENANCE_NUMBER).setStyle(Templates.bold12CenteredStyle),
-			cmp.text(bean.getMaintenanceNumber()).setStyle(Templates.bold12CenteredStyle)),
+			cmp.text(maintenancePhone).setStyle(Templates.bold12CenteredStyle)),
 
 		cmp.verticalList().add(
 
 			cmp.text(label).setStyle(stl.style(Templates.boldCenteredStyle).setFontSize(20)),
 			cmp.text(RECEIPT_NUMBER).setStyle(Templates.bold12CenteredStyle)),
 		cmp.verticalList().add(cmp.text(COUNTER_ID).setStyle(Templates.bold12CenteredStyle),
-			cmp.text(bean.getCounterId()).setStyle(Templates.bold12CenteredStyle)));
+			cmp.text(bean.getCounterCode()).setStyle(Templates.bold12CenteredStyle)));
     }
 
     public static void main(String[] args) {
 	ReceiptDesign design = new ReceiptDesign();
 	try {
-	    JasperReportBuilder report = design.build();
-	    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-	    report.show();
+	    
+	    
+	    List<ReceiptBean> asList = Arrays.asList(ReceiptBean.create(true),ReceiptBean.create(false));
+	    JasperReportBuilder[] array = new JasperReportBuilder[asList.size()];
+	    int i=0;
+	    for(ReceiptBean receiptBean:asList) {
+		  JasperReportBuilder report = design.build(receiptBean,"اشتراكات الجرد","71040284");
+		  array[i++] = report;
+	    }
+	    
+	    
+	    concatenatedReport().concatenate(array).toPdf(Exporters.pdfExporter("/home/ubility/all.pdf"));
+	  
+	    /*mainReport.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
+	    mainReport.show();*/
 	} catch (DRException e) {
 	    e.printStackTrace();
 	}

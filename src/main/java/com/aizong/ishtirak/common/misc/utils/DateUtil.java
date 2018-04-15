@@ -215,13 +215,6 @@ public class DateUtil {
       }
     
     
-    public static void main(String[]args) {
-	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
-	System.out.println(startEndDateOfCurrentMonth.getStartDateAsString());
-	System.out.println(startEndDateOfCurrentMonth.getEndDateAsString());
-	
-    }
-
 
     /**
      * month starts between 5 last month and 5 current month
@@ -285,4 +278,24 @@ public class DateUtil {
 	return date.format(DateTimeFormatter.ofPattern(SHORT_SQL_DATE_FORMAT));
     }
 
+    public static String getCurrentMonthLabel() {
+	
+	LocalDate date = LocalDate.now();
+	LocalDate minusMonths = date.minusMonths(1);
+	String monthName = getMonthName(minusMonths.getMonthValue()-1);
+	return date.getYear()+"/"+monthName;
+    }
+    public static void main(String[] args) {
+	LocalDate date = LocalDate.of(2018, 1, 1);
+	LocalDate minusMonths = date.minusMonths(1);
+	String monthName = minusMonths.getMonthValue()+"";
+	System.out.println(minusMonths.getYear()+","+monthName);
+    }
+    
+ /*   public static void main(String[]args) {
+   	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
+   	System.out.println(startEndDateOfCurrentMonth.getStartDateAsString());
+   	System.out.println(startEndDateOfCurrentMonth.getEndDateAsString());
+   	
+       }*/
 }

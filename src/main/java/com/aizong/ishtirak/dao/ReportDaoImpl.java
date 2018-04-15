@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,16 +233,18 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     }
     
     @Override
-    public List<Object[]> getContractHistoryPerContractOrALl(String uniqueContractId, String fromDate, String toDate, Boolean paid) {
+    public List<Object[]> getContractHistoryPerContractOrALl(List<String> uniqueContractIds, String fromDate, String toDate, Boolean paid) {
 	
-	boolean isAllContract = StringUtils.isBlank(uniqueContractId);
+	boolean isAllContract = uniqueContractIds == null || uniqueContractIds.isEmpty();
 	
 	String sql = SQLUtils.sql(isAllContract ? "all_contract_history.sql" : "contract_history.sql");
 	
 	if(isAllContract) {
 	    sql = MessageFormat.format(sql, fromDate,toDate);
 	}else {
-	    sql = MessageFormat.format(sql, uniqueContractId, fromDate, toDate);
+	    
+	    String parameterList = SQLUtils.toParameterList(uniqueContractIds);
+	    sql = MessageFormat.format(sql, parameterList, fromDate, toDate);
 	}
 	
 	if(paid!=null) {
@@ -251,7 +252,8 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	}
 	return toList(sql);
     }
-    
+
+
     @Override
     public List<Object[]> getExpensesPerEngine(String engine, String fromDate, String toDate) {
 	String sql = SQLUtils.sql("expenses_summary_per_engine.sql", fromDate, toDate);

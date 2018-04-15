@@ -6,7 +6,7 @@ import javax.swing.SwingWorker;
 
 public class MySwingWorker<T> extends SwingWorker<T,Void> {
 
-    private ProgressAction<T> progressAction;
+    protected ProgressAction<T> progressAction;
     
     public MySwingWorker(ProgressAction<T> progressAction) {
 	super();

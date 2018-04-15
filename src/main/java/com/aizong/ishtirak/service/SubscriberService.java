@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
+import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.model.Contract;
@@ -18,6 +19,7 @@ import com.aizong.ishtirak.model.MonthlyBundle;
 import com.aizong.ishtirak.model.OutExpensesLog;
 import com.aizong.ishtirak.model.Subscriber;
 import com.aizong.ishtirak.model.SubscriptionBundle;
+import com.aizong.ishtirak.model.Transaction;
 import com.aizong.ishtirak.model.Village;
 
 public interface SubscriberService {
@@ -125,5 +127,15 @@ public interface SubscriberService {
     void updateCounters(Map<String, Long> e, String startDate, String endDate);
 
     void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
+
+    Transaction getTransactionById(Long transactionId);
+
+    void deleteTransactions(List<Long> ids);
+
+    void updatePayment(List<Long> transactionIds, boolean paid);
+    
+    List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
+
+    void updateTransaction(Transaction transaction);
     
 }

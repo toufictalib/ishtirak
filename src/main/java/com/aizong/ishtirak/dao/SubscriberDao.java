@@ -7,6 +7,7 @@ import java.util.Set;
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
+import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
 import com.aizong.ishtirak.model.Employee;
@@ -62,4 +63,8 @@ public interface SubscriberDao extends GenericDao<Object> {
     void updateCounters(Map<String, Long> e, String startDate, String endDate);
 
     void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
+
+    void updatePayment(List<Long> transactionIds, boolean paid);
+
+    List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
 }
