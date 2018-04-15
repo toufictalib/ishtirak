@@ -15,13 +15,17 @@ import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.style.PenBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.constant.PageOrientation;
+import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 
 public class ReceiptDesign {
 
-    private static final int VALUE_FONT_SIZE = 13;
-
+    private static final int VALUE_FONT_SIZE = 18;
+    
+    private static final int LABEL_FONT_SIZE = 13;
+    
     private static final String RECEIPT_NUMBER = "وصل تحصيل";
 
     private static final String MAINTENANCE_NUMBER = "رقم الصيانة";
@@ -77,16 +81,11 @@ public class ReceiptDesign {
 
 	if (bean.isMonthlySubscription()) {
 	    horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(subscriptionAmp()).heightFixedOnTop()))
-		    .newRow().add(cmp.hListCell(cmp.horizontalList().add(cmp.text(""))).heightFixedOnTop()).newRow()
-		    .add(cmp.line().setStyle(stl.style().setBorder(stl.penThin()))).newRow()
-		    .add(cmp.text(SIGNATURE).setStyle(stl.style().setFont(stl.fontArialBold())
-			    .setPadding(stl.padding().setLeft(100).setTop(5)).setBold(true)));
+		    .newRow().add(cmp.hListCell(cmp.horizontalList().add(cmp.text(""))).heightFixedOnTop());
+		    
 	} else {
 	    horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(counter()).heightFixedOnTop())).newRow()
-		    .add(cmp.horizontalList(counter2())).newRow()
-		    .add(cmp.line().setStyle(stl.style().setBorder(stl.penThin()))).newRow()
-		    .add(cmp.text(SIGNATURE).setStyle(stl.style().setFont(stl.fontArialBold())
-			    .setPadding(stl.padding().setLeft(100).setTop(5)).setBold(true)));
+		    .add(cmp.horizontalList(counter2()));
 	}
 	return horizontalList;
     }
@@ -122,7 +121,7 @@ public class ReceiptDesign {
 				    .setBottomBorder(stl.penDotted()).setLeftPadding(10).setFontSize(VALUE_FONT_SIZE)
 				    .setFontName("Times New Roman").setBold(true)),
 		    cmp.text(label).setFixedColumns(12)
-			    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(VALUE_FONT_SIZE)))
+			    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(LABEL_FONT_SIZE)))
 		    .newRow();
 	}
     }
@@ -144,7 +143,7 @@ public class ReceiptDesign {
 				    .setStyle(setTextAlignment.setFontSize(VALUE_FONT_SIZE)
 					    .setFontName("Times New Roman").setBold(true)),
 			    cmp.text(label).setFixedColumns(fixedCols)
-				    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(VALUE_FONT_SIZE)))
+				    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(LABEL_FONT_SIZE)))
 			    .newRow(5));
 	}
     }
@@ -178,6 +177,7 @@ public class ReceiptDesign {
 	    int i=0;
 	    for(ReceiptBean receiptBean:asList) {
 		  JasperReportBuilder report = design.build(receiptBean,"اشتراكات الجرد","71040284");
+		  report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
 		  array[i++] = report;
 	    }
 	    
