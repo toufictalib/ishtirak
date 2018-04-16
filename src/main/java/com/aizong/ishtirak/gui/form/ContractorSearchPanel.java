@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.swing.JDialog;
 
-import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
+import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;

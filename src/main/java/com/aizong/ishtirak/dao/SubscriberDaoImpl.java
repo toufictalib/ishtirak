@@ -474,7 +474,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 			    rs.getString("address"), DateUtil.getCurrentMonthLabel(), rs.getLong("previous_counter"),
 			    rs.getLong("current_counter"), rs.getString("Bundle"),
 			    !TransactionType.COUNTER_PAYMENT.name().equals(rs.getString("transaction_type")),
-			    rs.getString("contract_unique_code"));
+			    rs.getString("contract_unique_code"), rs.getDouble("amount"));
 		    receiptBeans.add(bean);
 		}
 		return receiptBeans;

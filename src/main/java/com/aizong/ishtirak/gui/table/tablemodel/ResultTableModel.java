@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 
 @SuppressWarnings("serial")

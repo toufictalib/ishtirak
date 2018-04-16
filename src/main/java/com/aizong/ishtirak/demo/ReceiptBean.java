@@ -15,12 +15,13 @@ public class ReceiptBean {
     private String subscriptionType;
     private boolean monthlySubscription;
     private String counterCode;
+    private Double amountTopay;
     
     public ReceiptBean() {
 	
     }
     public ReceiptBean(String name, String village, String address, String date, Long oldCounter,
-		       Long newCounter, String subscriptionType, boolean monthlySubscription, String counterCode) {
+		       Long newCounter, String subscriptionType, boolean monthlySubscription, String counterCode, Double amountTopay) {
 	super();
 	this.name = name;
 	this.village = village;
@@ -31,6 +32,7 @@ public class ReceiptBean {
 	this.subscriptionType = subscriptionType;
 	this.monthlySubscription = monthlySubscription;
 	this.counterCode = counterCode;
+	this.amountTopay = amountTopay;
     }
 
     public String getName() {
@@ -86,12 +88,13 @@ public class ReceiptBean {
 	receiptBean.setName("توفيق طالب");
 	receiptBean.setAddress("السفيرة, بناية عويضة");
 	receiptBean.setDate("كانون الثاني  2018");
-	receiptBean.setNewCounter(1555555L);
+	receiptBean.setNewCounter(100000L);
 	receiptBean.setOldCounter(150000L);
 	receiptBean.setVillage("السفيرة");
 	receiptBean.setSubscriptionType("5 أمبير");
 	receiptBean.setMonthlySubscription(monthlySubscription);
 	receiptBean.setCounterCode("ب م 100");
+	receiptBean.setAmountTopay(100000d);
 	return receiptBean;
     }
 
@@ -100,10 +103,12 @@ public class ReceiptBean {
     }
 
     public String getAmountToPay() {
-	return CurrencyUtils.formatCurrency(new Locale("ar", "LB"), 120000d);
+	return CurrencyUtils.formatCurrency(new Locale("ar", "LB"), amountTopay);
     }
-
     
+    public void setAmountTopay(Double amountTopay) {
+        this.amountTopay = amountTopay;
+    }
     public static void main(String[]args) {
 	
 	Locale locale = new Locale("ar", "LB");

@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,10 +24,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 
-import org.springframework.stereotype.Component;
-
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
+import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
@@ -62,15 +60,21 @@ import com.jidesoft.swing.JideButton;
 
 @SuppressWarnings("serial")
 
-@Component
 public class MainFrame extends JFrame {
 
     Message message;
     public MainFrame(Message message) {
 	this.message =  message;
     }
+    
+    public MainFrame() {
+	
+    }
 
-    @PostConstruct
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
     public void onStart() {
 	SwingUtilities.invokeLater(new Runnable() {
 	    @Override
@@ -217,10 +221,18 @@ public class MainFrame extends JFrame {
 	miscMenu.add(btnVillage);
 	miscMenu.add(btnCompany);
 
-	JPanel topPanel = createTopPanel();
-
-	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "130dlu,p"));
-	mainBuilder.append(topPanel);
+	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,130dlu,p"));
+	
+	JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	
+	JButton btnClose = ButtonFactory.createBtnClose();
+	btnClose.addActionListener(e->{
+	    MainFrame.this.dispose();
+	});
+	closePanel.add(btnClose);
+	mainBuilder.append(closePanel,mainBuilder.getColumnCount());
+	mainBuilder.appendSeparator();
+	mainBuilder.append(createTopPanel());
 
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
 	panel.setBorder(ComponentUtils.emptyBorder(15));
@@ -254,7 +266,7 @@ public class MainFrame extends JFrame {
 
 	int gap = 15;
 	
-	JLabel lblTitle = new JLabel(message("title"), ImageHelperCustom.get().getImageIcon("logo.png"),
+	JLabel lblTitle = new JLabel(ServiceProvider.get().getCompany().getName(), ImageHelperCustom.get().getImageIcon("logo.png"),
 		SwingConstants.CENTER);
 	lblTitle.setFont(new Font("Serif", Font.BOLD, 50));
 	lblTitle.setVerticalTextPosition(JLabel.TOP);

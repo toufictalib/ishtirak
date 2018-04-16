@@ -5,13 +5,10 @@
 package com.aizong.ishtirak.common.misc.component;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.*;
-import java.io.Serializable;
+
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 /**
  *

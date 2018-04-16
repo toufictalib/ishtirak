@@ -27,7 +27,7 @@ public class GeneralReportButtonsPanel extends BasicForm {
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder = new DefaultFormBuilder(new FormLayout(getLayoutSpecs()));
 	builder.setDefaultDialogBorder();
-	JideButton btnMonthlyReports = button(message("reports.subscirption.contract"), "subreport.png");
+	JideButton btnMonthlyReports = button(message("reports.subscirption.employee"), "subreport.png");
 	btnMonthlyReports.addActionListener(e -> {
 	    MainFrame.openWindow(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),
 		    new EmployeeTablePanel(btnMonthlyReports.getActionCommand()));

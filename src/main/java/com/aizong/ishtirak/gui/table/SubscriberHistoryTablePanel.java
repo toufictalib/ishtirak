@@ -47,8 +47,11 @@ import com.aizong.ishtirak.model.Transaction;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperConcatenatedReportBuilder;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
+import net.sf.dynamicreports.report.constant.PageOrientation;
+import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.exception.DRException;
 
 @SuppressWarnings("serial")
@@ -198,6 +201,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 				    Company company = ServiceProvider.get().getCompany();
 				    report = design.build(receiptBean, company.getName(),
 					    company.getMaintenanceNumber());
+				    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
 				    if (report != null) {
 					list.add(report);
 				    }
@@ -208,8 +212,9 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 			    }
 
 			    try {
-				concatenatedReport().concatenate(list.toArray(new JasperReportBuilder[0]))
-					.toPdf(Exporters.pdfExporter(file));
+				//setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
+				JasperConcatenatedReportBuilder concatenate = concatenatedReport().concatenate(list.toArray(new JasperReportBuilder[0]));
+				concatenate.toPdf(Exporters.pdfExporter(file));
 				MessageUtils.showInfoMessage(SubscriberHistoryTablePanel.this, message("receipts.export.success"));
 			    } catch (DRException e) {
 				e.printStackTrace();

@@ -4,8 +4,6 @@
  */
 package com.aizong.ishtirak.common.misc.utils;
 
-import java.awt.Button;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;

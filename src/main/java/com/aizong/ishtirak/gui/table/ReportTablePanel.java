@@ -112,6 +112,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	    public void sorterChanged(RowSorterEvent arg0) {
 		int newRowCount = table.getRowCount();
 		setTxtRowCount(newRowCount);
+		sumAmount(table);
 
 	    }
 	});
@@ -192,15 +193,29 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	builder.append(txtRowCount, 3);
 
-	builder.append("المجموع", txtTotal);
-
+	if (showTotal()) {
+	    builder.append("المجموع", txtTotal);
+	}
 	return builder.getPanel();
     }
 
+    private boolean showTotal() {
+	int totalTargetedColumn = getTotalTargetedColumn();
+	if(totalTargetedColumn<0 || totalTargetedColumn >=table.getColumnCount()) {
+	    System.out.println("Total not added");
+	    return false;
+	}
+	return true;
+    }
+
+    protected int getTotalTargetedColumn() {
+	return -1;
+    }
+    
     private void fillTable() {
 	ReportTableModel reportTableModel = getReportTableModel();
         fillTable(reportTableModel);
-	// sumAmount(table);
+	sumAmount(table);
     }
 
     protected void fillTable(ReportTableModel reportTableModel) {
@@ -233,15 +248,6 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	}
 
 	table.setModel(model);
-	/*
-	 * model.addTableModelListener(new TableModelListener() {
-	 * 
-	 * @Override public void tableChanged(TableModelEvent e) {
-	 * sumAmount(table); }
-	 * 
-	 * 
-	 * });
-	 */
 
 	sorter.setModel(model);
 	table.setRowSorter(sorter);
@@ -255,16 +261,20 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	filterHeader.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     }
 
-    @SuppressWarnings("unused")
     private void sumAmount(JTable table) {
-	TableModel model = table.getModel();
-	int numberOfRaw = model.getRowCount();
+	
+	if(!showTotal()) {
+	    return;
+	}
+	int colToSum = getTotalTargetedColumn();
+	System.out.println("Column is "+colToSum);
+	int numberOfRaw = table.getRowCount();
 	double total = 0;
 	for (int i = 0; i < numberOfRaw; i++) {
-	    // if checkbox is checked
-	    double value = Double.valueOf(model.getValueAt(i, 5).toString());
+	    double value = Double.valueOf(table.getValueAt(i, colToSum).toString());
 	    total += value;
 	}
+	System.out.println("total is "+Double.toString(total));
 	txtTotal.setText(Double.toString(total));
     }
 

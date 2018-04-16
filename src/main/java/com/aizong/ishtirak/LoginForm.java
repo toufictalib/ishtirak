@@ -30,6 +30,7 @@ import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
@@ -73,12 +74,21 @@ public class LoginForm extends BasicForm {
 		MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
 		return;
 	    }
-
-	    boolean login = ServiceProvider.get().getSubscriberService().login(txtUserName.getText(),
-		    txtPassword.getPassword());
+	    
+	    boolean login = false;
+	    try {
+		login = ServiceProvider.get().getSubscriberService().login(txtUserName.getText(),
+			    txtPassword.getPassword());
+	    }catch (Exception e1) {
+		MessageUtils.showErrorMessage(LoginForm.this,"خطأ في اسم المستخدم أو كلمة السر");
+		return;
+	    }
+	    
 	    if (login) {
 		closeWindow();
-		new MainFrame(message);
+		MainFrame mainFrame = new MainFrame();
+		mainFrame.setMessage(message);
+		mainFrame.onStart();
 	    } else {
 		MessageUtils.showErrorMessage(getOwner(), message("login.badCredentials"));
 	    }
@@ -120,8 +130,8 @@ public class LoginForm extends BasicForm {
 	BasicPanel.message = message;
 	EventQueue.invokeLater(() -> {
 
-	   // LoginForm.this.startGui();
-	   // WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
+	    LoginForm.this.startGui();
+	   WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
 
 	    try {
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

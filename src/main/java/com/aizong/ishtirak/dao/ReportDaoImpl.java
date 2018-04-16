@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.utils.SQLUtils;
-import com.ss.rlib.concurrent.atomic.AtomicInteger;
 
 @Repository
 @Transactional
@@ -169,11 +169,10 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	List<Map<String,Object>> rows = jdbcTemplate.queryForList(sql);
 	return rows.stream().map(e->{
 	    Object[] row = new Object[e.size()];
-	    try(AtomicInteger counter = new AtomicInteger()){
+	    AtomicInteger counter = new AtomicInteger();
 	    e.entrySet().forEach(v->{
 		row[counter.getAndIncrement()] = v.getValue();
 	    });
-	    }
 	    return row;
 	}).collect(Collectors.toList());
     }

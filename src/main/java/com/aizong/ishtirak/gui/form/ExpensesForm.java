@@ -239,6 +239,7 @@ public class ExpensesForm extends BasicForm {
 
 	if (isEmployee()) {
 	    maintenaceLog.setEmployeeId(comboEmployees.getValue().getId());
+	    maintenaceLog.setDesc(message("employee.payment", comboEmployees.getValue().getName()+" "+comboEmployees.getValue().getLastName()));
 	    maintenaceLog.setEngineId(null);
 	}
 

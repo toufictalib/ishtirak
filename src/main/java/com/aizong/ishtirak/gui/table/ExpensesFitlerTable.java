@@ -1,11 +1,14 @@
 package com.aizong.ishtirak.gui.table;
 
 import java.awt.Window;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SavingCallback;
+import com.aizong.ishtirak.common.misc.component.DateRange;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
@@ -73,8 +76,18 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
     @Override
     public ReportTableModel getReportTableModel() {
-	return ServiceProvider.get().getReportServiceImpl().getExpenses();
+	DateRange dateRange = getRange();
+	return ServiceProvider.get().getReportServiceImpl().getExpenses(dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
     }
+    
+    public DateRange getRange() {
+	LocalDate initial = LocalDate.now();
+	LocalDate start = initial.withDayOfMonth(6);
+	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(5);
+
+	return new DateRange(DateUtil.fromLocalDate(start), DateUtil.fromLocalDate(end));
+    }
+    
 
     @Override
     protected String getAddTooltip() {

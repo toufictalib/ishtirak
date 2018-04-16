@@ -129,6 +129,50 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>coderazzi</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>glazedlists</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>jfxrt</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>jgoodies-common</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>jgoodies-forms</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ishtirak</groupId>
+			<artifactId>jide-oss</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		
 
 		<!-- Custom -->
 	
@@ -141,65 +185,16 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<shadedClassifierName>shaded</shadedClassifierName>
-					<transformers>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>com.aizong.ishtirak.LoginForm</mainClass>
-						</transformer>
-					</transformers>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.akathist.maven.plugins.launch4j</groupId>
-				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.5.1</version>
+                    <layout>ZIP</layout>
+                </configuration>
 				<executions>
 					<execution>
-						<id>l4j-clui</id>
-						<phase>package</phase>
 						<goals>
-							<goal>launch4j</goal>
+							<goal>repackage</goal>
 						</goals>
-						<configuration>
-							<headerType>gui</headerType>
-							<jar>${project.build.directory}/${project.artifactId}-${project.version}-shaded.jar</jar>
-							<outfile>${project.build.directory}/hasCode.exe</outfile>
-							<downloadUrl>http://java.com/download</downloadUrl>
-							<classPath>
-								<mainClass>com.hascode.tutorial.Main</mainClass>
-								<preCp>anything</preCp>
-							</classPath>
-							<icon>src/main/resources/icon/application.ico</icon>
-							<jre>
-								<minVersion>1.8.0</minVersion>
-								<jdkPreference>preferJre</jdkPreference>
-							</jre>
-							<versionInfo>
-								<fileVersion>1.0.0.0</fileVersion>
-								<txtFileVersion>${project.version}</txtFileVersion>
-								<fileDescription>${project.name}</fileDescription>
-								<copyright>2012 hasCode.com</copyright>
-								<productVersion>1.0.0.0</productVersion>
-								<txtProductVersion>1.0.0.0</txtProductVersion>
-								<productName>${project.name}</productName>
-								<companyName>hasCode.com</companyName>
-								<internalName>hasCode</internalName>
-								<originalFilename>hasCode.exe</originalFilename>
-							</versionInfo>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

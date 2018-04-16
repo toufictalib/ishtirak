@@ -1,8 +1,6 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -10,8 +8,9 @@ import javax.swing.JPanel;
 import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
+import com.aizong.ishtirak.common.misc.component.DateRange;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
-import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.table.ReportTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -54,21 +53,17 @@ public class ReportButtonsPanel extends BasicForm {
 
 			@Override
 			public ReportTableModel getReportTableModel() {
-			    return ServiceProvider.get().getReportServiceImpl().getExpenses();
+			    DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
+			    return ServiceProvider.get().getReportServiceImpl().getExpenses(dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
+			}
+			
+			@Override
+			protected int getTotalTargetedColumn() {
+			    return 2;
 			}
 		    });
 
 	});
-
-	/*
-	 * JideButton btnCounterHistory =
-	 * button(message("reports.subscirption.counterHistory"),
-	 * "subreport.png"); btnCounterHistory.addActionListener(e -> {
-	 *openWindow(
-	 * e.getActionCommand(), new CustomerSearchPanel());
-	 * 
-	 * });
-	 */
 
 	JideButton btnIshtirakReport = button(message("reports.subscirption.activeIshtirak"), "subreport.png");
 	btnIshtirakReport.addActionListener(e -> {
@@ -100,7 +95,6 @@ public class ReportButtonsPanel extends BasicForm {
 
 	builder.append(btnMonthlyReports);
 	builder.append(btnMonthlyExpenses);
-	// builder.append(btnCounterHistory);
 	builder.append(btnIshtirakReport);
 	builder.append(btnIshtirakReportWithoutReceipts);
 	return builder.getPanel();

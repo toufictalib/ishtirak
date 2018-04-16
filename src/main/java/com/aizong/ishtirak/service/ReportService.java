@@ -21,7 +21,7 @@ public interface ReportService {
 
     ReportTableModel getSubscriptionsIncomeReport();
 
-    ReportTableModel getExpenses();
+    ReportTableModel getExpenses(String startDate, String endDate);
 
     ReportTableModel getOutExpenses();
 

@@ -194,10 +194,9 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ReportTableModel getExpenses() {
-	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	List<Object[]> rows = reportDao.getExpenses(null, startEndDateOfCurrentMonth.getStartDateAsString(),
-		startEndDateOfCurrentMonth.getEndDateAsString());
+    public ReportTableModel getExpenses(String startDate, String endDate) {
+	
+	List<Object[]> rows = reportDao.getExpenses(null, startDate, endDate);
 
 	Object value = null;
 	for (Object[] row : rows) {
@@ -212,6 +211,7 @@ public class ReportServiceImpl implements ReportService {
 
 	return new ReportTableModel(cols, rows, clazzes);
     }
+    
     
     @Override
     public ReportTableModel getExpenses(ExpensesType expensesType, SearchBean searchBean) {
@@ -303,7 +303,7 @@ public class ReportServiceImpl implements ReportService {
     public ReportTableModel getActiveIshtirakInfo(List<Long> contractIds) {
 	List<Object[]> rows = reportDao.getActiveIshtirakInfo(contractIds);
 
-	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "counterId", "bundle", "engine" };
+	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "contract_unique_code", "bundle", "contract.form.bundle" };
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);

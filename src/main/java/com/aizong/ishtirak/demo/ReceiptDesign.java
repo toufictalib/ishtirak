@@ -22,9 +22,11 @@ import net.sf.dynamicreports.report.exception.DRException;
 
 public class ReceiptDesign {
 
-    private static final int VALUE_FONT_SIZE = 18;
+    private static final int VALUE_FONT_SIZE = 17;
     
     private static final int LABEL_FONT_SIZE = 13;
+    
+    private static final Integer COUNTER_FONT_SIZE = 10;
     
     private static final String RECEIPT_NUMBER = "وصل تحصيل";
 
@@ -100,7 +102,7 @@ public class ReceiptDesign {
     public ComponentBuilder<?, ?> counter2() {
 	HorizontalListBuilder list = cmp.horizontalList();
 	addCounerLine(list, NEW_COUNTER_VALUE, String.valueOf(bean.getNewCounter()), 5);
-	list.add(cmp.text("").setFixedColumns(10));
+	//list.add(cmp.text("").setFixedColumns(2));
 	addCounerLine(list, OLD_COUNTER_VALUE, String.valueOf(bean.getOldCounter()), 6);
 
 	return cmp.verticalList(list);
@@ -127,7 +129,7 @@ public class ReceiptDesign {
     }
 
     private void addCounerLine(HorizontalListBuilder list, String label, String value) {
-	addCounerLine(list, label, value, 12);
+	addCounerLine(list, label, value, 16);
     }
 
     private void addCounerLine(HorizontalListBuilder list, String label, String value, int fixedCols) {
@@ -139,17 +141,17 @@ public class ReceiptDesign {
 
 	    list.add(
 		    cmp.horizontalList().add(
-			    cmp.text(value.toString())
-				    .setStyle(setTextAlignment.setFontSize(VALUE_FONT_SIZE)
+			    cmp.text(value.toString()).setPrintInFirstWholeBand(true)
+				    .setStyle(setTextAlignment.setFontSize(LABEL_FONT_SIZE)
 					    .setFontName("Times New Roman").setBold(true)),
 			    cmp.text(label).setFixedColumns(fixedCols)
-				    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(LABEL_FONT_SIZE)))
+				    .setStyle(stl.style(STYLE_RTL).setFontName("Arial").bold().setFontSize(COUNTER_FONT_SIZE)))
 			    .newRow(5));
 	}
     }
 
     private StyleBuilder border(StyleBuilder builder) {
-	PenBuilder penDouble = stl.penDouble();
+	PenBuilder penDouble = stl.penThin();
 	return builder.setTopBorder(penDouble).setLeftBorder(penDouble).setRightBorder(penDouble)
 		.setBottomBorder(penDouble);
     }

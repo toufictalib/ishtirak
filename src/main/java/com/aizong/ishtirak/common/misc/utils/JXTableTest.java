@@ -1,13 +1,11 @@
 package com.aizong.ishtirak.common.misc.utils;
 
-import java.awt.Color;
-import java.util.regex.Pattern;
- 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
- 
+
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.*;
  
 public class JXTableTest {
  
