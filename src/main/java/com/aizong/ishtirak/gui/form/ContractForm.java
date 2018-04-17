@@ -236,7 +236,7 @@ public class ContractForm extends BasicForm {
 	}
 
 	if (!txtCounterId.getText().isEmpty() && comboEngines.getValue() != null) {
-
+	    
 	    boolean checkCounter = true;
 	    if (mode == Mode.UPDATE && contract.getContractUniqueCode().equals(txtCounterId.getText())) {
 		checkCounter = false;

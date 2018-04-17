@@ -27,11 +27,15 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.apache.log4j.Logger;
+
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
@@ -46,6 +50,8 @@ import net.coderazzi.filters.gui.TableFilterHeader;
 @SuppressWarnings("serial")
 public abstract class ReportTablePanel extends BasicPanel implements RefreshTableInterface {
 
+    private final static Logger LOG =Logger.getLogger(ReportTablePanel.class.getSimpleName());
+    
     protected JTable table;
     protected TableModel model;
     protected TableRowSorter<TableModel> sorter;
@@ -194,7 +200,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	builder.append(txtRowCount, 3);
 
 	if (showTotal()) {
-	    builder.append("المجموع", txtTotal);
+	    builder.append(txtTotal,3);
 	}
 	return builder.getPanel();
     }
@@ -267,15 +273,18 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	    return;
 	}
 	int colToSum = getTotalTargetedColumn();
-	System.out.println("Column is "+colToSum);
 	int numberOfRaw = table.getRowCount();
-	double total = 0;
+	Double total = 0d;
 	for (int i = 0; i < numberOfRaw; i++) {
-	    double value = Double.valueOf(table.getValueAt(i, colToSum).toString());
-	    total += value;
+	    try {
+		double value = Double.valueOf(table.getValueAt(i, colToSum).toString());
+		total += value;
+	    } catch (Exception e) {
+		LOG.warn(ReportTablePanel.class.getSimpleName()+" sum total error: "+e.getMessage());
+	    }
+
 	}
-	System.out.println("total is "+Double.toString(total));
-	txtTotal.setText(Double.toString(total));
+	txtTotal.setText(message("table.total", CurrencyUtils.format(total)));
     }
 
     private void applyRenderer() {

@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.common.misc.utils;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -10,5 +11,10 @@ public class CurrencyUtils {
 	NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(currentLocale);
 
 	return currencyFormatter.format(currencyAmount);
+    }
+    
+    static public String format(Double value) {
+	DecimalFormat decimalFormat = new DecimalFormat("###,###");
+	return decimalFormat.format(value);
     }
 }

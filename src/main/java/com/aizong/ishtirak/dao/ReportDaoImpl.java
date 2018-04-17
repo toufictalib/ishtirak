@@ -30,7 +30,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<Object[]> getSubscriptionsIncomeReport(Date startDate, Date endDate) {
+    public List<Object[]> getSubscriptionsIncomeReport(String startDate, String endDate) {
 	NativeQuery<Object[]> createSQLQuery = getsession().createNativeQuery("SELECT \n" + 
 		"    c.id as 'contract id', s.name as 'Subsciber Id',s.last_name as 'Last Name',concat(c.region,':',address) as address,\n" + 
 		"    b.name as 'Bundle Name' ,t.amount,t.is_paid, t.transaction_type " + 
@@ -180,7 +180,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> getActiveContractWithoutReceipts() {
+    public List<Long> getActiveContractWithoutReceipts(String startDate, String endDate) {
 	String sql = "SELECT \n" + 
 		"    id\n" + 
 		"FROM\n" + 
@@ -192,9 +192,10 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 		"        FROM\n" + 
 		"            transaction t\n" + 
 		"        WHERE\n" + 
-		"            t.transaction_type <> 'SETTELMENT_FEES');";
+		"            t.transaction_type <> 'SETTELMENT_FEES' and t.insert_date >= :startDate and t.insert_date <= :endDate);";
 	NativeQuery<Long> createSQLQuery = getsession().createNativeQuery(sql);
 	createSQLQuery.addScalar("id",StandardBasicTypes.LONG);
+	createSQLQuery.setParameter("startDate", startDate).setParameter("endDate", endDate);
 	return createSQLQuery.list();
     }
 

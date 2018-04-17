@@ -173,8 +173,8 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportTableModel getSubscriptionsIncomeReport() {
 	DateRange startEndDateOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	List<Object[]> rows = reportDao.getSubscriptionsIncomeReport(startEndDateOfCurrentMonth.getStartDate(),
-		startEndDateOfCurrentMonth.getEndDate());
+	List<Object[]> rows = reportDao.getSubscriptionsIncomeReport(startEndDateOfCurrentMonth.getStartDateAsString(),
+		startEndDateOfCurrentMonth.getEndDateAsString());
 
 	Object value = null;
 	for (Object[] row : rows) {
@@ -295,7 +295,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ReportTableModel getActiveIshtirakWithoutReceipts() {
-	List<Long> contractIds = reportDao.getActiveContractWithoutReceipts();
+	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
+	List<Long> contractIds = reportDao.getActiveContractWithoutReceipts(dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 	
 	return getActiveIshtirakInfo(contractIds);
     }
@@ -303,7 +304,7 @@ public class ReportServiceImpl implements ReportService {
     public ReportTableModel getActiveIshtirakInfo(List<Long> contractIds) {
 	List<Object[]> rows = reportDao.getActiveIshtirakInfo(contractIds);
 
-	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "contract_unique_code", "bundle", "contract.form.bundle" };
+	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "contract_unique_code", "subscriptionBundle", "engine" };
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);
@@ -338,7 +339,7 @@ public class ReportServiceImpl implements ReportService {
     public ReportTableModel getCounterHistory(Long subscriberId, SearchBean searchBean) {
 	List<Object[]> rows = reportDao.getCounterHistory(subscriberId, searchBean.getFromDate(), searchBean.getEndDate());
 
-	String[] cols = { "codeId", "counter","engine", "counterAmount", "insert_date" };
+	String[] cols = {  "counter","engine", "counterAmount", "insert_date" };
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);

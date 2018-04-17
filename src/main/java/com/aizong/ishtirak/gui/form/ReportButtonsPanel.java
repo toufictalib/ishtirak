@@ -42,6 +42,11 @@ public class ReportButtonsPanel extends BasicForm {
 			public ReportTableModel getReportTableModel() {
 			    return ServiceProvider.get().getReportServiceImpl().getSubscriptionsIncomeReport();
 			}
+			
+			@Override
+			protected int getTotalTargetedColumn() {
+			    return 5;
+			}
 		    });
 
 	});
@@ -92,6 +97,8 @@ public class ReportButtonsPanel extends BasicForm {
 		    });
 
 	});
+	
+	
 
 	builder.append(btnMonthlyReports);
 	builder.append(btnMonthlyExpenses);

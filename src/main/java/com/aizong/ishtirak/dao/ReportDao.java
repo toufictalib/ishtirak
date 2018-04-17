@@ -8,7 +8,7 @@ import com.aizong.ishtirak.bean.TransactionType;
 
 public interface ReportDao extends GenericDao<Object>{
 
-    List<Object[]> getSubscriptionsIncomeReport(Date startDate, Date endDate);
+    List<Object[]> getSubscriptionsIncomeReport(String startDate, String endDate);
     
     List<Object[]> getExpenses(ExpensesType expensesType, String startDate, String endDate);
 
@@ -20,7 +20,7 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getActiveIshtirakInfo(List<Long> contractIds);
 
-    List<Long> getActiveContractWithoutReceipts();
+    List<Long> getActiveContractWithoutReceipts(String startDate, String endDate);
 
     /**
      * 

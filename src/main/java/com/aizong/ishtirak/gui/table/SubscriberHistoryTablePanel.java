@@ -69,6 +69,10 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	start();
     }
 
+    @Override
+    protected int getTotalTargetedColumn() {
+        return 3;
+    }
     
     @Override
     protected JPanel initUI() {

@@ -3,14 +3,16 @@ package com.aizong.ishtirak;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -18,11 +20,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
@@ -35,17 +34,16 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
 @SuppressWarnings("serial")
-@SpringBootApplication
+@org.springframework.stereotype.Component
 public class LoginForm extends BasicForm {
-
-    private JTextField txtUserName;
-    private JPasswordField txtPassword;
 
     @Autowired
     Message message;
     
-    @Autowired
-    ServiceProvider serviceProvider;
+    private JTextField txtUserName;
+    private JPasswordField txtPassword;
+
+    
 
     public LoginForm() {
 	super();
@@ -65,7 +63,7 @@ public class LoginForm extends BasicForm {
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
-
+	
 	JButton btnLogin = new JButton(message("login"), ImageUtils.getLoginIcon());
 	btnLogin.addActionListener(e -> {
 
@@ -99,6 +97,7 @@ public class LoginForm extends BasicForm {
 
 	builder.appendSeparator();
 	builder.append(message("login.form.userName"), txtUserName);
+	txtUserName.requestFocus();
 	builder.append(message("login.form.password"), txtPassword);
 	builder.appendSeparator();
 	builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnLogin), builder.getColumnCount());
@@ -125,14 +124,17 @@ public class LoginForm extends BasicForm {
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
     }
 
-    @PostConstruct
     void onStart() {
-	BasicPanel.message = message;
+	BasicPanel.message=  message;
 	EventQueue.invokeLater(() -> {
 
 	    LoginForm.this.startGui();
-	   WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
-
+	   JDialog createDialog = WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
+	   createDialog.addWindowListener( new WindowAdapter() {
+	       public void windowOpened( WindowEvent e ){
+	           txtUserName.requestFocus();
+	       }
+	   }); 
 	    try {
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		    if ("Nimbus".equals(info.getName())) {
@@ -161,20 +163,9 @@ public class LoginForm extends BasicForm {
 	
     }
 
-    public MessageSource messageSource() {
-	ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-	source.setBasenames("i18n/messages", "i18n/enum", "i18n/cols", "i18n/form");
-	source.setDefaultEncoding("UTF-8");
-	return source;
-    }
-
-    @Bean
-    public Message createMessage() {
-	return new Message(getCurrentLocale(), messageSource());
-    }
 
     public static Locale getCurrentLocale() {
-	return new Locale("ar", "LB");
+	return Application.getCurrentLocale();
     }
     
     public static boolean isRtl() {
@@ -187,7 +178,8 @@ public class LoginForm extends BasicForm {
 	 * new SpringApplicationBuilder(LoginForm.class) .headless(false)
 	 * .web(false) .run(args);
 	 */
-	SpringApplication.run(LoginForm.class, args);
+	ConfigurableApplicationContext context = new SpringApplicationBuilder(LoginForm.class).headless(false).run(args);
+	LoginForm appFrame = context.getBean(LoginForm.class);
     }
 
 }

@@ -30,6 +30,12 @@ public class ExpensesTablePanel extends ReportTablePanel {
     }
 
     @Override
+    protected int getTotalTargetedColumn() {
+        return 2;
+    
+    }
+    
+    @Override
     protected JPanel initUI() {
 
 	JButton btnSearch = ButtonFactory.createBtnSearch();
@@ -50,7 +56,7 @@ public class ExpensesTablePanel extends ReportTablePanel {
 		MessageUtils.showErrorMessage(getOwner(), e1.getMessage());
 	    }
 	});
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:p:grow,p");
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:p:grow,p,p,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);
@@ -67,7 +73,7 @@ public class ExpensesTablePanel extends ReportTablePanel {
 
 	builder.append(txtRowCount, builder.getColumnCount());
 
-	// builder.append("المجموع", txtTotal);
+	 builder.append(txtTotal,builder.getColumnCount());
 
 	return builder.getPanel();
     };

@@ -35,6 +35,7 @@ import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.ImportButtonsPanel;
+import com.aizong.ishtirak.gui.SummaryTablePanel;
 import com.aizong.ishtirak.gui.form.CompanyForm;
 import com.aizong.ishtirak.gui.form.ExpensesForm;
 import com.aizong.ishtirak.gui.form.ExpensesReportButtonsPanel;
@@ -164,14 +165,9 @@ public class MainFrame extends JFrame {
 	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
 	});
 
-	JButton btnReports = button("تقارير", "reports.png");
+	JButton btnReports = button("تقارير أخرى", "reports.png");
 	btnReports.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new GeneralReportButtonsPanel());
-	});
-
-	JButton btnOutOfExpenses = button("مسحوبات المدير والموظفين", "reports.png");
-	btnOutOfExpenses.addActionListener(e -> {
-	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
 	});
 
 	JButton btnCompany = button(message("mainFrame.company"), "company.png");
@@ -195,6 +191,17 @@ public class MainFrame extends JFrame {
 	btnSubscription.addActionListener(e->{
 	    WindowUtils.createDialog(MainFrame.this.getOwner(), e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
 	});
+	JButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
+	btnSummary.addActionListener(e -> {
+	    MainFrame.openFullWindow(MainFrame.this.getOwner(), e.getActionCommand(),
+		    new SummaryTablePanel(btnMonthlyReports.getActionCommand()));
+
+	});
+	
+	JButton btnOutOfExpenses = button("مسحوبات المدير والشركاء", "reports.png");
+	btnOutOfExpenses.addActionListener(e -> {
+	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
+	});
 	
 	setTitle(message("tite"));
 
@@ -210,10 +217,11 @@ public class MainFrame extends JFrame {
 	expensesMenu.add(btnEmployeeJob);
 	expensesMenu.add(btnExpensesManagement);
 	expensesMenu.add(btnExpenses);
+	expensesMenu.add(btnOutOfExpenses);
 	reportsMenu.add(btnMonthlyReports);
 	reportsMenu.add(btnReports);
 	reportsMenu.add(btnExpensesReport);
-	reportsMenu.add(btnOutOfExpenses);
+	reportsMenu.add(btnSummary);
 	reportsMenu.add(btnResult);
 	miscMenu.add(btnEngineManagement);
 	miscMenu.add(btnMonthlyBundle);

@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.common.form.BasicForm;
+import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.table.ExpensesTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -36,8 +38,9 @@ public class ExpensesReportButtonsPanel extends BasicForm {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-		    MainFrame.openWindow(ExpensesReportButtonsPanel.this.getOwner(), e.getActionCommand(),
-			    new ExpensesTablePanel(e.getActionCommand(), expensesType));
+		    ExpensesTablePanel expensesTablePanel = new ExpensesTablePanel(e.getActionCommand(), expensesType);
+		    expensesTablePanel.setPreferredSize(ComponentUtils.getDimension(90, 83));
+			 WindowUtils.createDialog(ExpensesReportButtonsPanel.this.getOwner(), e.getActionCommand(),expensesTablePanel);
 		}
 	    });
 	    builder.append(button);
