@@ -20,8 +20,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
@@ -152,6 +150,7 @@ public class LoginForm extends BasicForm {
 		e1.printStackTrace();
 	    }
 	    LoginForm.this.startGui();
+	    LoginForm.this.setBackground(UIManager.getColor ("Panel.background"));
 	   JDialog createDialog = WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
 	   createDialog.setIconImage(ImageUtils.getFrameIcon().getImage());
 	   createDialog.addWindowListener( new WindowAdapter() {
@@ -180,8 +179,8 @@ public class LoginForm extends BasicForm {
 	 * new SpringApplicationBuilder(LoginForm.class) .headless(false)
 	 * .web(false) .run(args);
 	 */
-	ConfigurableApplicationContext context = new SpringApplicationBuilder(LoginForm.class).headless(false).run(args);
-	LoginForm appFrame = context.getBean(LoginForm.class);
+	//ConfigurableApplicationContext context = new SpringApplicationBuilder(LoginForm.class).headless(false).run(args);
+	//LoginForm appFrame = context.getBean(LoginForm.class);
     }
 
 }

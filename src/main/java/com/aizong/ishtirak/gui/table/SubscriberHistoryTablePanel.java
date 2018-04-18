@@ -36,6 +36,8 @@ import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
 import com.aizong.ishtirak.common.misc.utils.ProgressAction;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.SearchMonthPanel;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.demo.ReceiptBean;
@@ -177,59 +179,66 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 		int returnVal = fc.showSaveDialog(SubscriberHistoryTablePanel.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 		    File file = fc.getSelectedFile();
-		    MySwingWorker.execute(new ProgressAction<List<ReceiptBean>>() {
+		    
+		    ProgressBar.execute(new ProgressBarListener<JasperConcatenatedReportBuilder>() {
 
 			@Override
-			public List<ReceiptBean> action() {
-
+			public JasperConcatenatedReportBuilder onBackground() throws Exception {
 			    DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
-			    return ServiceProvider.get().getSubscriberService().getReceipts(
+			     List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService().getReceipts(
 				    selectedTransactions.isEmpty() ? null : selectedTransactions, dateRange.getStartDateAsString(),
 				    dateRange.getEndDateAsString());
+			     
+			     List<JasperReportBuilder> list = new ArrayList<>();
+				    ReceiptDesign design = new ReceiptDesign();
+				    for (ReceiptBean receiptBean : receipts) {
+
+					JasperReportBuilder report;
+					try {
+					    Company company = ServiceProvider.get().getCompany();
+					    report = design.build(receiptBean, company.getName(),
+						    company.getMaintenanceNumber());
+					    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
+					    if (report != null) {
+						list.add(report);
+					    }
+					} catch (DRException e) {
+					    e.printStackTrace();
+					}
+
+				    }
+				    
+				    if(list.isEmpty()) {
+					return null;
+				    }
+				   return concatenatedReport().concatenate(list.toArray(new JasperReportBuilder[0]));
+			
 			}
 
 			@Override
-			public void success(List<ReceiptBean> receipts) {
+			public void onDone(JasperConcatenatedReportBuilder jasperConcatenatedReportBuilder) {
 			    
-			    if(!all && receipts.isEmpty()) {
-				MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("receipts.empty"));
+			    if(jasperConcatenatedReportBuilder==null) {
+				if(!all) {
+				    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("receipts.empty"));
+				}else {
+				    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("receipts.empty.all"));
+				}
 				return;
 			    }
 			    
-			    List<JasperReportBuilder> list = new ArrayList<>();
-			    ReceiptDesign design = new ReceiptDesign();
-			    for (ReceiptBean receiptBean : receipts) {
-
-				JasperReportBuilder report;
-				try {
-				    Company company = ServiceProvider.get().getCompany();
-				    report = design.build(receiptBean, company.getName(),
-					    company.getMaintenanceNumber());
-				    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-				    if (report != null) {
-					list.add(report);
-				    }
-				} catch (DRException e) {
-				    e.printStackTrace();
-				}
-
-			    }
-
 			    try {
 				//setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-				JasperConcatenatedReportBuilder concatenate = concatenatedReport().concatenate(list.toArray(new JasperReportBuilder[0]));
-				concatenate.toPdf(Exporters.pdfExporter(file));
+				
+				jasperConcatenatedReportBuilder.toPdf(Exporters.pdfExporter(file));
 				MessageUtils.showInfoMessage(SubscriberHistoryTablePanel.this, message("receipts.export.success"));
 			    } catch (DRException e) {
 				e.printStackTrace();
 			    }
+			
+			    
 			}
-
-			@Override
-			public void failure(Exception e) {
-
-			}
-		    });
+		    }, SubscriberHistoryTablePanel.this);
 		}
 	    
 	};

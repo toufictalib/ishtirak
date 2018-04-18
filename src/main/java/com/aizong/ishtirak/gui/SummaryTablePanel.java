@@ -1,7 +1,9 @@
 package com.aizong.ishtirak.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +18,7 @@ import java.util.Map.Entry;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -23,7 +26,8 @@ import javax.swing.table.TableCellRenderer;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.SummaryBean;
 import com.aizong.ishtirak.bean.TransactionType;
-import com.aizong.ishtirak.common.form.BasicForm;
+import com.aizong.ishtirak.common.form.BasicPanel;
+import com.aizong.ishtirak.common.form.OrientationUtils;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
@@ -41,9 +45,11 @@ import com.aizong.ishtirak.gui.table.tablemodel.ExpensesTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.IncomeTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.ResultTableModel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 @SuppressWarnings("serial")
-public class SummaryTablePanel extends BasicForm implements ActionListener {
+public class SummaryTablePanel extends BasicPanel implements ActionListener {
 
     private SearchMonthPanel searchMonthPanel;
 
@@ -57,13 +63,13 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 
     public SummaryTablePanel(String title) {
 	super();
-	initializePanel();
+	initComponents();
+	buildPanel();
     }
 
     protected void init() {
     }
 
-    @Override
     protected void initComponents() {
 	btnSearch = ButtonFactory.createBtnSearch();
 	btnSearch.addActionListener(this);
@@ -105,33 +111,46 @@ public class SummaryTablePanel extends BasicForm implements ActionListener {
 
     }
 
-    @Override
-    protected Component buildPanel(DefaultFormBuilder builder) {
-
-	builder = createBuilder(getLayoutSpecs(), "p,p,p,100dlu,p,120dlu,50dlu,p,50dlu,p");
+    protected void buildPanel() {
+	
 	JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	controlPanel.add(searchMonthPanel);
 	controlPanel.add(btnSearch);
-
+	
+	
+	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,100dlu,p,120dlu,p,50dlu,50dlu"));
+	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+	builder.setDefaultDialogBorder();
+ 	builder.setLeftToRight(false);
 	// starting build panel
-	builder.appendSeparator();
-	builder.append(controlPanel);
 	builder.appendSeparator(message("income"));
-
 	builder.append(ComponentUtils.createScrollPane(tableIncome));
 	builder.appendSeparator(message("expenses"));
 	builder.append(ComponentUtils.createScrollPane(tableExpenses));
-	builder.append(ComponentUtils.createScrollPane(tableConsumption));
+	
 	builder.appendSeparator(message("result"));
 	builder.append(ComponentUtils.createScrollPane(tableResult));
 
+	builder.append(ComponentUtils.createScrollPane(tableConsumption));
+	
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	panel.add(btnPrint);
 	builder.append(panel);
-	return builder.getPanel();
+	
+	add(controlPanel,BorderLayout.NORTH);
+
+	JPanel panel2 = builder.getPanel();
+	JScrollPane scrollPane = new JScrollPane();
+	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+	panel2.setPreferredSize(ComponentUtils.getDimension(85, 95));
+	scrollPane.setViewportView(panel2);
+	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(88, 70)));
+	
+	add(scrollPane,BorderLayout.CENTER);
+	add(panel, BorderLayout.SOUTH);
     }
 
-    @Override
     protected String getLayoutSpecs() {
 	return "fill:p:grow";
     }

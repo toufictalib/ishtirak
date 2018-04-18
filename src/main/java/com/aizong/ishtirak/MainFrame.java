@@ -192,8 +192,10 @@ public class MainFrame extends JFrame {
 	});
 	JButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
 	btnSummary.addActionListener(e -> {
-	    MainFrame.openFullWindow(MainFrame.this, e.getActionCommand(),
-		    new SummaryTablePanel(btnMonthlyReports.getActionCommand()));
+	    
+	    final SummaryTablePanel panel = new SummaryTablePanel(btnMonthlyReports.getActionCommand());
+	    WindowUtils.createDialog(MainFrame.this, e.getActionCommand(),
+		    panel);
 
 	});
 	
@@ -331,7 +333,7 @@ public class MainFrame extends JFrame {
     }
     
     public static JDialog openFullWindow(Window owner, String text, JPanel component) {
-   	component.setPreferredSize(ComponentUtils.getDimension(100, 90));
+   	component.setPreferredSize(ComponentUtils.getDimension(90, 90));
    	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
    	return createDialog;
        }

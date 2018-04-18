@@ -36,7 +36,7 @@ public abstract class BasicForm extends BasicPanel {
 
     private void initUI() {
 
-	FormLayout layouts = new FormLayout("pref:grow");
+	FormLayout layouts = new FormLayout("fill:pref:grow");
 	DefaultFormBuilder rowBuilder = new DefaultFormBuilder(layouts, this);
 	rowBuilder.setDefaultDialogBorder();
 
