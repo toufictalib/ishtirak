@@ -37,8 +37,8 @@ import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
-import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
-import com.aizong.ishtirak.common.misc.utils.ProgressAction;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
@@ -157,17 +157,16 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     }
 
     private void fillTable() {
-	
-	MySwingWorker.execute(new ProgressAction<ReportTableModel>() {
-	    
-	    
+	ProgressBar.execute(new ProgressBarListener<ReportTableModel>() {
+
 	    @Override
-	    public ReportTableModel action() {
+	    public ReportTableModel onBackground() throws Exception {
 		return getReportTableModel();
 	    }
 
 	    @Override
-	    public void success(ReportTableModel t) {
+	    public void onDone(ReportTableModel response) {
+
 		ReportTableModel reportTableModel = getReportTableModel();
 		Object[] columns = reportTableModel.getCols();
 		columns = add(columns, "btnView");
@@ -203,16 +202,10 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 
 		TableUtils.resizeColumnWidth(table);
 		
-	    }
-
-	    @Override
-	    public void failure(Exception e) {
-		// TODO Auto-generated method stub
+	    
 		
 	    }
-	});
-	
-	
+	}, CommonFilterTable.this);
 	
     }
 

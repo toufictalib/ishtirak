@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.util.List;
 
@@ -189,7 +188,7 @@ public class MainFrame extends JFrame {
 	
 	JButton btnSubscription = button("ادارة الإشتراكات", "subreport.png");
 	btnSubscription.addActionListener(e->{
-	    WindowUtils.createDialog(MainFrame.this, e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
+	    openFullWindow(MainFrame.this, e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
 	});
 	JButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
 	btnSummary.addActionListener(e -> {
@@ -229,7 +228,7 @@ public class MainFrame extends JFrame {
 	miscMenu.add(btnVillage);
 	miscMenu.add(btnCompany);
 
-	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,130dlu,p"));
+	DefaultFormBuilder mainBuilder = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,80dlu,p"));
 	
 	JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	
@@ -251,8 +250,7 @@ public class MainFrame extends JFrame {
 	mainBuilder.append(panel);
 
 	setContentPane(mainBuilder.getPanel());
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	setSize(screenSize);
+	setExtendedState(JFrame.MAXIMIZED_BOTH);
 	setLocationRelativeTo(null);
 	setIconImage(ImageUtils.getFrameIcon().getImage());
 	setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -291,8 +289,7 @@ public class MainFrame extends JFrame {
 	JPanel topPanel = new JPanel(new BorderLayout());
 	topPanel.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black),BorderFactory.createEmptyBorder()));
 	
-	topPanel.add(lblTitle, BorderLayout.PAGE_START);
-	topPanel.add(lbtPhone, BorderLayout.PAGE_END);
+	topPanel.add(lblTitle, BorderLayout.CENTER);
 	return topPanel;
     }
 
@@ -315,7 +312,7 @@ public class MainFrame extends JFrame {
     
     public static JDialog openWindow(Window owner, String text, JPanel component) {
 	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
-	    component.setPreferredSize(ComponentUtils.getDimension(90, 80));
+	    component.setPreferredSize(ComponentUtils.getDimension(90, 70));
 	}
 	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
 
@@ -328,13 +325,13 @@ public class MainFrame extends JFrame {
     }
 
     public static JDialog openWindowAsFrame(Window owner, String text, JPanel component) {
-	component.setPreferredSize(ComponentUtils.getDimension(90, 80));
+	component.setPreferredSize(ComponentUtils.getDimension(90, 70));
 	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
 	return createDialog;
     }
     
     public static JDialog openFullWindow(Window owner, String text, JPanel component) {
-   	component.setPreferredSize(ComponentUtils.getDimension(100, 100));
+   	component.setPreferredSize(ComponentUtils.getDimension(100, 90));
    	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
    	return createDialog;
        }

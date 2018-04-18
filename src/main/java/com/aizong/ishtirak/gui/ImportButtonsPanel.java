@@ -22,8 +22,8 @@ import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
-import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
-import com.aizong.ishtirak.common.misc.utils.ProgressAction;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -46,7 +46,6 @@ public class ImportButtonsPanel extends BasicForm {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder = new DefaultFormBuilder(new FormLayout(getLayoutSpecs()));
@@ -61,13 +60,12 @@ public class ImportButtonsPanel extends BasicForm {
 
 	JideButton btnIshtirakReport = button(message("export.counterValues"), "export.png");
 	btnIshtirakReport.addActionListener(e -> {
-
-	    MySwingWorker.execute(export(btnIshtirakReport, true));
+	    ProgressBar.execute(export(btnIshtirakReport, true), ImportButtonsPanel.this);
 	});
 
 	JideButton btnIshtirakReportWithoutReceipts = button(message("export.payement"), "export.png");
 	btnIshtirakReportWithoutReceipts.addActionListener(e -> {
-	    MySwingWorker.execute(export(btnIshtirakReportWithoutReceipts, false));
+	    ProgressBar.execute(export(btnIshtirakReportWithoutReceipts, false), ImportButtonsPanel.this);
 
 	});
 
@@ -140,16 +138,16 @@ private void importData(boolean importCounter) {
 
     }
 
-    private ProgressAction<ReportTableModel> export(JideButton btn, boolean counterInput) {
-	return new ProgressAction<ReportTableModel>() {
+    private ProgressBarListener<ReportTableModel> export(JideButton btn, boolean counterInput) {
+	return new ProgressBarListener<ReportTableModel>() {
 
 	    @Override
-	    public ReportTableModel action() {
+	    public ReportTableModel onBackground() {
 		return ServiceProvider.get().getReportServiceImpl().getExportedFiles(counterInput);
 	    }
 
 	    @Override
-	    public void success(ReportTableModel reportTableModel) {
+	    public void onDone(ReportTableModel reportTableModel) {
 		JFileChooser fc = new JFileChooser();
 		fc.setSelectedFile(new File(btn.getActionCommand() + ".csv"));
 		int returnVal = fc.showSaveDialog(ImportButtonsPanel.this);
@@ -180,10 +178,6 @@ private void importData(boolean importCounter) {
 		}
 	    }
 
-	    @Override
-	    public void failure(Exception e) {
-
-	    }
 	};
     }
 
