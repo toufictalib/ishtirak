@@ -179,7 +179,7 @@ public class MainFrame extends JFrame {
 	btnResult.addActionListener(e -> {
 	    JPanel resultPanel = new ResultForm(btnResult.getActionCommand());
 	    resultPanel.setPreferredSize(ComponentUtils.getDimension(90, 80));
-	    WindowUtils.createDialog(MainFrame.this.getOwner(), e.getActionCommand(),resultPanel );
+	    WindowUtils.createDialog(MainFrame.this, e.getActionCommand(),resultPanel );
 	});
 	
 	JButton btnExpensesReport = button("تقارير المصاريف", "reports.png");
@@ -189,11 +189,11 @@ public class MainFrame extends JFrame {
 	
 	JButton btnSubscription = button("ادارة الإشتراكات", "subreport.png");
 	btnSubscription.addActionListener(e->{
-	    WindowUtils.createDialog(MainFrame.this.getOwner(), e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
+	    WindowUtils.createDialog(MainFrame.this, e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
 	});
 	JButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
 	btnSummary.addActionListener(e -> {
-	    MainFrame.openFullWindow(MainFrame.this.getOwner(), e.getActionCommand(),
+	    MainFrame.openFullWindow(MainFrame.this, e.getActionCommand(),
 		    new SummaryTablePanel(btnMonthlyReports.getActionCommand()));
 
 	});
@@ -203,7 +203,7 @@ public class MainFrame extends JFrame {
 	    openWindow(e.getActionCommand(), new OutExpensesFitlerTable(btnOutOfExpenses.getText()));
 	});
 	
-	setTitle(message("tite"));
+	setTitle(ServiceProvider.get().getCompany().getName());
 
 	JPanel ishtirakMenu = createMenuPanel(message("subscritpions"));
 	JPanel expensesMenu = createMenuPanel(message("expenses"));

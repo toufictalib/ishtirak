@@ -128,13 +128,6 @@ public class LoginForm extends BasicForm {
 	BasicPanel.message=  message;
 	EventQueue.invokeLater(() -> {
 
-	    LoginForm.this.startGui();
-	   JDialog createDialog = WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
-	   createDialog.addWindowListener( new WindowAdapter() {
-	       public void windowOpened( WindowEvent e ){
-	           txtUserName.requestFocus();
-	       }
-	   }); 
 	    try {
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		    if ("Nimbus".equals(info.getName())) {
@@ -147,7 +140,7 @@ public class LoginForm extends BasicForm {
 			    Object key = keys.nextElement();
 			    Object value = UIManager.get(key);
 			    if (value instanceof Font) {
-				UIManager.put(key, new Font("Leitura News", Font.PLAIN, 15));
+				UIManager.put(key, new Font("Dialog", Font.PLAIN, 15));
 			    }
 			}
 			break;
@@ -158,6 +151,15 @@ public class LoginForm extends BasicForm {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	    }
+	    LoginForm.this.startGui();
+	   JDialog createDialog = WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
+	   createDialog.setIconImage(ImageUtils.getFrameIcon().getImage());
+	   createDialog.addWindowListener( new WindowAdapter() {
+	       public void windowOpened( WindowEvent e ){
+	           txtUserName.requestFocus();
+	       }
+	   }); 
+	   
 	});
 	
 	

@@ -37,6 +37,8 @@ import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
+import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
+import com.aizong.ishtirak.common.misc.utils.ProgressAction;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
@@ -155,40 +157,63 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     }
 
     private void fillTable() {
-	ReportTableModel reportTableModel = getReportTableModel();
-	Object[] columns = reportTableModel.getCols();
-	columns = add(columns, "btnView");
 	
-	Object[] internalisationCols = new Object[columns.length];
-	for (int i = 0; i < columns.length; i++) {
-	    if (columns[i] != null) {
-		internalisationCols[i] = message.getMessage(columns[i].toString());
-	    }else {
-		internalisationCols[i] = columns[i];
-	    }
-	}
-
-	model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
-	    @Override
-	    public boolean isCellEditable(int arg0, int arg1) {
-		return arg1 == (table.getModel().getColumnCount() - 1);
-	    }
+	MySwingWorker.execute(new ProgressAction<ReportTableModel>() {
+	    
 	    
 	    @Override
-	    public Class<?> getColumnClass(int arg0) {
-	        if(arg0<reportTableModel.getClazzes().length) {
-	            return reportTableModel.getClazzes()[arg0];
-	        }
-		return super.getColumnClass(arg0);
+	    public ReportTableModel action() {
+		return getReportTableModel();
 	    }
-	};
-	table.setModel(model);
-	sorter.setModel(model);
-	table.setRowSorter(sorter);
-	setTxtRowCount(model.getRowCount());
-	applyRenderer();
 
-	TableUtils.resizeColumnWidth(table);
+	    @Override
+	    public void success(ReportTableModel t) {
+		ReportTableModel reportTableModel = getReportTableModel();
+		Object[] columns = reportTableModel.getCols();
+		columns = add(columns, "btnView");
+		
+		Object[] internalisationCols = new Object[columns.length];
+		for (int i = 0; i < columns.length; i++) {
+		    if (columns[i] != null) {
+			internalisationCols[i] = message.getMessage(columns[i].toString());
+		    }else {
+			internalisationCols[i] = columns[i];
+		    }
+		}
+
+		model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
+		    @Override
+		    public boolean isCellEditable(int arg0, int arg1) {
+			return arg1 == (table.getModel().getColumnCount() - 1);
+		    }
+		    
+		    @Override
+		    public Class<?> getColumnClass(int arg0) {
+		        if(arg0<reportTableModel.getClazzes().length) {
+		            return reportTableModel.getClazzes()[arg0];
+		        }
+			return super.getColumnClass(arg0);
+		    }
+		};
+		table.setModel(model);
+		sorter.setModel(model);
+		table.setRowSorter(sorter);
+		setTxtRowCount(model.getRowCount());
+		applyRenderer();
+
+		TableUtils.resizeColumnWidth(table);
+		
+	    }
+
+	    @Override
+	    public void failure(Exception e) {
+		// TODO Auto-generated method stub
+		
+	    }
+	});
+	
+	
+	
     }
 
     private void applyRenderer() {

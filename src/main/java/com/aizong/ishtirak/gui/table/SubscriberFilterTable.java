@@ -99,6 +99,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
     @Override
     public ReportTableModel getReportTableModel() {
+	
 	return ServiceProvider.get().getReportServiceImpl().getSubscribers();
     }
 
