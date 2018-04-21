@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,7 +125,7 @@ public interface SubscriberService {
     
     public Map<Long, Set<String>> getContractUniqueCodesByEngine();  
     
-    void updateCounters(Map<String, Long> e, String startDate, String endDate);
+    void updateCounters(Map<String, Long> e, LocalDate selectedDate);
 
     void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
 

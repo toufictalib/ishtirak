@@ -134,7 +134,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	panel.add(btnHistoryCounter);
 
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,p,fill:p:grow,p");
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,p,fill:260:grow,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);

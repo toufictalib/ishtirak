@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -232,20 +233,21 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void saveCounterHistory(CounterHistory history) throws Exception {
-	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth(LocalDate.now());
 	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractUniqueCode(),effectiveCurrentMonth.getStartDateAsString(),effectiveCurrentMonth.getEndDateAsString() );
 	 if(counterHistoryByContractId==null) {
 	     subscriberDao.save(Arrays.asList(history));
 	 }else {
-	     history.setId(counterHistoryByContractId.getId());
-	     subscriberDao.updateCounterHistory(history);
+	     counterHistoryByContractId.setConsumption(history.getConsumption());
+	     counterHistoryByContractId.setContractUniqueCode(history.getContractUniqueCode());
+	     subscriberDao.updateCounterHistory(counterHistoryByContractId);
 	 }
 
     }
 
     @Override
     public CounterHistory getCounterHistoryByContractId(String contractUniqueCode) {
-	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth(LocalDate.now());
 	return subscriberDao.getCounterHistoryByContractId(contractUniqueCode, effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
     }
     
@@ -507,8 +509,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void updateCounters(Map<String, Long> e, String startDate, String endDate) {
-	subscriberDao.updateCounters(e, startDate, endDate);
+    public void updateCounters(Map<String, Long> e, LocalDate selectedDate) {
+	subscriberDao.updateCounters(e, selectedDate);
     }
 
     @Override

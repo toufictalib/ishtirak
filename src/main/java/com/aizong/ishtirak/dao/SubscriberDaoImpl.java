@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.Constant;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.SQLUtils;
@@ -357,15 +359,17 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public void updateCounters(Map<String, Long> e, String startDate, String endDate) {
-	deleteCounterHistory(e.keySet(), startDate, endDate);
+    public void updateCounters(Map<String, Long> e, LocalDate selectedDate) {
+	
+	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedDate);
+	deleteCounterHistory(e.keySet(), dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 
 	List<CounterHistory> counterHistories = new ArrayList<>();
 	for (Entry<String, Long> p : e.entrySet()) {
 	    CounterHistory counterHistory = new CounterHistory();
 	    counterHistory.setContractUniqueCode(p.getKey());
 	    counterHistory.setConsumption(p.getValue());
-
+	    counterHistory.setInsertDate(DateUtil.fromLocalDate(selectedDate));
 	    counterHistories.add(counterHistory);
 	}
 
