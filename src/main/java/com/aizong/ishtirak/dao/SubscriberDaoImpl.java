@@ -377,9 +377,10 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
     
     @Override
-    public void updatePaid(Map<String, Boolean> updatedTransactionsMap, String startDate, String endDate) {
+    public void updatePaid(Map<String, Boolean> updatedTransactionsMap, LocalDate selectedDate) {
 
-	String sql = SQLUtils.sql("getNotPaidTransaction.sql", startDate, endDate);
+	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedDate);
+	String sql = SQLUtils.sql("getNotPaidTransaction.sql", dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 
 	// map contains as key unique counter id and as value a trasaction id
 	Map<String, Long> map = jdbcTemplate.query(sql, new ResultSetExtractor<Map<String, Long>>() {

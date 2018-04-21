@@ -63,7 +63,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     void updateCounters(Map<String, Long> e,LocalDate now);
 
-    void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
+    void updatePaid(Map<String, Boolean> e, LocalDate selectedDate);
 
     void updatePayment(List<Long> transactionIds, boolean paid);
 

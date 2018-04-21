@@ -103,6 +103,8 @@ public class ImportButtonsPanel extends BasicForm {
 			    : readAllLines;
 
 		    String message = "";
+		    LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(), LocalDate.now().getDayOfMonth());
+		    
 		    if (importCounter) {
 
 			Map<String, Long> values = new HashMap<>();
@@ -118,7 +120,7 @@ public class ImportButtonsPanel extends BasicForm {
 			    }
 			}
 			
-			LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(), LocalDate.now().getDayOfMonth());
+			
 			ServiceProvider.get().getSubscriberService().updateCounters(values,
 				now);
 			message = "import.counter.done";
@@ -135,9 +137,8 @@ public class ImportButtonsPanel extends BasicForm {
 				}
 			    }
 			}
-			DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
 			ServiceProvider.get().getSubscriberService().updatePaid(values,
-				dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
+				now);
 			message = "import.paid.done";
 		    }
 		    MessageUtils.showInfoMessage(ImportButtonsPanel.this, message(message));

@@ -127,7 +127,7 @@ public interface SubscriberService {
     
     void updateCounters(Map<String, Long> e, LocalDate selectedDate);
 
-    void updatePaid(Map<String, Boolean> e, String startDate, String endDate);
+    void updatePaid(Map<String, Boolean> e, LocalDate selectedDate);
 
     Transaction getTransactionById(Long transactionId);
 

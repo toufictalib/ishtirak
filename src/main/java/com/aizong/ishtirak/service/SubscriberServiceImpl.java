@@ -514,8 +514,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void updatePaid(Map<String, Boolean> e, String startDate, String endDate) {
-	subscriberDao.updatePaid(e, startDate, endDate);
+    public void updatePaid(Map<String, Boolean> e, LocalDate selectedDate) {
+	subscriberDao.updatePaid(e, selectedDate);
     }
 
     @Override
