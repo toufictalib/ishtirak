@@ -200,7 +200,7 @@ public class DateUtil {
 
     public static DateRange getStartEndDateOfCurrentMonth() {
 	LocalDate initial = LocalDate.now();
-	initial = initial.minusMonths(1);
+	//initial = initial.minusMonths(1);
 	LocalDate start = initial.withDayOfMonth(6);
 	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(5);
 
@@ -292,6 +292,9 @@ public class DateUtil {
 	System.out.println(minusMonths.getYear()+","+monthName);
     }
     
+    public static boolean isCountedAsCurrentMonth() {
+	return LocalDate.now().getDayOfMonth() <21;
+    }
  /*   public static void main(String[]args) {
    	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
    	System.out.println(startEndDateOfCurrentMonth.getStartDateAsString());

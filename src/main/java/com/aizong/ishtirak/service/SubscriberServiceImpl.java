@@ -3,8 +3,10 @@ package com.aizong.ishtirak.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -192,7 +194,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	    }
 	}
 	
-	saveContract(contract, settelementFees);
+	saveContract(contract, settelementFees, false);
 	
 	
     }
@@ -202,7 +204,7 @@ public class SubscriberServiceImpl implements SubscriberService {
      * paid once at creation of subscription
      */
     @Override
-    public void saveContract(Contract contract,Integer settelementFees) {
+    public void saveContract(Contract contract,Integer settelementFees, boolean createEmptyCounterHistory) {
 	
 	if (contract.getId() != null) {
 	    subscriberDao.update(contract);
@@ -215,6 +217,16 @@ public class SubscriberServiceImpl implements SubscriberService {
 		transaction.setContractId(contract.getId());
 		transaction.setTransactionType(TransactionType.SETTELMENT_FEES);
 		subscriberDao.save(Arrays.asList(transaction));
+	    }
+	    
+	    if(createEmptyCounterHistory) {
+		CounterHistory counterHistory = new CounterHistory();
+		counterHistory.setConsumption(0l);
+		counterHistory.setContractUniqueCode(contract.getContractUniqueCode());
+		if(DateUtil.isCountedAsCurrentMonth()) {
+		    counterHistory.setInsertDate(Date.from(LocalDateTime.now().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant()));
+		}
+		saveCounterHistory(counterHistory);
 	    }
 	}
 
@@ -232,8 +244,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void saveCounterHistory(CounterHistory history) throws Exception {
-	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth(LocalDate.now());
+    public void saveCounterHistory(CounterHistory history) {
+	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
 	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractUniqueCode(),effectiveCurrentMonth.getStartDateAsString(),effectiveCurrentMonth.getEndDateAsString() );
 	 if(counterHistoryByContractId==null) {
 	     subscriberDao.save(Arrays.asList(history));
@@ -247,7 +259,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public CounterHistory getCounterHistoryByContractId(String contractUniqueCode) {
-	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth(LocalDate.now());
+	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
 	return subscriberDao.getCounterHistoryByContractId(contractUniqueCode, effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
     }
     
@@ -290,6 +302,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	List<Contract> contracts = getActiveContracts();
 	
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
+	
 	//create only the contracts already created yet
 	Set<Long> alreadyCreatedContracts = new HashSet<>(
 		subscriberDao.getCreatedContractsForCurrentMonth(contracts,
@@ -304,8 +317,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 	List<SubscriptionHistory> subscriptionHistoryList = new ArrayList<>();
 
 	List<ContractConsumptionBean> counterHistories = getContractConsupmtion();
-	Map<Long, ContractConsumptionBean> counterHistory = counterHistories.stream()
-		.collect(Collectors.toMap(e -> e.getContractId(), e -> e));
+	Map<String, ContractConsumptionBean> counterHistory = counterHistories.stream()
+		.collect(Collectors.toMap(e -> e.getContractUniqueCode(), e -> e));
 
 	// 1-create the transaction for each bundle type
 	// 2-create the subscription history for each counter subscription
@@ -327,7 +340,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		transactions.add(transaction);
 	    } else if (bundle instanceof SubscriptionBundle) {
 
-		ContractConsumptionBean contractConsumptionBean = counterHistory.get(contract.getId());
+		ContractConsumptionBean contractConsumptionBean = counterHistory.get(contract.getContractUniqueCode());
 		if (contractConsumptionBean != null && contractConsumptionBean.getConsumption().isPresent()) {
 		    long consumption = contractConsumptionBean.getConsumption().get();
 		    SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;

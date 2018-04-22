@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class ContractConsumptionBean {
 
-    private Long contractId;
+    private String contractUniqueCode;
     private Long previousCounterValue;
     private Long currentCounterValue;
 
@@ -12,19 +12,19 @@ public class ContractConsumptionBean {
 	super();
     }
 
-    public ContractConsumptionBean(Long contractId, Long previousCounterValue, Long currentCounterValue) {
+    public ContractConsumptionBean(String contractUniqueCode, Long previousCounterValue, Long currentCounterValue) {
 	super();
-	this.contractId = contractId;
+	this.contractUniqueCode = contractUniqueCode;
 	this.previousCounterValue = previousCounterValue;
 	this.currentCounterValue = currentCounterValue;
     }
 
-    public Long getContractId() {
-	return contractId;
+    public String getContractUniqueCode() {
+	return contractUniqueCode;
     }
 
-    public void setContractId(Long contractId) {
-	this.contractId = contractId;
+    public void setContractUniqueCode(String contractUniqueCode) {
+	this.contractUniqueCode = contractUniqueCode;
     }
 
     public Long getPreviousCounterValue() {

@@ -30,6 +30,7 @@ import com.aizong.ishtirak.model.Address;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.Engine;
+import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -210,7 +211,11 @@ public class ContractForm extends BasicForm {
 	contract.setEngineId(comboEngines.getValue().getId());
 	contract.setSubscriberId(subscriberId);
 
-	ServiceProvider.get().getSubscriberService().saveContract(contract, txtSettelementFees.getValue());
+	boolean createEmptyCounterHistory = false;
+	if (comboBundles.getValue() instanceof SubscriptionBundle && contract.getId() == null) {
+	    createEmptyCounterHistory = true;
+	}
+	ServiceProvider.get().getSubscriberService().saveContract(contract, txtSettelementFees.getValue(), createEmptyCounterHistory);
 	closeWindow();
 
     }

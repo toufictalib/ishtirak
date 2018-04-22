@@ -59,13 +59,13 @@ public interface SubscriberService {
     
     List<Subscriber> searchSubscribers(SearchCustomerCriteria criteria);
     
-    void saveContract(Contract contract,Integer settelementFees);
+    void saveContract(Contract contract,Integer settelementFees, boolean createEmptyCounterHistory);
     
     Contract getContractById(Long id);
     
     void deleteContracts(List<Long> ids);
 
-    void saveCounterHistory(CounterHistory history) throws Exception;
+    void saveCounterHistory(CounterHistory history);
     
     List<Contract> getCounterContractBySubscriberId(Long contractId);
 

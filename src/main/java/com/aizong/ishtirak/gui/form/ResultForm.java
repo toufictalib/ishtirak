@@ -285,6 +285,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 	return chart;
     }
 
+    @SuppressWarnings("unused")
     private JPanel getChartPanel(boolean expenses, List<Tuple<String, Double>> list) {
 	ChartPanel chartPanel = new ChartPanel(
 		createChart(expenses ? createExpensesDataset(list) : createDataset(list)));

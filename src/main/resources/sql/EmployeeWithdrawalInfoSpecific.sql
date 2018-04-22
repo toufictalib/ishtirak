@@ -1,6 +1,6 @@
 SELECT 
     o.id,
-    et.name 'job',
+    et.name "job",
     e.name,
     e.last_name,
     o.amount,
@@ -12,6 +12,6 @@ FROM
 WHERE
     et.id = e.employee_type_id
         AND e.id = o.employee 
-        AND o.insert_date >= {1}
-        AND o.insert_date <= {2}
+        AND o.insert_date >= "{1}"
+        AND o.insert_date <= "{2}"
         AND e.id = {0}

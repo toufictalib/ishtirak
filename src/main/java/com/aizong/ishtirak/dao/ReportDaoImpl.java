@@ -121,11 +121,12 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 
 
     @Override
-    public List<Object[]> getSubscriptionsHistory(String  contractUniqueCode, String fromDate, String endDate, TransactionType transactionType) {
-	
-	String sql = SQLUtils.sql(transactionType==TransactionType.COUNTER_PAYMENT ? "contractCounterHistory.sql" :"contractHistory.sql");
-	
-	sql = MessageFormat.format(sql, contractUniqueCode, fromDate, endDate);
+    public List<Object[]> getSubscriptionsHistory(String contractUniqueCode, String fromDate, String endDate,
+	    TransactionType transactionType) {
+
+	String sql = SQLUtils.sql(transactionType == TransactionType.COUNTER_PAYMENT ? "contractCounterHistory.sql"
+		: "contractHistory.sql", contractUniqueCode, fromDate, endDate);
+
 	return toList(sql);
     }
     
@@ -203,22 +204,19 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     @Override
     public List<Object[]> getEmployeesPayments(Long employeeId, String fromDate, String endDate) {
 	
-	String file = employeeId!=null ? "EmployeeWithdrawalInfoSpecific.sql" : "EmployeeWithdrawalInfo.sql";
-	String sql = SQLUtils.sql(file);
-	
+
+	String sql = null;
 	if(employeeId!=null) {
-	    sql = MessageFormat.format(sql, employeeId,"\""+fromDate+"\"", "\""+endDate+"\"");
+	    sql = SQLUtils.sql("EmployeeWithdrawalInfoSpecific.sql", employeeId,fromDate, endDate);
 	}else {
-	    sql = MessageFormat.format(sql, "\""+fromDate+"\"", "\""+endDate+"\"");
+	    sql = SQLUtils.sql("EmployeeWithdrawalInfo.sql", fromDate,endDate);
 	}
 	return toList(sql);
     }
     
     @Override
     public List<Object[]> getCounterHistory(Long subscriberId, String fromDate, String endDate) {
-
-	String sql = SQLUtils.sql("counterHistoryReport.sql");
-	sql = MessageFormat.format(sql, subscriberId, "\"" + fromDate + "\"", "\"" + endDate + "\"");
+	String sql = SQLUtils.sql("counterHistoryReport.sql",subscriberId, fromDate, endDate);
 	return toList(sql);
     }
     

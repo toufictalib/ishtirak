@@ -3,7 +3,6 @@ package com.aizong.ishtirak.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,13 +141,15 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     @Override
     public List<ContractConsumptionBean> getCounterHistory(int previousMonth, int currentMonth) {
 
-	String sql = "select c1.contract_id as 'contractId',c1.consumption as 'previousCounterValue',c2.consumption as 'currentCounterValue' "
+	String sql = "select c1.contract_unique_code as 'contractUniqueCode',"
+		+ "c1.consumption as 'previousCounterValue',"
+		+ "c2.consumption as 'currentCounterValue' "
 		+ "from counter_history c1,counter_history c2 where "
-		+ "c1.contract_id = c2.contract_id and month(c1.insert_date) in (:previousMonth) "
+		+ "c1.contract_unique_code = c2.contract_unique_code and month(c1.insert_date) in (:previousMonth) "
 		+ "and month(c2.insert_date) in (:currentMonth)";
 	NativeQuery sqlQuery = getsession().createSQLQuery(sql);
 	sqlQuery.setParameter("previousMonth", previousMonth).setParameter("currentMonth", currentMonth);
-	sqlQuery.addScalar("contractId", StandardBasicTypes.LONG)
+	sqlQuery.addScalar("contractUniqueCode", StandardBasicTypes.STRING)
 		.addScalar("previousCounterValue", StandardBasicTypes.LONG)
 		.addScalar("currentCounterValue", StandardBasicTypes.LONG);
 	sqlQuery.setResultTransformer(Transformers.aliasToBean(ContractConsumptionBean.class));
@@ -222,7 +223,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 
 	if (!activeContracts.isEmpty()) {
 	    String sql = "select id_contract from transaction t "
-		    + "where insert_date>=:fromDate and insert_date<=toDate "
+		    + "where insert_date>=:fromDate and insert_date<= :toDate "
 		    + "and t.id_contract in (:activeContracts) and t.transaction_type <> :transactionType";
 
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
@@ -288,13 +289,11 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate) {
+    public Map<String, List<Tuple<String, Double>>> getResult(String fromDate,  String endDate) {
 
-	String income = SQLUtils.sql("income.sql");
-	income = MessageFormat.format(income, fromDate, endDate);
+	String income = SQLUtils.sql("income.sql", fromDate, endDate);
 
-	String expenses = SQLUtils.sql("expenses.sql");
-	expenses = MessageFormat.format(expenses, fromDate, endDate);
+	String expenses = SQLUtils.sql("expenses.sql",fromDate, endDate);
 
 	List<Tuple<String, Double>> incomeList = jdbcTemplate.query(income,
 		new ResultSetExtractor<List<Tuple<String, Double>>>() {
@@ -486,5 +485,6 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    }
 	});
     }
+    
     
 }
