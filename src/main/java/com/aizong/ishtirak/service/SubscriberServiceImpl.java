@@ -223,7 +223,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		CounterHistory counterHistory = new CounterHistory();
 		counterHistory.setConsumption(0l);
 		counterHistory.setContractUniqueCode(contract.getContractUniqueCode());
-		if(DateUtil.isCountedAsCurrentMonth()) {
+		if(DateUtil.isCountedAsCurrentMonth(LocalDate.now())) {
 		    counterHistory.setInsertDate(Date.from(LocalDateTime.now().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant()));
 		}
 		saveCounterHistory(counterHistory);
@@ -301,6 +301,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 	// get active contracts
 	List<Contract> contracts = getActiveContracts();
 	
+	//filter all active contracts created after specific time before they should not
+	//into computation
+	contracts = contracts.stream()
+		.filter(e -> DateUtil.isCountedAsCurrentMonth(
+			e.getInsertDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
+		.collect(Collectors.toList());
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
 	
 	//create only the contracts already created yet

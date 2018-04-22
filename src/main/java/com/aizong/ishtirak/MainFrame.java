@@ -146,7 +146,7 @@ public class MainFrame extends JFrame {
 		if (!generateReceipts.isEmpty()) {
 		    DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
 		    builder.appendSeparator("");
-
+		    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
 		} else {
 		    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
 		}

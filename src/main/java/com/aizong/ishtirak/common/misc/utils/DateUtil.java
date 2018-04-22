@@ -292,8 +292,9 @@ public class DateUtil {
 	System.out.println(minusMonths.getYear()+","+monthName);
     }
     
-    public static boolean isCountedAsCurrentMonth() {
-	return LocalDate.now().getDayOfMonth() <21;
+    public static boolean isCountedAsCurrentMonth(LocalDate localDate) {
+	String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
+	return localDate.getDayOfMonth() < (Integer.parseInt(message)+1);
     }
  /*   public static void main(String[]args) {
    	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
