@@ -20,17 +20,18 @@ public class OutExpensesFitlerTable extends CommonFilterTable {
 
     public OutExpensesFitlerTable(String title) {
 	super(title, new MyTableListener() {
-	    
+
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
-		WindowUtils.createDialog(owner, message("expenses.form.new"), new OutExpensesForm(Mode.NEW,null, new SavingCallback() {
+		WindowUtils.createDialog(owner, message("expenses.form.new"),
+			new OutExpensesForm(Mode.NEW, null, new SavingCallback() {
 
-		    @Override
-		    public void onSuccess(Object o) {
-			refreshTableInterface.refreshTable();
+			    @Override
+			    public void onSuccess(Object o) {
+				refreshTableInterface.refreshTable();
 
-		    }
-		}));
+			    }
+			}));
 
 	    }
 
@@ -38,7 +39,8 @@ public class OutExpensesFitlerTable extends CommonFilterTable {
 	    public void view(Window owner, Long id) {
 		OutExpensesLog expenseLog = ServiceProvider.get().getSubscriberService().getOutExpensesById(id);
 		if (expenseLog != null) {
-		    WindowUtils.createDialog(owner, message("expenses.form.view"), new OutExpensesForm(Mode.VIEW, expenseLog, null));
+		    WindowUtils.createDialog(owner, message("expenses.form.view"),
+			    new OutExpensesForm(Mode.VIEW, expenseLog, null));
 		}
 	    }
 
@@ -60,7 +62,8 @@ public class OutExpensesFitlerTable extends CommonFilterTable {
 
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		boolean yes = MessageUtils.showConfirmationMessage(owner, message("bundle.report.buttons.delete"), message("delete"));
+		boolean yes = MessageUtils.showConfirmationMessage(owner, message("bundle.report.buttons.delete"),
+			message("delete"));
 		if (yes) {
 		    List<Long> ids = new ArrayList<>();
 		    ids.add(id);
@@ -79,4 +82,11 @@ public class OutExpensesFitlerTable extends CommonFilterTable {
     @Override
     protected String getAddTooltip() {
 	return message("expenses.form.add");
-    }}
+    }
+    
+    @Override
+    protected int getTotalTargetedColumn() {
+        return 3;
+    }
+    
+}

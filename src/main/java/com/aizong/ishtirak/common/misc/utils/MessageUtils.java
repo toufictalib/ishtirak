@@ -15,38 +15,55 @@ import javax.swing.JOptionPane;
  */
 public class MessageUtils {
 
-    public static String getDefaultErrorTitle(String code){
+    public static String getDefaultErrorTitle(String code) {
 	return ServiceProvider.get().getMessage().getMessage(code);
     }
     
     public static void showErrorMessage(Component owner, String message) {
-        JOptionPane.showMessageDialog(owner, message, getDefaultErrorTitle("error"), JOptionPane.ERROR_MESSAGE);
+	JOptionPane.showMessageDialog(owner, message, getDefaultErrorTitle("error"), JOptionPane.ERROR_MESSAGE);
 
     }
 
     public static void showWarningMessage(Component owner, String title, String message) {
-        JOptionPane.showMessageDialog(owner, message, title, JOptionPane.WARNING_MESSAGE);
+	JOptionPane.showMessageDialog(owner, message, title, JOptionPane.WARNING_MESSAGE);
 
     }
-    
-    public static void showWarningMessage(Component owner,  String message) {
-        JOptionPane.showMessageDialog(owner, message,getDefaultErrorTitle("warning") , JOptionPane.WARNING_MESSAGE);
+
+    public static void showWarningMessage(Component owner, String message) {
+	JOptionPane.showMessageDialog(owner, message, getDefaultErrorTitle("warning"), JOptionPane.WARNING_MESSAGE);
 
     }
 
     public static void showInfoMessage(Component owner, String title, String message) {
-        JOptionPane.showMessageDialog(owner, message, title, JOptionPane.INFORMATION_MESSAGE);
+	JOptionPane.showMessageDialog(owner, message, title, JOptionPane.INFORMATION_MESSAGE);
 
     }
 
     public static void showInfoMessage(Component owner, String message) {
-        showInfoMessage(owner, getDefaultErrorTitle("info"), message);
+	showInfoMessage(owner, getDefaultErrorTitle("info"), message);
 
     }
-    
-    public static boolean showConfirmationMessage(Component owner,String question,String title)
-    {
-        int answer =  JOptionPane.showConfirmDialog(owner, question, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-        return answer == JOptionPane.YES_OPTION;
+
+    public static boolean showConfirmationMessage(Component owner, String question, String title) {
+	int answer = JOptionPane.showConfirmDialog(owner, question, title, JOptionPane.OK_CANCEL_OPTION,
+		JOptionPane.WARNING_MESSAGE);
+	return answer == JOptionPane.YES_OPTION;
+    }
+
+    public static boolean showConfirmationMessage(Component owner, String question) {
+	int answer = JOptionPane.showConfirmDialog(owner, question, getDefaultErrorTitle("confirmation"),
+		JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+	return answer == JOptionPane.YES_OPTION;
+    }
+
+    public static String showInputDialog(Component owner, String label, String title) {
+	return JOptionPane.showInputDialog(owner, label, title,JOptionPane.PLAIN_MESSAGE);
+	
+
+    }
+
+    public static String showInputDialog(Component owner, String label) {
+	return showInputDialog(owner, label, getDefaultErrorTitle("input"));
+
     }
 }

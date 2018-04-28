@@ -56,20 +56,20 @@ public class ExpensesTablePanel extends ReportTablePanel {
 		MessageUtils.showErrorMessage(getOwner(), e1.getMessage());
 	    }
 	});
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:p:grow,p,p,p");
-	builder.setDefaultDialogBorder();
-
-	builder.appendSeparator(title);
+	
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	panel.add(createDefault);
 	panel.add(btnSearch);
+	
+	
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:240dlu:grow,p,p");
+	builder.setDefaultDialogBorder();
 
+	builder.appendSeparator(title);
+	
 	builder.append(panel, builder.getColumnCount());
-	// builder.append(txtFE, 3);
 
-	JScrollPane scrollPane = new JScrollPane(table);
-	// scrollPane.setPreferredSize(ComponentUtils.getDimension(60, 60));
-	builder.append(scrollPane, builder.getColumnCount());
+	builder.append(new JScrollPane(table), builder.getColumnCount());
 
 	builder.append(txtRowCount, builder.getColumnCount());
 

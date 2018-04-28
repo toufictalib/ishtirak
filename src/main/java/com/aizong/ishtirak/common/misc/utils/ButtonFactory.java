@@ -82,6 +82,7 @@ public class ButtonFactory {
     }
 
     public static void makeButtonAsIcon(JButton button) {
+	button.setToolTipText(button.getText());
 	button.setText("");
 	button.setOpaque(false);
 	button.setContentAreaFilled(false);

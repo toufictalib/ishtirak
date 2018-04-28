@@ -43,8 +43,6 @@ public class EmployeeTablePanel extends ReportTablePanel {
 	SearchPanel createDefault = SearchPanel.createDefault(startEndDateOfCurrentMonth.getStartDate(),
 		startEndDateOfCurrentMonth.getEndDate());
 
-	String leftToRightSpecs = "fill:p:grow";
-
 	btnSearch.addActionListener(e -> {
 	    try {
 		ReportTableModel reportTableModel = ServiceProvider.get().getReportServiceImpl()
@@ -55,7 +53,9 @@ public class EmployeeTablePanel extends ReportTablePanel {
 		MessageUtils.showErrorMessage(getOwner(), e1.getMessage());
 	    }
 	});
-	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:p:grow,p");
+	
+	String leftToRightSpecs = "fill:p:grow";
+	DefaultFormBuilder builder = BasicForm.createBuilder(leftToRightSpecs, "p,p,fill:240dlu:grow,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);
@@ -82,6 +82,11 @@ public class EmployeeTablePanel extends ReportTablePanel {
     @Override
     public ReportTableModel getReportTableModel() {
 	return null;
+    }
+    
+    @Override
+    protected int getTotalTargetedColumn() {
+        return 4;
     }
 
 }

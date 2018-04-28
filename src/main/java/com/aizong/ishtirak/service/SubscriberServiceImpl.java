@@ -182,19 +182,15 @@ public class SubscriberServiceImpl implements SubscriberService {
      * save new contact and deactivate old one
      */
     @Override
-    public void saveAndDeactivateContact(Contract contract,Integer settelementFees, Long oldContractId) {
+    public void switchSubscription(Contract contract,Integer settelementFees, Long oldContractId) {
 	
 	//deactivate old contract
 	
 	if (oldContractId != null) {
-	    Contract oldContract = getContractById(oldContractId);
-	    if (oldContract != null) {
-		oldContract.setActive(false);
-		subscriberDao.save(Arrays.asList(oldContract));
-	    }
+	    closeSubscription(oldContractId);
 	}
 	
-	saveContract(contract, settelementFees, false);
+	saveContract(contract, settelementFees, false, null);
 	
 	
     }
@@ -204,10 +200,17 @@ public class SubscriberServiceImpl implements SubscriberService {
      * paid once at creation of subscription
      */
     @Override
-    public void saveContract(Contract contract,Integer settelementFees, boolean createEmptyCounterHistory) {
+    public void saveContract(Contract contract,Integer settelementFees, boolean createEmptyCounterHistory, Integer reatctivateSubscriptionFees) {
 	
 	if (contract.getId() != null) {
 	    subscriberDao.update(contract);
+	    if(reatctivateSubscriptionFees!=null) {
+		Transaction transaction = new Transaction();
+		transaction.setAmount(Double.valueOf(reatctivateSubscriptionFees));
+		transaction.setContractId(contract.getId());
+		transaction.setTransactionType(TransactionType.SETTELMENT_FEES);
+		subscriberDao.save(Arrays.asList(transaction));
+	    }
 	} else {
 	    subscriberDao.save(Arrays.asList(contract));
 
@@ -563,6 +566,16 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void updateTransaction(Transaction transaction) {
 	subscriberDao.update(transaction);
 	
+    }
+    
+    @Override
+    public void closeSubscription(Long contractId) {
+	Contract oldContract = getContractById(contractId);
+	if (oldContract != null && oldContract.getCloseDate() == null) {
+	    oldContract.setActive(false);
+	    oldContract.setCloseDate(new Date());
+	    subscriberDao.save(Arrays.asList(oldContract));
+	}
     }
     
 }

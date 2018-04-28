@@ -245,7 +245,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	Criteria criteria = getsession().createCriteria(Contract.class);
 	criteria.add(Restrictions.eq("subscriberId", subscriberId));
 	if (active != null) {
-	    criteria.add(Restrictions.eq("active", active));
+	    criteria.add(Restrictions.isNull("closeDate"));
 	}
 	return criteria.list();
     }

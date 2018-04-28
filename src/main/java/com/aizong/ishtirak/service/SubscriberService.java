@@ -59,7 +59,8 @@ public interface SubscriberService {
     
     List<Subscriber> searchSubscribers(SearchCustomerCriteria criteria);
     
-    void saveContract(Contract contract,Integer settelementFees, boolean createEmptyCounterHistory);
+    void saveContract(Contract contract, Integer settelementFees, boolean createEmptyCounterHistory,
+	    Integer reatctivateSubscriptionFees);
     
     Contract getContractById(Long id);
     
@@ -113,7 +114,7 @@ public interface SubscriberService {
 
     void deleteOutExpenses(List<Long> ids);
 
-    void saveAndDeactivateContact(Contract contract, Integer settelementFees, Long oldContractId);
+    void switchSubscription(Contract contract, Integer settelementFees, Long oldContractId);
 
     List<Contract> getActiveContractBySubscriberId(Long subscriberId);
 
@@ -138,5 +139,7 @@ public interface SubscriberService {
     List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
 
     void updateTransaction(Transaction transaction);
+
+    void closeSubscription(Long contractId);
     
 }

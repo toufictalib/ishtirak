@@ -196,6 +196,22 @@ public class ContractForm extends BasicForm {
 	    return;
 	}
 
+	Integer reatctivateSubscriptionFees = null;
+	
+	if (mode == Mode.UPDATE && contract != null && !contract.isActive() && cbActive.isSelected()) {
+	    String input = MessageUtils.showInputDialog(ContractForm.this, message("subscription.reactivate.fees"));
+	    try {
+		if(input==null || input.isEmpty()) {
+		    
+		}else {
+		    reatctivateSubscriptionFees = Integer.parseInt(input);
+		}
+	    }catch (Exception e) {
+		MessageUtils.showWarningMessage(ContractForm.this, message("input.integer"));
+		return;
+	    }
+	}
+	
 	contract = contract == null ? new Contract() : contract;
 	contract.setActive(cbActive.isSelected());
 
@@ -215,7 +231,9 @@ public class ContractForm extends BasicForm {
 	if (comboBundles.getValue() instanceof SubscriptionBundle && contract.getId() == null) {
 	    createEmptyCounterHistory = true;
 	}
-	ServiceProvider.get().getSubscriberService().saveContract(contract, txtSettelementFees.getValue(), createEmptyCounterHistory);
+	
+	
+	ServiceProvider.get().getSubscriberService().saveContract(contract, txtSettelementFees.getValue(), createEmptyCounterHistory, reatctivateSubscriptionFees);
 	closeWindow();
 
     }

@@ -3,16 +3,25 @@ package com.aizong.ishtirak.gui;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFileChooser;
+
+import org.springframework.beans.factory.annotation.Value;
 
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 
 public class DatabaseUtils {
+    
+    @Value("${spring.datasource.url}")
+    private String dbName ;
+    
+    @Value("${spring.datasource.username}")
+    private String dbUser;
+    
+    @Value("${spring.datasource.password}")
+    private String dbPass;
 
-    public static void export(Component owner, String filePath) throws IOException, InterruptedException {
+    public void export(Component owner, String filePath){
 
 	JFileChooser fc = new JFileChooser();
 	fc.setSelectedFile(new File(filePath+"_backup.sql"));
@@ -34,26 +43,25 @@ public class DatabaseUtils {
 	    executeCmd = "mysqldump -u " + dbUser + " -p" + dbPass + "  " + dbName + " -r "+file.getPath();
 
 	    Process runtimeProcess;
-	    runtimeProcess = Runtime.getRuntime().exec(executeCmd);
-	    int processComplete = runtimeProcess.waitFor();
-	    if (processComplete == 0) {
-		
-		MessageUtils.showInfoMessage(owner, "Backup taken successfully");
+	    
+	    int processComplete;
+	    try {
+		runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+		processComplete = runtimeProcess.waitFor();
+		 if (processComplete == 0) {
+			
+			MessageUtils.showInfoMessage(owner, "Backup taken successfully");
 
-	    } else {
-		MessageUtils.showErrorMessage(owner, "Could not take mysql backup");
+		    } else {
+			MessageUtils.showErrorMessage(owner, "Could not take mysql backup");
 
+		    }
+	    } catch (InterruptedException | IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
+	   
 	}
     }
 
-    public static void main(String[] args) {
-	LocalDateTime dateTime = LocalDateTime.now();
-	String format = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-	try {
-	    DatabaseUtils.export(null, format);
-	} catch (IOException | InterruptedException e) {
-	    e.printStackTrace();
-	}
-    }
 }

@@ -1,9 +1,13 @@
 package com.aizong.ishtirak.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
@@ -30,6 +34,10 @@ public class Contract extends BaseEntity {
 
     @Column(name = "engine_id")
     private long engineId;
+    
+    @Column(name = "closed_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date closeDate;
 
     @Embedded
     private Address address;
@@ -85,6 +93,14 @@ public class Contract extends BaseEntity {
     @Override
     public String toString() {
 	return contractUniqueCode;
+    }
+
+    public Date getCloseDate() {
+	return closeDate;
+    }
+
+    public void setCloseDate(Date closeDate) {
+	this.closeDate = closeDate;
     }
 
 }

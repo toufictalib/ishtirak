@@ -97,7 +97,7 @@ public class ContractSwitchingForm extends ContractForm {
 	newContract.setEngineId(contract.getEngineId());
 	newContract.setSubscriberId(subscriberId);
 
-	ServiceProvider.get().getSubscriberService().saveAndDeactivateContact(newContract, txtSettelementFees.getValue(), oldContractId);
+	ServiceProvider.get().getSubscriberService().switchSubscription(newContract, txtSettelementFees.getValue(), oldContractId);
 	closeWindow();
 
     }

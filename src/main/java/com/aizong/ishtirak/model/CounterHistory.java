@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,6 +28,7 @@ public class CounterHistory implements Serializable {
     protected Long id;
 
     @Column(name = "insert_date")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date insertDate;
 
     @Column(name = "update_date")

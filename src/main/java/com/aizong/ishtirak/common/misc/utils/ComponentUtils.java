@@ -56,8 +56,14 @@ public class ComponentUtils {
     {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         
-        int width = (int) (screenSize.width*widthPercentage/100);
-        int height = (int) (screenSize.height*heightPercentage/100);
+        int w = screenSize.width;
+        int h = screenSize.height;
+        
+        w = (int) (w*0.9);
+        h = (int) (h*0.9);
+        
+        int width = (int) (w*widthPercentage/100);
+        int height = (int) (h*heightPercentage/100);
         return new Dimension(width, height);
     }
     

@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -23,16 +25,19 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 
+import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
-import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
+import com.aizong.ishtirak.gui.DatabaseUtils;
 import com.aizong.ishtirak.gui.ImportButtonsPanel;
 import com.aizong.ishtirak.gui.SummaryTablePanel;
 import com.aizong.ishtirak.gui.form.CompanyForm;
@@ -93,8 +98,21 @@ public class MainFrame extends JFrame {
 
 	JButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
 	btnSubscriberManagement.addActionListener(e -> {
-	    SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand());
-	    openWindow(e.getActionCommand(), subscriberFilterTable);
+	    ProgressBar.execute(new ProgressBarListener<ReportTableModel>() {
+
+		    @Override
+		    public ReportTableModel onBackground() throws Exception {
+			return ServiceProvider.get().getReportServiceImpl().getSubscribers();
+		    }
+
+		    @Override
+		    public void onDone(ReportTableModel response) {
+			 SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand(),response);
+			    openWindow(e.getActionCommand(), subscriberFilterTable);
+		    }}
+		    ,MainFrame.this);
+	    System.out.println("Finish Loading on Done");
+	   
 	});
 
 	JButton btnEngineManagement = button("إدارة المولدات", "engine.png");
@@ -234,11 +252,25 @@ public class MainFrame extends JFrame {
 	
 	JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	
-	JButton btnClose = ButtonFactory.createBtnClose();
+	JButton btnClose = MainFrame.button(message("close"), "close.png");
+	btnClose.setPreferredSize(new Dimension(150,btnClose.getPreferredSize().height));
+	btnClose.setHorizontalAlignment(SwingConstants.CENTER);
 	btnClose.addActionListener(e->{
 	    MainFrame.this.dispose();
 	});
+	
+	JButton btnExportDatabase = MainFrame.button(message("export.db.message"), "backup.png");
+	btnExportDatabase.setPreferredSize(new Dimension(150,btnExportDatabase.getPreferredSize().height));
+	btnExportDatabase.setHorizontalAlignment(SwingConstants.CENTER);
+	btnExportDatabase.addActionListener(e->{
+	    LocalDateTime dateTime = LocalDateTime.now();
+	    String format = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	    new DatabaseUtils().export(null, format);
+	});
+	
 	closePanel.add(btnClose);
+	closePanel.add(btnExportDatabase);
+	
 	mainBuilder.append(closePanel,mainBuilder.getColumnCount());
 	mainBuilder.appendSeparator();
 	mainBuilder.append(createTopPanel());
@@ -314,7 +346,7 @@ public class MainFrame extends JFrame {
     
     public static JDialog openWindow(Window owner, String text, JPanel component) {
 	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
-	    component.setPreferredSize(ComponentUtils.getDimension(90, 70));
+	    component.setPreferredSize(ComponentUtils.getDimension(90, 85));
 	}
 	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
 
@@ -333,7 +365,7 @@ public class MainFrame extends JFrame {
     }
     
     public static JDialog openFullWindow(Window owner, String text, JPanel component) {
-   	component.setPreferredSize(ComponentUtils.getDimension(90, 90));
+   	component.setPreferredSize(ComponentUtils.getDimension(100, 95));
    	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
    	return createDialog;
        }

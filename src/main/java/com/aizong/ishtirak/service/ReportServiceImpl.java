@@ -246,7 +246,7 @@ public class ReportServiceImpl implements ReportService {
 	    }
 	}
 	String[] cols = { "maintenanceId", "withdrawerName", "withdrawerLastName", "amount", "description",
-		"maintenanceType", "insertDate" };
+		 "insertDate" };
 
 	Class<?>[] clazzes = { Long.class, String.class, String.class, Double.class, String.class, String.class,
 		Date.class };
@@ -304,7 +304,7 @@ public class ReportServiceImpl implements ReportService {
     public ReportTableModel getActiveIshtirakInfo(List<Long> contractIds) {
 	List<Object[]> rows = reportDao.getActiveIshtirakInfo(contractIds);
 
-	String[] cols = { "codeId", "name", "lastName", "village", "mainPhone", "contract_unique_code", "subscriptionBundle", "engine" };
+	String[] cols = { "contract_unique_code", "name", "lastName", "village", "mainPhone",  "subscriptionBundle", "engine" };
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);

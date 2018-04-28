@@ -1,5 +1,6 @@
 package com.aizong.ishtirak.gui.table;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.FlowLayout;
@@ -10,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Date;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -34,7 +36,6 @@ import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
-import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
@@ -42,7 +43,6 @@ import com.aizong.ishtirak.common.misc.utils.TableUtils;
 import com.aizong.ishtirak.common.misc.utils.reporting.ReportUtils;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
 
 import net.coderazzi.filters.gui.AutoChoices;
 import net.coderazzi.filters.gui.TableFilterHeader;
@@ -79,14 +79,18 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	initComponents();
 	fillTable();
 
-	DefaultFormBuilder buidler = new DefaultFormBuilder(new FormLayout("fill:p:grow", "p,p,p"), this);
-	buidler.append(initUI());
-	buidler.appendSeparator();
-
+	
+	DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow", "fill:p:grow,p,p");
+	builder.append(initUI());
+	builder.appendSeparator();
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	panel.add(btnExportExcel);
 	panel.add(btnPrint);
-	buidler.append(panel);
+	panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+	
+	builder.append(panel);
+	add(builder.getPanel(),BorderLayout.CENTER);
+	
     }
 
     private void initComponents() {
@@ -207,7 +211,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
     private boolean showTotal() {
 	int totalTargetedColumn = getTotalTargetedColumn();
-	if(totalTargetedColumn<0 || totalTargetedColumn >=table.getColumnCount()) {
+	if(totalTargetedColumn<0 || table.getColumnCount()==0 || totalTargetedColumn >=table.getColumnCount()) {
 	    System.out.println("Total not added");
 	    return false;
 	}

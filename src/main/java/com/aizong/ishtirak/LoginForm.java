@@ -55,14 +55,17 @@ public class LoginForm extends BasicForm {
     @Override
     protected void initComponents() {
 	txtUserName = new JTextField();
+	txtUserName.setText("manager");
 	txtPassword = new JPasswordField();
+	txtPassword.setText("manager");
 
     }
 
+    JButton btnLogin;
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
 	
-	JButton btnLogin = new JButton(message("login"), ImageUtils.getLoginIcon());
+	btnLogin = new JButton(message("login"), ImageUtils.getLoginIcon());
 	btnLogin.addActionListener(e -> {
 
 	    Optional<List<String>> validateInputs = validateInputs();
@@ -156,6 +159,7 @@ public class LoginForm extends BasicForm {
 	   createDialog.addWindowListener( new WindowAdapter() {
 	       public void windowOpened( WindowEvent e ){
 	           txtUserName.requestFocus();
+	           btnLogin.doClick();
 	       }
 	   }); 
 	   

@@ -2,7 +2,9 @@ package com.aizong.ishtirak.gui.table;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Window;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
@@ -22,9 +24,12 @@ import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.form.ContractForm;
@@ -40,8 +45,12 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 @SuppressWarnings("serial")
 public class SubscriberFilterTable extends CommonFilterTable {
 
-    public SubscriberFilterTable(String title) {
-	super(title, new MyTableListener() {
+    private ReportTableModel reportTableModel;
+
+    //stop initialize on start
+    
+    public SubscriberFilterTable(String title, ReportTableModel reportTableModel) {
+	super(title, false,new MyTableListener() {
 
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
@@ -95,12 +104,14 @@ public class SubscriberFilterTable extends CommonFilterTable {
 		MessageUtils.showWarningMessage(owner, message("delete.forbidden"));
 	    }
 	});
+	this.reportTableModel = reportTableModel;
+	this.start();
     }
 
     @Override
     public ReportTableModel getReportTableModel() {
-	
-	return ServiceProvider.get().getReportServiceImpl().getSubscribers();
+
+	return reportTableModel;
     }
 
     @Override
@@ -109,6 +120,10 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	JButton btnAddContract = createAddContractBtn(message("subscription.form.add"));
 
 	JButton btnEditContract = createEditContractBtn(message("subscription.form.edit"), Mode.UPDATE, false);
+
+	JButton btnStopContract = ButtonFactory.button(message("subscription.form.stop"),
+		ImageHelperCustom.get().getImageIcon("stop.png"));
+	btnStopContract.addActionListener(createStopContractBtn());
 
 	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"), Mode.VIEW, false);
 
@@ -126,6 +141,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	JPanel panel = new JPanel();
 	panel.add(btnAddContract);
 	panel.add(btnEditContract);
+	panel.add(btnStopContract);
 	panel.add(btnSwitchContract);
 	panel.add(btnViewContract);
 	panel.add(btnHistoryontract);
@@ -147,6 +163,82 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	builder.append(txtRowCount);
 
 	return builder.getPanel();
+    }
+
+    private ActionListener createStopContractBtn() {
+	return e -> {
+	    Optional<Long> selectedRowId = getSelectedRowId();
+	    if (selectedRowId.isPresent()) {
+		Long id = selectedRowId.get();
+		List<Contract> contracts = ServiceProvider.get().getSubscriberService()
+			.getActiveContractBySubscriberId(id);
+
+		if (contracts == null || contracts.isEmpty()) {
+		    MessageUtils.showInfoMessage(getOwner(), message("subscriber.noSubscription"));
+		    return;
+		}
+		if (contracts.size() > 1) {
+		    JPanel panel = new JPanel(new BorderLayout());
+		    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		    ExCombo<Contract> combo = new ExCombo<>(true, contracts);
+		    panel.add(combo, BorderLayout.PAGE_START);
+
+		    JButton btnApply = ButtonFactory.button(message("subscription.form.stop"),
+			    ImageHelperCustom.get().getImageIcon("stop.png"));
+		    JButton btnClose = ButtonFactory.createBtnClose();
+
+		    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		    buttonPanel.add(btnApply);
+		    buttonPanel.add(btnClose);
+		    panel.add(buttonPanel, BorderLayout.PAGE_END);
+
+		    btnApply.addActionListener(e1 -> {
+
+			if (combo.getValue() == null) {
+			    MessageUtils.showWarningMessage(SubscriberFilterTable.this,
+				    message("contract.close.missing"));
+			    return;
+			}
+
+			boolean ok = MessageUtils.showConfirmationMessage(SubscriberFilterTable.this,
+				message("contract.close.confirmation"));
+			if (ok) {
+
+			    ProgressBar.execute(new ProgressBarListener<Void>() {
+
+				@Override
+				public Void onBackground() throws Exception {
+				    if (selectedRowId.isPresent()) {
+					ServiceProvider.get().getSubscriberService()
+						.closeSubscription(combo.getValue().getId());
+				    }
+
+				    return null;
+				}
+
+				@Override
+				public void onDone(Void response) {
+				    btnClose.doClick();
+				    MessageUtils.showInfoMessage(SubscriberFilterTable.this, message("contract.close"));
+
+				}
+			    }, SubscriberFilterTable.this);
+			}
+
+		    });
+
+		    JDialog createDialog = WindowUtils.createDialog(getOwner(), title, panel);
+		    btnClose.addActionListener(v -> createDialog.dispose());
+
+		} else {
+		    boolean ok = MessageUtils.showConfirmationMessage(SubscriberFilterTable.this,
+			    message("contract.close.confirmation"));
+		    if (ok) {
+			ServiceProvider.get().getSubscriberService().closeSubscription(contracts.get(0).getId());
+		    }
+		}
+	    }
+	};
     }
 
     private JButton createAddContractBtn(String title) {
@@ -264,7 +356,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
     }
 
     private JButton createContractHistoryBtn(String title) {
-	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> MainFrame.openWindow(getOwner(), title, new SubscriptionHistoryTablePanel(title, subscriber.getId())));
+	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> MainFrame.openWindow(getOwner(),
+		title, new SubscriptionHistoryTablePanel(title, subscriber.getId())));
     }
 
     private JButton showCounterHistory(String title) {
@@ -294,5 +387,9 @@ public class SubscriberFilterTable extends CommonFilterTable {
     @Override
     protected String getAddTooltip() {
 	return message(message("subscriber.form.add"));
+    }
+    
+    protected void fillTable() {
+	reloadTable();
     }
 }

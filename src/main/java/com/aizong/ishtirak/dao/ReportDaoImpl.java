@@ -85,7 +85,7 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Object[]> getOutExpenses(Date startDate, Date endDate) {
-	String sql = "select m.id, e.name 'Employee Name',e.last_name 'Employee Last Name', m.amount, m.description,m.maintenace_type,m.insert_date "
+	String sql = "select m.id, e.name 'Employee Name',e.last_name 'Employee Last Name', m.amount, m.description,m.insert_date "
 		+ "from out_expenses_log m "
 		+ "left join employee e on e.id = m.employee "
 		+ "where m.insert_date >=:startDate and m.insert_date <=:endDate order by m.insert_date desc";
@@ -96,7 +96,6 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	addScalar("Employee Last Name",StandardBasicTypes.STRING).
 	addScalar("amount",StandardBasicTypes.DOUBLE).
 	addScalar("description",StandardBasicTypes.STRING).
-	addScalar("maintenace_type",StandardBasicTypes.STRING).
 	addScalar("insert_date",StandardBasicTypes.DATE);
 	return createSQLQuery.list();
     }
@@ -133,12 +132,11 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     @Override
     public List<Object[]> getActiveIshtirakInfo(List<Long> contractIds){
 	String sql = "SELECT " + 
-		"    c.id,\n" + 
+		"    c.contract_unique_code,\n" + 
 		"    s.name,\n" + 
 		"    s.last_name,\n" + 
 		"    v.name 'Village',\n" + 
 		"    si.main_phone,\n" + 
-		"    c.contract_unique_code,\n" + 
 		"    b.name 'Bundle',\n" + 
 		"    e.name 'Engine'\n" + 
 		"FROM\n" + 
@@ -153,13 +151,15 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 		"        AND si.id_village = v.id\n" + 
 		"        AND c.bundle_id = b.id\n" + 
 		"        AND c.engine_id = e.id\n" + 
-		"        AND c.is_active\n" + 
-		"";
+		"        AND c.is_active\n";
+		
 	
 	if(!contractIds.isEmpty()) {
 	    sql+= " AND c.id in ({0})";
 	    sql = MessageFormat.format(sql, contractIds.stream().map(e->String.valueOf(e)).collect(Collectors.joining(",")));
 	}
+	
+	sql+= "	 ORDER BY LENGTH(contract_unique_code),c.contract_unique_code";
 	
 	return toList(sql);
 	
@@ -193,7 +193,8 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 		"        FROM\n" + 
 		"            transaction t\n" + 
 		"        WHERE\n" + 
-		"            t.transaction_type <> 'SETTELMENT_FEES' and t.insert_date >= :startDate and t.insert_date <= :endDate);";
+		"            t.transaction_type <> 'SETTELMENT_FEES' and t.insert_date >= :startDate and t.insert_date <= :endDate) "
+		+ "	 ORDER BY LENGTH(contract_unique_code),c.contract_unique_code";;
 	NativeQuery<Long> createSQLQuery = getsession().createNativeQuery(sql);
 	createSQLQuery.addScalar("id",StandardBasicTypes.LONG);
 	createSQLQuery.setParameter("startDate", startDate).setParameter("endDate", endDate);

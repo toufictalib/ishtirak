@@ -39,7 +39,7 @@ public class ExpensesReportButtonsPanel extends BasicForm {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 		    ExpensesTablePanel expensesTablePanel = new ExpensesTablePanel(e.getActionCommand(), expensesType);
-		    expensesTablePanel.setPreferredSize(ComponentUtils.getDimension(90, 83));
+		    expensesTablePanel.setPreferredSize(ComponentUtils.getDimension(90, 85));
 			 WindowUtils.createDialog(ExpensesReportButtonsPanel.this.getOwner(), e.getActionCommand(),expensesTablePanel);
 		}
 	    });

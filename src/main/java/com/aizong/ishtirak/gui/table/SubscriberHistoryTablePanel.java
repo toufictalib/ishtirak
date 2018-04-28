@@ -106,6 +106,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	panel.add(new JLabel(message("contract_unique_code")));
 	panel.add(txtCounterId);
 	panel.add(cbAll);
+	panel.add(new JLabel(" | "));
 	panel.add(new JLabel(message("paid")));
 	panel.add(comboPaid);
 	panel.add(btnSearch);
