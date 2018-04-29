@@ -78,7 +78,7 @@ public class ProgressBar<T> extends JPanel implements PropertyChangeListener
 			{
 				Toolkit.getDefaultToolkit().beep();
 				setCursor(null); // turn off the wait cursor
-				dialog.dispose();
+				
 				if (get().isSuccess())
 				{
 					listener.onDone(get().value);
@@ -92,6 +92,8 @@ public class ProgressBar<T> extends JPanel implements PropertyChangeListener
 			catch (ExecutionException ex)
 			{
 				Logger.getLogger(ProgressBar.class.getName()).log(Level.SEVERE, null, ex);
+			}finally {
+			    dialog.dispose();
 			}
 		}
 

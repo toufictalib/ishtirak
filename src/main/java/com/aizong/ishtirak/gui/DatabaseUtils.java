@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
+import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 
 public class DatabaseUtils {
     
@@ -21,6 +22,9 @@ public class DatabaseUtils {
     @Value("${spring.datasource.password}")
     private String dbPass;
 
+    @Value("${mysqldump.path}")
+    private String mysqldumpPath;
+    
     public void export(Component owner, String filePath){
 
 	JFileChooser fc = new JFileChooser();
@@ -40,7 +44,7 @@ public class DatabaseUtils {
 	    // Execute Shell Command
 	    /***********************************************************/
 	    String executeCmd = "";
-	    executeCmd = "mysqldump -u " + dbUser + " -p" + dbPass + "  " + dbName + " -r "+file.getPath();
+	    executeCmd = ((mysqldumpPath==null || mysqldumpPath.isEmpty()) ? "" :mysqldumpPath)+"mysqldump -u " + dbUser + " -p" + dbPass + "  " + dbName + " -r "+file.getPath();
 
 	    Process runtimeProcess;
 	    
@@ -50,10 +54,10 @@ public class DatabaseUtils {
 		processComplete = runtimeProcess.waitFor();
 		 if (processComplete == 0) {
 			
-			MessageUtils.showInfoMessage(owner, "Backup taken successfully");
+			MessageUtils.showInfoMessage(owner, ServiceProvider.get().getMessage().getMessage("backup.success"));
 
 		    } else {
-			MessageUtils.showErrorMessage(owner, "Could not take mysql backup");
+			MessageUtils.showErrorMessage(owner, ServiceProvider.get().getMessage().getMessage("backup.failure"));
 
 		    }
 	    } catch (InterruptedException | IOException e) {

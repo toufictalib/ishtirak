@@ -111,7 +111,6 @@ public class MainFrame extends JFrame {
 			    openWindow(e.getActionCommand(), subscriberFilterTable);
 		    }}
 		    ,MainFrame.this);
-	    System.out.println("Finish Loading on Done");
 	   
 	});
 
@@ -346,7 +345,7 @@ public class MainFrame extends JFrame {
     
     public static JDialog openWindow(Window owner, String text, JPanel component) {
 	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
-	    component.setPreferredSize(ComponentUtils.getDimension(90, 85));
+	    component.setPreferredSize(ComponentUtils.getDimension(90, 89));
 	}
 	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
 
