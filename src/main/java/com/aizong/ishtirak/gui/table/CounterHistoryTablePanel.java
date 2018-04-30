@@ -1,7 +1,6 @@
 package com.aizong.ishtirak.gui.table;
 
 import java.awt.FlowLayout;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -23,8 +22,7 @@ public class CounterHistoryTablePanel extends ReportTablePanel {
     private Long subscriberId;
     
     public CounterHistoryTablePanel(String title, Long subscriberId) {
-	super();
-	this.title = title;
+	super(title,null);
 	this.subscriberId = subscriberId;
 	start();
     }
@@ -72,9 +70,5 @@ public class CounterHistoryTablePanel extends ReportTablePanel {
 	return builder.getPanel();
     };
 
-    @Override
-    public ReportTableModel getReportTableModel() {
-	return new ReportTableModel(new String[] {}, new ArrayList<Object[]>(), new Class[] {});
-    }
 
 }

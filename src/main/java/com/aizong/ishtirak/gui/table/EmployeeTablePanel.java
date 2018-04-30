@@ -25,8 +25,7 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 public class EmployeeTablePanel extends ReportTablePanel {
 
     public EmployeeTablePanel(String title) {
-	super();
-	this.title = title;
+	super(title, null);
 	start();
     }
 
@@ -79,11 +78,6 @@ public class EmployeeTablePanel extends ReportTablePanel {
 	return builder.getPanel();
     };
 
-    @Override
-    public ReportTableModel getReportTableModel() {
-	return null;
-    }
-    
     @Override
     protected int getTotalTargetedColumn() {
         return 4;

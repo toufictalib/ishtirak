@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.aizong.ishtirak.MainFrame;
@@ -66,8 +67,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
     private JButton btnSearch;
 
     public SubscriberHistoryTablePanel(String title) {
-	super();
-	this.title = title;
+	super(title, null);
 	start();
     }
 
@@ -78,6 +78,8 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
     
     @Override
     protected JPanel initUI() {
+	
+	table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
 	searchMonthPanel = SearchMonthPanel.createDefault(dateRange.getStartDate(), dateRange.getStartDate());
@@ -161,12 +163,12 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	return l -> {
 
 	    
-	    Optional<Long> transactionId = getSelectedRowId(false);
+	    Optional<List<Long>> transactionId = getSelectedRowsId(false);
 	    
 	    List<Long> selectedTransactions = new ArrayList<>();
 	    if (!all) {
 		if(transactionId.isPresent()) {
-		    selectedTransactions.add(transactionId.get());
+		    selectedTransactions.addAll(transactionId.get());
 		}else {
 		    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("table.row.select.missing"));
 			return;
@@ -430,11 +432,6 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	};
     };
 
-    @Override
-    public ReportTableModel getReportTableModel() {
-	return null;
-    }
-
     public void warnNoSelectedRow() {
 	MessageUtils.showInfoMessage(getOwner(), message("table.row.select.missing"));
     }
@@ -443,12 +440,39 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	return getSelectedRowId(true);
     }
     protected Optional<Long> getSelectedRowId(boolean warn) {
+	
+	if(table.getSelectedRows().length>1) {
+	    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("choose.single"));
+	    return Optional.empty();
+	}
 	int selectedRow = table.getSelectedRow();
 	if (selectedRow >= 0) {
 	    Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
 	    if (valueAt instanceof Long) {
 		return Optional.of((Long) valueAt);
 	    }
+	} else {
+	    if (warn) {
+		warnNoSelectedRow();
+	    }
+	}
+	return Optional.empty();
+    }
+    
+    protected Optional<List<Long>> getSelectedRowsId(boolean warn) {
+	int[] selectedRows = table.getSelectedRows();
+	if (selectedRows.length > 0) {
+	    Arrays.sort(selectedRows);
+
+	    List<Long> modelSelectedRow = new ArrayList<>();
+	    for (int selectedRow : selectedRows) {
+		Object valueAt = table.getModel().getValueAt(table.convertRowIndexToModel(selectedRow), 0);
+		if (valueAt instanceof Long) {
+		    modelSelectedRow.add((Long) valueAt);
+		}
+	    }
+
+	    return modelSelectedRow.isEmpty() ? Optional.empty() : Optional.of(modelSelectedRow);
 	} else {
 	    if (warn) {
 		warnNoSelectedRow();

@@ -252,14 +252,14 @@ public class MainFrame extends JFrame {
 	JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	
 	JButton btnClose = MainFrame.button(message("close"), "close.png");
-	btnClose.setPreferredSize(new Dimension(150,btnClose.getPreferredSize().height));
+	btnClose.setPreferredSize(new Dimension(200,btnClose.getPreferredSize().height));
 	btnClose.setHorizontalAlignment(SwingConstants.CENTER);
 	btnClose.addActionListener(e->{
 	    MainFrame.this.dispose();
 	});
 	
 	JButton btnExportDatabase = MainFrame.button(message("export.db.message"), "backup.png");
-	btnExportDatabase.setPreferredSize(new Dimension(150,btnExportDatabase.getPreferredSize().height));
+	btnExportDatabase.setPreferredSize(new Dimension(200,btnExportDatabase.getPreferredSize().height));
 	btnExportDatabase.setHorizontalAlignment(SwingConstants.CENTER);
 	btnExportDatabase.addActionListener(e->{
 	    LocalDateTime dateTime = LocalDateTime.now();
@@ -297,7 +297,7 @@ public class MainFrame extends JFrame {
 	JPanel jPanel = new JPanel(new GridLayout(5, 1, 15, 15));
 
 	jPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.black), title));
-	jPanel.setPreferredSize(new Dimension(250, 400));
+	jPanel.setPreferredSize(new Dimension(275, 400));
 	return jPanel;
     }
 
@@ -345,7 +345,7 @@ public class MainFrame extends JFrame {
     
     public static JDialog openWindow(Window owner, String text, JPanel component) {
 	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
-	    component.setPreferredSize(ComponentUtils.getDimension(90, 89));
+	    component.setPreferredSize(ComponentUtils.getDimension(90, 90));
 	}
 	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
 
@@ -383,6 +383,7 @@ public class MainFrame extends JFrame {
 	btn.setHorizontalAlignment(SwingConstants.RIGHT);
 	btn.setButtonStyle(JideButton.TOOLBOX_STYLE);
 	btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	btn.setFont(LoginForm.getJideCustomFont());
 	return btn;
     }
     

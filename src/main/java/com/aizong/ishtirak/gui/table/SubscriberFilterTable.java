@@ -3,6 +3,7 @@ package com.aizong.ishtirak.gui.table;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -138,7 +139,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 		Mode.VIEW);
 
 	JButton btnHistoryCounter = showCounterHistory(message("counter.form.histroy"));
-	JPanel panel = new JPanel();
+	JPanel panel = new JPanel(new GridLayout(2, 7));
 	panel.add(btnAddContract);
 	panel.add(btnEditContract);
 	panel.add(btnStopContract);

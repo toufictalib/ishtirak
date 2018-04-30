@@ -24,6 +24,6 @@ WHERE
     v.id = c.id_village and
     t.insert_date >= "{0}" and
     t.insert_date <= "{1}"
-    ORDER by c.contract_unique_code
+    ORDER by  LENGTH(c.contract_unique_code),c.contract_unique_code
     
     

@@ -50,8 +50,8 @@ import net.coderazzi.filters.gui.TableFilterHeader;
 @SuppressWarnings("serial")
 public abstract class ReportTablePanel extends BasicPanel implements RefreshTableInterface {
 
-    private final static Logger LOG =Logger.getLogger(ReportTablePanel.class.getSimpleName());
-    
+    private final static Logger LOG = Logger.getLogger(ReportTablePanel.class.getSimpleName());
+
     protected JTable table;
     protected TableModel model;
     protected TableRowSorter<TableModel> sorter;
@@ -63,23 +63,27 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     protected JButton btnPrint;
 
     private TableFilterHeader filterHeader;
+    
+    private final ReportTableModel reportTableModel;
 
-    public ReportTablePanel() {
-	super();
-    }
-
-    public ReportTablePanel(String title) {
-	super();
+   
+    public ReportTablePanel(String title, ReportTableModel reportTableModel, boolean init) {
 	this.title = title;
-	start();
-
+	this.reportTableModel = reportTableModel;
+	if(init) {
+	    start();
+	}
+	
+    }
+    public ReportTablePanel(String title, ReportTableModel reportTableModel) {
+	this(title, reportTableModel, true);
+	
     }
 
     protected void start() {
 	initComponents();
 	fillTable();
 
-	
 	DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow", "fill:p:grow,p,p");
 	builder.append(initUI());
 	builder.appendSeparator();
@@ -87,10 +91,10 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	panel.add(btnExportExcel);
 	panel.add(btnPrint);
 	panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-	
+
 	builder.append(panel);
-	add(builder.getPanel(),BorderLayout.CENTER);
-	
+	add(builder.getPanel(), BorderLayout.CENTER);
+
     }
 
     private void initComponents() {
@@ -105,7 +109,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 		return comp;
 	    }
 	};
-	//table.setPreferredScrollableViewportSize(table.getPreferredSize());
+	// table.setPreferredScrollableViewportSize(table.getPreferredSize());
 
 	table.setRowHeight(50);
 	table.setFillsViewportHeight(true);
@@ -126,7 +130,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
 	    }
 	});
-	
+
 	JTableHeader header = table.getTableHeader();
 	header.setDefaultRenderer(new HeaderRenderer(table));
 
@@ -204,14 +208,14 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	builder.append(txtRowCount, 3);
 
 	if (showTotal()) {
-	    builder.append(txtTotal,3);
+	    builder.append(txtTotal, 3);
 	}
 	return builder.getPanel();
     }
 
     private boolean showTotal() {
 	int totalTargetedColumn = getTotalTargetedColumn();
-	if(totalTargetedColumn<0 || table.getColumnCount()==0 || totalTargetedColumn >=table.getColumnCount()) {
+	if (totalTargetedColumn < 0 || table.getColumnCount() == 0 || totalTargetedColumn >= table.getColumnCount()) {
 	    System.out.println("Total not added");
 	    return false;
 	}
@@ -221,39 +225,37 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
     protected int getTotalTargetedColumn() {
 	return -1;
     }
-    
+
     private void fillTable() {
-	ReportTableModel reportTableModel = getReportTableModel();
-        fillTable(reportTableModel);
+	fillTable(reportTableModel);
 	sumAmount(table);
     }
 
     protected void fillTable(ReportTableModel reportTableModel) {
-	
-	
-	if(reportTableModel!=null) {
-	String[] columns = reportTableModel.getCols();
 
-	Object[] internalisationCols = new Object[reportTableModel.getCols().length];
-	for (int i = 0; i < columns.length; i++) {
-	    internalisationCols[i] = message.getMessage(columns[i]);
-	}
+	if (reportTableModel != null) {
+	    String[] columns = reportTableModel.getCols();
 
-	model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
-	    @Override
-	    public boolean isCellEditable(int arg0, int arg1) {
-		return false;
+	    Object[] internalisationCols = new Object[reportTableModel.getCols().length];
+	    for (int i = 0; i < columns.length; i++) {
+		internalisationCols[i] = message.getMessage(columns[i]);
 	    }
 
-	    @Override
-	    public Class<?> getColumnClass(int arg0) {
-		if (reportTableModel.getClazzes().length == columns.length) {
-		    return reportTableModel.getClazzes()[arg0];
+	    model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
+		@Override
+		public boolean isCellEditable(int arg0, int arg1) {
+		    return false;
 		}
-		return super.getColumnClass(arg0);
-	    }
-	};
-	}else {
+
+		@Override
+		public Class<?> getColumnClass(int arg0) {
+		    if (reportTableModel.getClazzes().length == columns.length) {
+			return reportTableModel.getClazzes()[arg0];
+		    }
+		    return super.getColumnClass(arg0);
+		}
+	    };
+	} else {
 	    model = new DefaultTableModel(5, 6);
 	}
 
@@ -265,15 +267,14 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	applyRenderer();
 
 	TableUtils.resizeColumnWidth(table);
-	
 
 	filterHeader.updateUI();
 	filterHeader.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     }
 
     private void sumAmount(JTable table) {
-	
-	if(!showTotal()) {
+
+	if (!showTotal()) {
 	    return;
 	}
 	int colToSum = getTotalTargetedColumn();
@@ -284,7 +285,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 		double value = Double.valueOf(table.getValueAt(i, colToSum).toString());
 		total += value;
 	    } catch (Exception e) {
-		LOG.warn(ReportTablePanel.class.getSimpleName()+" sum total error: "+e.getMessage());
+		LOG.warn(ReportTablePanel.class.getSimpleName() + " sum total error: " + e.getMessage());
 	    }
 
 	}
@@ -318,6 +319,5 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 
     }
 
-    public abstract ReportTableModel getReportTableModel();
 
 }

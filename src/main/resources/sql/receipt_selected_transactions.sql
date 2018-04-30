@@ -1,7 +1,7 @@
 SELECT 
 	t.id,
     c.contract_unique_code, 
-    CONCAT(s.name, " ", s.last_name) "Full Name",
+    s.name "Full Name",
     t.amount,
     t.is_paid,
     t.transaction_type,
@@ -32,5 +32,5 @@ WHERE
     t.transaction_type in("MONTHLY_PAYMENT","COUNTER_PAYMENT")
     and t.id in ({2})
     and c.is_active = 1
-    ORDER by c.contract_unique_code
+    ORDER by LENGTH(c.contract_unique_code),c.contract_unique_code
     

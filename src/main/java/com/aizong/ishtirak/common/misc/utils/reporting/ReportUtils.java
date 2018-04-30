@@ -34,7 +34,7 @@ public class ReportUtils {
 	XSSFWorkbook wb = new XSSFWorkbook();
 	Sheet sheet = wb.createSheet(title); // WorkSheet
 	sheet.setRightToLeft(LoginForm.isRtl());
-	Row row = sheet.createRow(2); // Row created at line 3
+	Row row = sheet.createRow(1); // Row created at line 3
 
 	Row headerRow = sheet.createRow(0); // Create row at line 0
 	for (int headings = 0; headings < model.getColumnCount(); headings++) { // For
@@ -56,8 +56,17 @@ public class ReportUtils {
 	    }
 
 	    // Set the row to the next one in the sequence
-	    row = sheet.createRow((rows + 3));
+	    row = sheet.createRow((rows + 2));
 	}
+	
+	try {
+	    for (int i = 0; i < model.getColumnCount(); i++) {
+		sheet.autoSizeColumn(i);
+	    }
+	} catch (Exception e) {
+	    // TODO: handle exception
+	}
+	
 	wb.write(new FileOutputStream(file));// Save the file
     }
 

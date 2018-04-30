@@ -23,8 +23,7 @@ public class ExpensesTablePanel extends ReportTablePanel {
     private ExpensesType expensesType;
     
     public ExpensesTablePanel(String title, ExpensesType expensesType) {
-	super();
-	this.title = title;
+	super(title, null);
 	this.expensesType = expensesType;
 	start();
     }
@@ -78,9 +77,5 @@ public class ExpensesTablePanel extends ReportTablePanel {
 	return builder.getPanel();
     };
 
-    @Override
-    public ReportTableModel getReportTableModel() {
-	return null;
-    }
 
 }

@@ -61,7 +61,7 @@ public class LoginForm extends BasicForm {
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
-	
+
 	JButton btnLogin = new JButton(message("login"), ImageUtils.getLoginIcon());
 	btnLogin.addActionListener(e -> {
 
@@ -70,16 +70,16 @@ public class LoginForm extends BasicForm {
 		MessageUtils.showWarningMessage(getOwner(), String.join("\n", validateInputs.get()));
 		return;
 	    }
-	    
+
 	    boolean login = false;
 	    try {
 		login = ServiceProvider.get().getSubscriberService().login(txtUserName.getText(),
-			    txtPassword.getPassword());
-	    }catch (Exception e1) {
-		MessageUtils.showErrorMessage(LoginForm.this,"خطأ في اسم المستخدم أو كلمة السر");
+			txtPassword.getPassword());
+	    } catch (Exception e1) {
+		MessageUtils.showErrorMessage(LoginForm.this, "خطأ في اسم المستخدم أو كلمة السر");
 		return;
 	    }
-	    
+
 	    if (login) {
 		closeWindow();
 		MainFrame mainFrame = new MainFrame();
@@ -123,7 +123,7 @@ public class LoginForm extends BasicForm {
     }
 
     void onStart() {
-	BasicPanel.message=  message;
+	BasicPanel.message = message;
 	EventQueue.invokeLater(() -> {
 
 	    try {
@@ -131,15 +131,16 @@ public class LoginForm extends BasicForm {
 		    if ("Nimbus".equals(info.getName())) {
 			UIManager.setLookAndFeel(info.getClassName());
 
-			
-
 			Enumeration<Object> keys = UIManager.getDefaults().keys();
 			while (keys.hasMoreElements()) {
 			    Object key = keys.nextElement();
 			    Object value = UIManager.get(key);
 			    if (value instanceof Font) {
-				UIManager.put(key, new Font("Arial", Font.PLAIN, 20));
-				System.out.println(key);
+				if (key.toString().equals("Table.font")) {
+				    UIManager.put("Table.font", getCustomFont(18));
+				} else {
+				    UIManager.put(key,new Font("Tahoma", Font.PLAIN, 14));
+				}
 			    }
 			}
 			break;
@@ -151,37 +152,45 @@ public class LoginForm extends BasicForm {
 		e1.printStackTrace();
 	    }
 	    LoginForm.this.startGui();
-	    LoginForm.this.setBackground(UIManager.getColor ("Panel.background"));
-	   JDialog createDialog = WindowUtils.createDialog(null, message.getMessage("login.form.title"), LoginForm.this);
-	   createDialog.setIconImage(ImageUtils.getFrameIcon().getImage());
-	   createDialog.addWindowListener( new WindowAdapter() {
-	       public void windowOpened( WindowEvent e ){
-	           txtUserName.requestFocus();
-	       }
-	   }); 
-	   
+	    LoginForm.this.setBackground(UIManager.getColor("Panel.background"));
+	    JDialog createDialog = WindowUtils.createDialog(null, message.getMessage("login.form.title"),
+		    LoginForm.this);
+	    createDialog.setIconImage(ImageUtils.getFrameIcon().getImage());
+	    createDialog.addWindowListener(new WindowAdapter() {
+		public void windowOpened(WindowEvent e) {
+		    txtUserName.requestFocus();
+		}
+	    });
+
 	});
-	
-	
+
     }
 
+    public static Font getCustomFont(int size) {
+	return new Font("Arial", Font.PLAIN, size);
+    }
+
+    public static Font getJideCustomFont() {
+	return new Font("Tahoma", Font.PLAIN, 16);
+    }
 
     public static Locale getCurrentLocale() {
 	return Application.getCurrentLocale();
     }
-    
+
     public static boolean isRtl() {
 	return true;
     }
-    
+
     public static void main(String[] args) {
 	// SpringApplication.run(LoginForm.class, args);
 	/*
 	 * new SpringApplicationBuilder(LoginForm.class) .headless(false)
 	 * .web(false) .run(args);
 	 */
-	//ConfigurableApplicationContext context = new SpringApplicationBuilder(LoginForm.class).headless(false).run(args);
-	//LoginForm appFrame = context.getBean(LoginForm.class);
+	// ConfigurableApplicationContext context = new
+	// SpringApplicationBuilder(LoginForm.class).headless(false).run(args);
+	// LoginForm appFrame = context.getBean(LoginForm.class);
     }
 
 }

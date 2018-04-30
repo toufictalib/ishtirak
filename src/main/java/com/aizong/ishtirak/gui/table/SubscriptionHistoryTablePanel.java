@@ -28,8 +28,7 @@ public class SubscriptionHistoryTablePanel extends ReportTablePanel {
 
     private Long subscriberId;
     public SubscriptionHistoryTablePanel(String title, Long subscriberId) {
-	super();
-	this.title =title;
+	super(title,null);
 	this.subscriberId = subscriberId;
 	start();
     }
@@ -100,10 +99,5 @@ public class SubscriptionHistoryTablePanel extends ReportTablePanel {
 	panel.add(btnSearch);
 	return panel;
     };
-
-    @Override
-    public ReportTableModel getReportTableModel() {
-	return null;
-    }
 
 }

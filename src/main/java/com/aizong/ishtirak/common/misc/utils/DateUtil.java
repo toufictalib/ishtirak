@@ -32,7 +32,7 @@ public class DateUtil {
     public static final SimpleDateFormat SHORT_FORMAT = new SimpleDateFormat(SHORT_SQL_DATE_FORMAT);
 
     public static String[] monthes;
-
+    
     public static Date addDays(Date date, int days) {
 	Calendar cal = Calendar.getInstance();
 	cal.setTime(date);
@@ -273,16 +273,21 @@ public class DateUtil {
     
     
     public static String getContractDate() {
-	LocalDate now = LocalDate.now();
-	LocalDate date = LocalDate.of(now.getYear(), getEffectiveMonth(), 16);
-	return date.format(DateTimeFormatter.ofPattern(SHORT_SQL_DATE_FORMAT));
+
+	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
+	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
+	    int dayOfMonth = Integer.parseInt(message) + 1;
+	    LocalDate now = LocalDate.now();
+	    LocalDate date = LocalDate.of(now.getYear(), getEffectiveMonth(), dayOfMonth);
+	    return date.format(DateTimeFormatter.ofPattern(SHORT_SQL_DATE_FORMAT));
+	}
+	return getStartEndDateOfCurrentMonth().getEndDateAsString();
     }
 
     public static String getCurrentMonthLabel() {
 	
 	LocalDate date = LocalDate.now();
-	LocalDate minusMonths = date.minusMonths(1);
-	String monthName = getMonthName(minusMonths.getMonthValue()-1);
+	String monthName = getMonthName(date.getMonthValue()-1);
 	return date.getYear()+"/"+monthName;
     }
     public static void main(String[] args) {
@@ -293,8 +298,12 @@ public class DateUtil {
     }
     
     public static boolean isCountedAsCurrentMonth(LocalDate localDate) {
-	String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
-	return localDate.getDayOfMonth() < (Integer.parseInt(message)+1);
+	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
+	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
+	    return localDate.getDayOfMonth() < (Integer.parseInt(message) + 1);
+	}
+	return true;
+
     }
  /*   public static void main(String[]args) {
    	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
