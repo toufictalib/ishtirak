@@ -242,41 +242,45 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	    @Override
 	    public void onDone(ReportTableModel response) {
 
-		reloadTable();
+		reloadTable(response);
 	    }
 
 	}, CommonFilterTable.this);
 
     }
-    
-    protected void reloadTable() {
-	ReportTableModel reportTableModel = getReportTableModel();
-	Object[] columns = reportTableModel.getCols();
-	columns = add(columns, "btnView");
-	
-	Object[] internalisationCols = new Object[columns.length];
-	for (int i = 0; i < columns.length; i++) {
-	    if (columns[i] != null) {
-		internalisationCols[i] = message.getMessage(columns[i].toString());
-	    } else {
-		internalisationCols[i] = columns[i];
-	    }
-	}
-	
-	model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
-	    @Override
-	    public boolean isCellEditable(int arg0, int arg1) {
-		return arg1 == (table.getModel().getColumnCount() - 1);
-	    }
-	    
-	    @Override
-	    public Class<?> getColumnClass(int arg0) {
-		if (arg0 < reportTableModel.getClazzes().length) {
-		    return reportTableModel.getClazzes()[arg0];
+
+    protected void reloadTable(ReportTableModel reportTableModel) {
+
+	if (reportTableModel != null) {
+	    Object[] columns = reportTableModel.getCols();
+	    columns = add(columns, "btnView");
+
+	    Object[] internalisationCols = new Object[columns.length];
+	    for (int i = 0; i < columns.length; i++) {
+		if (columns[i] != null) {
+		    internalisationCols[i] = message.getMessage(columns[i].toString());
+		} else {
+		    internalisationCols[i] = columns[i];
 		}
-		return super.getColumnClass(arg0);
 	    }
-	};
+
+	    model = new DefaultTableModel(reportTableModel.getRowsAsArray(), internalisationCols) {
+		@Override
+		public boolean isCellEditable(int arg0, int arg1) {
+		    return arg1 == (table.getModel().getColumnCount() - 1);
+		}
+
+		@Override
+		public Class<?> getColumnClass(int arg0) {
+		    if (arg0 < reportTableModel.getClazzes().length) {
+			return reportTableModel.getClazzes()[arg0];
+		    }
+		    return super.getColumnClass(arg0);
+		}
+	    };
+	} else {
+	    model = new DefaultTableModel();
+	}
 	table.setModel(model);
 	sorter.setModel(model);
 	table.setRowSorter(sorter);

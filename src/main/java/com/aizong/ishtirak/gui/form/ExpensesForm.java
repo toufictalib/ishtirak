@@ -5,6 +5,7 @@ import java.awt.ComponentOrientation;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +15,15 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import org.jdesktop.swingx.JXDatePicker;
+
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.SavingCallback;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DoubleTextField;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
+import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
@@ -48,6 +52,7 @@ public class ExpensesForm extends BasicForm {
     private SavingCallback callback;
     private Mode mode = Mode.NEW;
     private ExpensesLog expensesLog;
+    private JXDatePicker dateInsertDatePicker;
 
     private ExpensesType[] maintenanceTypeValues = ExpensesType.values();
 
@@ -84,6 +89,9 @@ public class ExpensesForm extends BasicForm {
 	txtNote.setRows(4);
 
 	txtDieselQuantity = new IntergerTextField();
+	
+	dateInsertDatePicker = ComponentUtils.createDatePicker();
+	dateInsertDatePicker.setDate(new Date());
     }
 
     private boolean isDiesel() {
@@ -156,6 +164,8 @@ public class ExpensesForm extends BasicForm {
 	    }
 	    comboEmployees.setSelectedItem(new Employee(expensesLog.getEmployeeId()));
 	}
+	
+	dateInsertDatePicker.setDate(expensesLog.getInsertDate());
     }
 
     @Override
@@ -202,6 +212,7 @@ public class ExpensesForm extends BasicForm {
 	JScrollPane scrollPane = new JScrollPane(txtNote);
 	scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	builder.append(message("maintenance.form.note"), scrollPane);
+	builder.append(message("maintenance.form.insertDate"),dateInsertDatePicker);
 	builder.appendSeparator();
 
 	JButton btnSave = ButtonFactory.createBtnSave();
@@ -247,6 +258,8 @@ public class ExpensesForm extends BasicForm {
 	 
 	maintenaceLog.setOilConsumption(isOil() ? txtDieselQuantity.getValue() : null);
 
+	maintenaceLog.setInsertDate(dateInsertDatePicker.getDate());
+	
 	ServiceProvider.get().getSubscriberService().saveMaintenanceLog(maintenaceLog);
 
 	if (!saveAndNew) {

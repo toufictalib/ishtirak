@@ -402,7 +402,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 		    @Override
 		    public void onDone(ReportTableModel response) {
 			 SubscriberFilterTable.this.reportTableModel = response;
-			 reloadTable();
+			 reloadTable(response);
 		    }}
 		    ,SubscriberFilterTable.this);
 	   
