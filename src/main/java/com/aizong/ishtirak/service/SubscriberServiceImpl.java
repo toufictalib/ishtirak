@@ -103,7 +103,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void deleteSubscribers(List<Long> subscriberIds) {
-	subscriberDao.deleteContents(subscriberIds);
+	subscriberDao.deleteSubscribers(subscriberIds);
+	
+	for(Long subscriberId:subscriberIds) {
+	    List<Long> contractIds = subscriberDao.getContractIdsBySubscriberId(subscriberId);
+	    deleteContracts(contractIds);
+	}
     }
 
     @Override
@@ -240,8 +245,13 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public void deleteContracts(List<Long> ids) {
-	subscriberDao.deleteContracts(ids);
+    public void deleteContracts(List<Long> contractIds) {
+	
+	List<Long> relatedTransactionIds = subscriberDao.getTransactionIdsByContractIds(contractIds);
+	subscriberDao.deleteTransactions(relatedTransactionIds);
+	subscriberDao.deleteSubscriptionHistory(relatedTransactionIds);
+	subscriberDao.deleteCounterHistory(contractIds);
+	subscriberDao.deleteContracts(contractIds);
 
     }
 

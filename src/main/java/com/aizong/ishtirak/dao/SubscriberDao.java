@@ -18,7 +18,7 @@ import com.aizong.ishtirak.model.User;
 
 public interface SubscriberDao extends GenericDao<Object> {
 
-    void deleteContents(List<Long> ids);
+    void deleteSubscribers(List<Long> ids);
 
     void deleteEngines(List<Long> ids);
 
@@ -71,4 +71,11 @@ public interface SubscriberDao extends GenericDao<Object> {
     List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
 
     void deleteSubscriptionHistory(List<Long> transactionIds);
+
+    List<Long> getTransactionIdsByContractIds(List<Long> contractIds);
+
+    void deleteCounterHistory(List<Long> contractIds);
+
+    List<Long> getContractIdsBySubscriberId(Long subscriberId);
+
 }

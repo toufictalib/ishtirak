@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
@@ -51,7 +52,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public void deleteContents(List<Long> ids) {
+    public void deleteSubscribers(List<Long> ids) {
 	if (ids.size() > 0) {
 	    String sql = "delete from subscriber where id  in :ids";
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
@@ -492,6 +493,41 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    }
 	});
     }
+
+    @Override
+    public List<Long> getTransactionIdsByContractIds(List<Long> contractIds) {
+	if (contractIds != null && !contractIds.isEmpty()) {
+	    String sql = "select id from transaction where id_contract in (:contractIds)";
+	    NativeQuery createNativeQuery = getsession().createNativeQuery(sql);
+	    createNativeQuery.setParameterList("contractIds", contractIds);
+	    createNativeQuery.addScalar("id", StandardBasicTypes.LONG);
+	    return createNativeQuery.list();
+	}
+	return new ArrayList<>();
+
+    }
+
+    @Override
+    public void deleteCounterHistory(List<Long> contractIds) {
+
+	if (contractIds != null && !contractIds.isEmpty()) {
+	    String sql = "delete from counter_history where  contract_unique_code in ("
+		    + "select contract_unique_code from contract where id in (:contractIds)" + ")";
+	    NativeQuery createNativeQuery = getsession().createNativeQuery(sql);
+	    createNativeQuery.setParameterList("contractIds", contractIds);
+	    createNativeQuery.executeUpdate();
+	}
+
+    }
     
-    
+    @Override
+    public List<Long> getContractIdsBySubscriberId(Long subscriberId) {
+  	Criteria criteria = getsession().createCriteria(Contract.class);
+  	criteria.setProjection(Projections.projectionList()
+  		      .add(Projections.property("id"), "id"))
+  		    .setResultTransformer(Transformers.aliasToBean(Contract.class));
+  	 
+  	criteria.add(Restrictions.eq("subscriberId", subscriberId));
+  	return criteria.list();
+      }
 }

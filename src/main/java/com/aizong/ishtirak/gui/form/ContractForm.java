@@ -1,9 +1,11 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,9 +24,12 @@ import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.AlphanumComparator;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar;
+import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.model.Address;
 import com.aizong.ishtirak.model.Bundle;
@@ -74,7 +79,7 @@ public class ContractForm extends BasicForm {
     }
 
     private void init() {
-	if (mode != Mode.VIEW) {
+	if (mode != Mode.VIEW || mode != Mode.DELETE) {
 	    counterPerEngine = ServiceProvider.get().getSubscriberService().getContractUniqueCodesByEngine();
 	    counterPerEngine.entrySet().forEach(e->allKeys.addAll(e.getValue()));
 	    Collections.sort(allKeys, new AlphanumComparator());
@@ -181,11 +186,38 @@ public class ContractForm extends BasicForm {
 
 	if (mode == Mode.VIEW) {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose), builder.getColumnCount());
+	} else if (mode == Mode.DELETE) {
+	    JButton btnDelete = new JButton(message("subscription.form.delete"), ImageUtils.getDeleteIcon());
+	    btnDelete.addActionListener(deleteSubscription());
+	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnDelete), builder.getColumnCount());
 	} else {
 	    builder.append(ButtonBarFactory.buildRightAlignedBar(btnClose, btnSave), builder.getColumnCount());
 	}
 
 	return builder.getPanel();
+    }
+
+    private ActionListener deleteSubscription() {
+	return e -> {
+	boolean yes = MessageUtils.showConfirmationMessage(ContractForm.this, message("subscription.delete", contract.getContractUniqueCode()));
+	if (yes) {
+	    ProgressBar.execute(new ProgressBarListener<Void>() {
+
+		@Override
+		public Void onBackground() throws Exception {
+		    ServiceProvider.get().getSubscriberService().deleteContracts(Arrays.asList(contract.getId()));
+		    return null;
+		}
+
+		@Override
+		public void onDone(Void response) {
+		    closeWindow();
+		    MessageUtils.showInfoMessage(ContractForm.this, message("subscription.success"));
+		    
+		}
+	    }, ContractForm.this);
+	}
+	};
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,10 +49,10 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
     private ReportTableModel reportTableModel;
 
-    //stop initialize on start
-    
+    // stop initialize on start
+
     public SubscriberFilterTable(String title, ReportTableModel reportTableModel) {
-	super(title, false,new MyTableListener() {
+	super(title, false, new MyTableListener() {
 
 	    @Override
 	    public void add(Window owner, RefreshTableInterface refreshTableInterface) {
@@ -94,15 +95,16 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	    @Override
 	    public void delete(Window owner, Long id, RefreshTableInterface refreshTableInterface) {
-		/*
-		 * boolean yes = MessageUtils.showConfirmationMessage(owner,
-		 * message("deleteRow.confirmation"), message("delete")); if
-		 * (yes) { List<Long> ids = new ArrayList<>(); ids.add(id);
-		 * ServiceProvider.get().getSubscriberService().
-		 * deleteSubscribers(ids); refreshTableInterface.refreshTable();
-		 * }
-		 */
-		MessageUtils.showWarningMessage(owner, message("delete.forbidden"));
+		
+		boolean yes = MessageUtils.showConfirmationMessage(owner, message("subscriber.delete"),
+			message("delete"));
+		if (yes) {
+		    List<Long> ids = new ArrayList<>();
+		    ids.add(id);
+		    ServiceProvider.get().getSubscriberService().deleteSubscribers(ids);
+		    refreshTableInterface.refreshTable();
+		}
+
 	    }
 	});
 	this.reportTableModel = reportTableModel;
@@ -128,6 +130,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"), Mode.VIEW, false);
 
+	JButton btnDeleteContract = createEditContractBtn(message("subscription.form.delete"), Mode.DELETE, false);
+
 	JButton btnSwitchContract = createEditContractBtn(message("subscription.form.switch"), Mode.UPDATE, true);
 
 	JButton btnHistoryontract = createContractHistoryBtn(message("subscription.form.histroy"));
@@ -145,6 +149,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	panel.add(btnStopContract);
 	panel.add(btnSwitchContract);
 	panel.add(btnViewContract);
+	panel.add(btnDeleteContract);
 	panel.add(btnHistoryontract);
 	panel.add(btnEditCounterHistory);
 	panel.add(btnViewCounterHistory);
@@ -269,12 +274,8 @@ public class SubscriberFilterTable extends CommonFilterTable {
 	    Optional<Long> selectedRowId = getSelectedRowId();
 	    if (selectedRowId.isPresent()) {
 		Long id = selectedRowId.get();
-		List<Contract> contracts = null;
-		if (switchSubscription) {
-		    contracts = ServiceProvider.get().getSubscriberService().getActiveContractBySubscriberId(id);
-		} else {
-		    contracts = ServiceProvider.get().getSubscriberService().getActiveContractBySubscriberId(id);
-		}
+		List<Contract> contracts = ServiceProvider.get().getSubscriberService()
+			.getActiveContractBySubscriberId(id);
 
 		if (contracts == null || contracts.isEmpty()) {
 		    MessageUtils.showInfoMessage(getOwner(), message("subscriber.noSubscription"));
@@ -391,6 +392,21 @@ public class SubscriberFilterTable extends CommonFilterTable {
     }
     
     protected void fillTable() {
-	reloadTable();
+	   ProgressBar.execute(new ProgressBarListener<ReportTableModel>() {
+
+		    @Override
+		    public ReportTableModel onBackground() throws Exception {
+			return ServiceProvider.get().getReportServiceImpl().getSubscribers();
+		    }
+
+		    @Override
+		    public void onDone(ReportTableModel response) {
+			 SubscriberFilterTable.this.reportTableModel = response;
+			 reloadTable();
+		    }}
+		    ,SubscriberFilterTable.this);
+	   
+	   
+	
     }
 }
