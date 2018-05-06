@@ -486,11 +486,11 @@ public class ResultForm extends BasicForm implements ActionListener {
 		@Override
 		public Map<String, List<Tuple<String, Double>>> action() {
 		    LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
-			    searchMonthPanel.getSelectedFromMonth(), 5);
+			    searchMonthPanel.getSelectedFromMonth(), 6);
 		    DateRange fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
 
 		    LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
-			    searchMonthPanel.getSelectedToMonth(), 5);
+			    searchMonthPanel.getSelectedToMonth(), 6);
 		    DateRange toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
 
 		    return ServiceProvider.get().getSubscriberService().getResult(fromDateRange.getStartDateAsString(),

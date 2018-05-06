@@ -35,7 +35,7 @@ public class MonthYearCombo extends JPanel {
 	add(datePickerFrom);
 	add(new JLabel("شهر :"));
 	LocalDate localDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	datePickerFrom.setSelectedIndex(localDate.getMonthValue()-1);
+	datePickerFrom.setSelectedIndex(DateUtil.getEffectiveMonth()-1);
 	datePickerYearFrom.setSelectedItem(localDate.getYear());
     }
     

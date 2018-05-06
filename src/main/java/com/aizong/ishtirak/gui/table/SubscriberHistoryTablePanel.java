@@ -9,6 +9,8 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
+import com.aizong.ishtirak.common.misc.utils.AlphanumComparator;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
@@ -194,6 +197,16 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 			     
 			     List<JasperReportBuilder> list = new ArrayList<>();
 				    ReceiptDesign design = new ReceiptDesign();
+				    
+				    AlphanumComparator alphanumComparator = new AlphanumComparator();
+				    Collections.sort(receipts, new Comparator<ReceiptBean>() {
+
+					@Override
+					public int compare(ReceiptBean o1, ReceiptBean o2) {
+					    return alphanumComparator.compare(o1.getCounterCode(), o2.getCounterCode());
+					}
+
+				    });
 				    for (ReceiptBean receiptBean : receipts) {
 
 					JasperReportBuilder report;
@@ -401,11 +414,11 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 		}
 
 		LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
-			searchMonthPanel.getSelectedFromMonth(), 5);
+			searchMonthPanel.getSelectedFromMonth(), 6);
 		DateRange fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
 
 		LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
-			searchMonthPanel.getSelectedToMonth(), 5);
+			searchMonthPanel.getSelectedToMonth(), 6);
 		DateRange toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
 
 		List<String> uniqueContractIds = null;

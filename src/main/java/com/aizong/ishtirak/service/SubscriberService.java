@@ -70,7 +70,7 @@ public interface SubscriberService {
     
     List<Contract> getCounterContractBySubscriberId(Long contractId);
 
-    List<Contract> generateReceipts();
+    List<Contract> generateReceipts(LocalDate selectedMonth);
 
     void saveMaintenanceLog(ExpensesLog maintenaceLog);
 

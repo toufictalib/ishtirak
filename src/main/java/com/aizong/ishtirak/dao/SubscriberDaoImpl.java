@@ -139,16 +139,12 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<ContractConsumptionBean> getCounterHistory(int previousMonth, int currentMonth) {
+    public List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange, DateRange previousDateRange) {
 
-	String sql = "select c1.contract_unique_code as 'contractUniqueCode',"
-		+ "c1.consumption as 'previousCounterValue',"
-		+ "c2.consumption as 'currentCounterValue' "
-		+ "from counter_history c1,counter_history c2 where "
-		+ "c1.contract_unique_code = c2.contract_unique_code and month(c1.insert_date) in (:previousMonth) "
-		+ "and month(c2.insert_date) in (:currentMonth)";
+	String sql = SQLUtils.sql("user_consumption_between_now_previous.sql", currentDateRange.getStartDateAsString(),
+		currentDateRange.getEndDateAsString(), previousDateRange.getStartDateAsString(),
+		previousDateRange.getEndDateAsString());
 	NativeQuery sqlQuery = getsession().createSQLQuery(sql);
-	sqlQuery.setParameter("previousMonth", previousMonth).setParameter("currentMonth", currentMonth);
 	sqlQuery.addScalar("contractUniqueCode", StandardBasicTypes.STRING)
 		.addScalar("previousCounterValue", StandardBasicTypes.LONG)
 		.addScalar("currentCounterValue", StandardBasicTypes.LONG);
@@ -195,6 +191,17 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    String sql = "delete from transaction where id  in :ids";
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
 	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+
+    }
+    
+    @Override
+    public void deleteSubscriptionHistory(List<Long> transactionIds) {
+	if (transactionIds.size() > 0) {
+	    String sql = "delete from subscription_history where transaction  in :transactionIds";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("transactionIds", transactionIds);
 	    sqlQuery.executeUpdate();
 	}
 

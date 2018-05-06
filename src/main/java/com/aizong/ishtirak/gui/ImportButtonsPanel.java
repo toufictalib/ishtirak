@@ -100,7 +100,7 @@ public class ImportButtonsPanel extends BasicForm {
 
 		    String message = "";
 		    LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
-			    LocalDate.now().getDayOfMonth());
+			    6);
 
 		    FileInputStream excelFile = new FileInputStream(file);
 		    Workbook workbook = new XSSFWorkbook(excelFile);

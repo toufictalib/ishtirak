@@ -24,8 +24,8 @@ import com.aizong.ishtirak.common.misc.component.DateRange;
  */
 public class DateUtil {
 
-    private static final int DAYS_OF_NEXT_MONTH = 5;
-    private static final int START_MONTH = 6;
+    public static final int DAYS_OF_NEXT_MONTH = 5;
+    public static final int START_MONTH = 6;
     public static final String SHORT_SQL_DATE_FORMAT = "yyyy-MM-dd";
     public static final String LONG_SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -199,15 +199,14 @@ public class DateUtil {
     }
 
     public static DateRange getStartEndDateOfCurrentMonth() {
-	LocalDate initial = LocalDate.now();
-	//initial = initial.minusMonths(1);
-	LocalDate start = initial.withDayOfMonth(6);
-	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(5);
-
-	return new DateRange(fromLocalDate(start), fromLocalDate(end));
+	return getStartEndDateOfCurrentMonth(LocalDate.now());
     }
     
-    public static DateRange getStartEndDateOfCurrentMonth(LocalDate initial) {
+    public static DateRange getStartEndDateOfCurrentMonth(LocalDate localDate) {
+	LocalDate initial = localDate;
+	if(initial.getDayOfMonth()<6) {
+	    initial = initial.minusMonths(1);
+	}
 	LocalDate start = initial.withDayOfMonth(START_MONTH);
 	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(DAYS_OF_NEXT_MONTH);
 
@@ -217,27 +216,52 @@ public class DateUtil {
     
 
     /**
-     * month starts between 5 last month and 5 current month
-     * so if current day is smaller or equal 5 we should subtract the month by 1
+     * effective month is between 6 of previous month and 5 of current month
      * @return
      */
-    /*public static MyDate getEffectiveCurrentMonth() {
+    public static int getEffectiveMonth() {
 	LocalDateTime currentTime = LocalDateTime.now();
 	Month month = currentTime.getMonth();
 	int currentMonth = month.getValue();
-	if (currentTime.getDayOfMonth() < 5) {
+	if (currentTime.getDayOfMonth() < 6) {
 	    currentMonth--;
 	}
 	
-	int year = currentTime.getYear();
 	if(currentMonth==0) {
 	    currentMonth = 12;
-	    year--;
 	}
-	
-	return new MyDate(currentMonth, year);
+	return currentMonth;
     }
-    */
+    
+    
+    public static String getContractDate() {
+	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
+	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
+	    int dayOfMonth = Integer.parseInt(message) + 1;
+	    LocalDate now = LocalDate.now();
+	    LocalDate date = LocalDate.of(now.getYear(), getEffectiveMonth(), dayOfMonth);
+	    return date.format(DateTimeFormatter.ofPattern(SHORT_SQL_DATE_FORMAT));
+	}
+	return getStartEndDateOfCurrentMonth().getEndDateAsString();
+    }
+
+    public static String getCurrentMonthLabel() {
+	LocalDate date = LocalDate.now();
+	if(date.getDayOfMonth()<6) {
+	    date = date.minusMonths(1);
+	}
+	String monthName = getMonthName(date.getMonthValue()-1);
+	return date.getYear()+"/"+monthName;
+    }
+    public static boolean isCountedAsCurrentMonth(LocalDate localDate) {
+	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
+	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
+	    return localDate.getDayOfMonth() < (Integer.parseInt(message) + 1);
+	}
+	return true;
+
+    }
+    
     public static String getMonthName(int month) {
 	try {
 	    if (monthes == null) {
@@ -252,59 +276,16 @@ public class DateUtil {
 	}
 	return month+"";
     }
-
-    /**
-     * effective month is between 6 of previous month and 5 of current month
-     * @return
-     */
-    public static int getEffectiveMonth() {
-	LocalDateTime currentTime = LocalDateTime.now();
-	Month month = currentTime.getMonth();
-	int currentMonth = month.getValue();
-	if (currentTime.getDayOfMonth() < 5) {
-	    currentMonth--;
-	}
-	
-	if(currentMonth==0) {
-	    currentMonth = 12;
-	}
-	return currentMonth;
-    }
     
     
-    public static String getContractDate() {
-
-	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
-	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
-	    int dayOfMonth = Integer.parseInt(message) + 1;
-	    LocalDate now = LocalDate.now();
-	    LocalDate date = LocalDate.of(now.getYear(), getEffectiveMonth(), dayOfMonth);
-	    return date.format(DateTimeFormatter.ofPattern(SHORT_SQL_DATE_FORMAT));
-	}
-	return getStartEndDateOfCurrentMonth().getEndDateAsString();
-    }
-
-    public static String getCurrentMonthLabel() {
-	
-	LocalDate date = LocalDate.now();
-	String monthName = getMonthName(date.getMonthValue()-1);
-	return date.getYear()+"/"+monthName;
-    }
     public static void main(String[] args) {
-	LocalDate date = LocalDate.of(2018, 1, 1);
-	LocalDate minusMonths = date.minusMonths(1);
-	String monthName = minusMonths.getMonthValue()+"";
-	System.out.println(minusMonths.getYear()+","+monthName);
+	LocalDate date = LocalDate.of(2018, 05, 02);
+	System.out.println(DateUtil.getStartEndDateOfCurrentMonth(date).getStartDateAsString());
+	System.out.println(DateUtil.getStartEndDateOfCurrentMonth(date).getEndDateAsString());
     }
     
-    public static boolean isCountedAsCurrentMonth(LocalDate localDate) {
-	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
-	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
-	    return localDate.getDayOfMonth() < (Integer.parseInt(message) + 1);
-	}
-	return true;
 
-    }
+    
  /*   public static void main(String[]args) {
    	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
    	System.out.println(startEndDateOfCurrentMonth.getStartDateAsString());

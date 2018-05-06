@@ -227,11 +227,11 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 		public SummaryBean action() {
 
 		    LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
-			    searchMonthPanel.getSelectedFromMonth(), 5);
+			    searchMonthPanel.getSelectedFromMonth(), 6);
 		    DateRange fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
 
 		    LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
-			    searchMonthPanel.getSelectedToMonth(), 5);
+			    searchMonthPanel.getSelectedToMonth(), 6);
 		    DateRange toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
 
 		    return ServiceProvider.get().getReportServiceImpl()

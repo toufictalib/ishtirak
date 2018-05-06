@@ -2,7 +2,6 @@ package com.aizong.ishtirak.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -285,19 +284,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 	return subscriberDao.getActiveContracts();
     }
 
-    private List<ContractConsumptionBean> getContractConsupmtion() {
-	LocalDateTime currentTime = LocalDateTime.now();
-	Month month = currentTime.getMonth();
-	int currentMonth = month.getValue();
-	// back up nbOfDaysBeforeToday of current date
-	LocalDateTime dateMinusMonths = currentTime.minusMonths(1);
-	int previousMonth = dateMinusMonths.getMonth().getValue();
-
-	return subscriberDao.getCounterHistory(previousMonth, currentMonth);
-    }
-
     @Override
-    public List<Contract> generateReceipts() {
+    public List<Contract> generateReceipts(LocalDate selectedMonth) {
 
 	List<Contract> failedContract = new ArrayList<>();
 	
@@ -310,9 +298,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 		.filter(e -> DateUtil.isCountedAsCurrentMonth(
 			e.getInsertDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
 		.collect(Collectors.toList());
-	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
+
+	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedMonth);
 	
-	//create only the contracts already created yet
+	//create only the contracts haven't created yet
 	Set<Long> alreadyCreatedContracts = new HashSet<>(
 		subscriberDao.getCreatedContractsForCurrentMonth(contracts,
 			dateRange.getStartDateAsString(), dateRange.getEndDateAsString()));
@@ -325,7 +314,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 	List<Transaction> transactions = new ArrayList<>();
 	List<SubscriptionHistory> subscriptionHistoryList = new ArrayList<>();
 
-	List<ContractConsumptionBean> counterHistories = getContractConsupmtion();
+	//get counter history for curret month and pervious month
+	List<ContractConsumptionBean> counterHistories = subscriberDao.getCounterHistory(
+		dateRange,
+		DateUtil.getStartEndDateOfCurrentMonth(selectedMonth.minusMonths(1)));
 	Map<String, ContractConsumptionBean> counterHistory = counterHistories.stream()
 		.collect(Collectors.toMap(e -> e.getContractUniqueCode(), e -> e));
 
@@ -345,7 +337,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		transaction.setAmount(((MonthlyBundle) bundle).getFees());
 		transaction.setContractId(contract.getId());
 		transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
-
+		transaction.setInsertDate(dateRange.getStartDate());
+		
 		transactions.add(transaction);
 	    } else if (bundle instanceof SubscriptionBundle) {
 
@@ -358,6 +351,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 			    subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * consumption);
 		    transaction.setContractId(contract.getId());
 		    transaction.setTransactionType(TransactionType.COUNTER_PAYMENT);
+		    transaction.setInsertDate(dateRange.getStartDate());
 		    transactions.add(transaction);
 
 		    SubscriptionHistory subscriptionHistory = new SubscriptionHistory();
@@ -367,6 +361,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    subscriptionHistory.setCostPerKb(subscriptionBundle.getCostPerKb());
 		    subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
 		    subscriptionHistory.setTransaction(transaction);
+		    subscriptionHistory.setInsertDate(transaction.getInsertDate());
+		    
 		    subscriptionHistoryList.add(subscriptionHistory);
 
 		}else {
@@ -548,6 +544,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void deleteTransactions(List<Long> ids) {
 	subscriberDao.deleteTransactions(ids);
+	subscriberDao.deleteSubscriptionHistory(ids);
 	
 	
     }

@@ -8,6 +8,7 @@ import java.util.Set;
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.model.Contract;
 import com.aizong.ishtirak.model.CounterHistory;
@@ -31,7 +32,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Contract> getActiveContracts();
 
-    List<ContractConsumptionBean> getCounterHistory(int previousMonth, int currentMonth);
+    List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange, DateRange previousDateRange);
 
     void deleteVillages(List<Long> ids);
     
@@ -68,4 +69,6 @@ public interface SubscriberDao extends GenericDao<Object> {
     void updatePayment(List<Long> transactionIds, boolean paid);
 
     List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
+
+    void deleteSubscriptionHistory(List<Long> transactionIds);
 }

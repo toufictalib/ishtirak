@@ -3,14 +3,18 @@ package com.aizong.ishtirak.common.misc.utils;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @SuppressWarnings("serial")
@@ -23,7 +27,7 @@ public class BaseEntity implements Serializable {
     protected Long id;
 
     @Column(name = "insert_date")
-    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date insertDate;
 
     @Column(name = "update_date")
@@ -35,10 +39,11 @@ public class BaseEntity implements Serializable {
 
     public BaseEntity() {
 	super();
+	this.insertDate = new Date();
     }
 
     public BaseEntity(Long id) {
-	super();
+	this();
 	this.id = id;
     }
 
@@ -55,7 +60,10 @@ public class BaseEntity implements Serializable {
     }
 
     public void setInsertDate(Date insertDate) {
-	this.insertDate = insertDate;
+	if(insertDate==null) {
+	    insertDate = new Date();
+	}
+	this.insertDate = Timestamp.valueOf(LocalDateTime.of(DateUtil.localDate(insertDate), LocalTime.now()));
     }
 
     public Date getUpdateDate() {

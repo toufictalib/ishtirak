@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -29,10 +31,12 @@ import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.ImageHelperCustom;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.Message;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
+import com.aizong.ishtirak.common.misc.utils.MonthYearCombo;
 import com.aizong.ishtirak.common.misc.utils.ProgressBar;
 import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
@@ -156,17 +160,24 @@ public class MainFrame extends JFrame {
 
 	JButton btnReceipts = button("إنشاء كل الايصالات", "receipts.png");
 	btnReceipts.addActionListener(e -> {
-	    boolean yes = MessageUtils.showConfirmationMessage(MainFrame.this, "هل تريد إصدار كل الايصالات لهذا الشهر",
-		    "اصدار ايصالات");
-	    if (yes) {
-		List<Contract> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts();
-		if (!generateReceipts.isEmpty()) {
-		    DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
-		    builder.appendSeparator("");
-		    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
-		} else {
-		    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
-		}
+	    
+	    MonthYearCombo monthYearCombo = new MonthYearCombo();
+	    Object[] options = { message("إصدار كل الايصالات"), message("import.counter.close") };
+	    int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
+		    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+	    if (answer == JOptionPane.YES_OPTION) {
+			LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
+			    DateUtil.START_MONTH);
+			
+			List<Contract> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts(now);
+			if (!generateReceipts.isEmpty()) {
+			    DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
+			    builder.appendSeparator("");
+			    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+			} else {
+			    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+			}
 
 	    }
 	});

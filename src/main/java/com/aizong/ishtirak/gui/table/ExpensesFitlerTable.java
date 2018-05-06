@@ -1,7 +1,6 @@
 package com.aizong.ishtirak.gui.table;
 
 import java.awt.Window;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,16 +75,8 @@ public class ExpensesFitlerTable extends CommonFilterTable {
 
     @Override
     public ReportTableModel getReportTableModel() {
-	DateRange dateRange = getRange();
+	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
 	return ServiceProvider.get().getReportServiceImpl().getExpenses(dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
-    }
-    
-    public DateRange getRange() {
-	LocalDate initial = LocalDate.now();
-	LocalDate start = initial.withDayOfMonth(6);
-	LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth()).plusDays(5);
-
-	return new DateRange(DateUtil.fromLocalDate(start), DateUtil.fromLocalDate(end));
     }
     
 
