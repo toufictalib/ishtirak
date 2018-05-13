@@ -385,13 +385,20 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedDate);
 	deleteCounterHistory(e.keySet(), dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 
+
+	//update counters
+	String sql = "select contract_unique_code from contract where insert_date <= \""+dateRange.getEndDateAsString()+"\"";
+	Set<String> contractUniqueCodes = new HashSet<>(getsession().createNativeQuery(sql).list());
 	List<CounterHistory> counterHistories = new ArrayList<>();
 	for (Entry<String, Long> p : e.entrySet()) {
-	    CounterHistory counterHistory = new CounterHistory();
-	    counterHistory.setContractUniqueCode(p.getKey());
-	    counterHistory.setConsumption(p.getValue());
-	    counterHistory.setInsertDate(DateUtil.fromLocalDate(selectedDate));
-	    counterHistories.add(counterHistory);
+	    if (contractUniqueCodes.contains(p.getKey())) {
+		CounterHistory counterHistory = new CounterHistory();
+		counterHistory.setContractUniqueCode(p.getKey());
+		counterHistory.setConsumption(p.getValue());
+		counterHistory.setInsertDate(DateUtil.fromLocalDate(selectedDate));
+		counterHistories.add(counterHistory);
+	    }
+
 	}
 
 	save(new ArrayList<>(counterHistories));
@@ -400,6 +407,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     @Override
     public void updatePaid(Map<String, Boolean> updatedTransactionsMap, LocalDate selectedDate) {
 
+	//***** map transaction to contract unique code per each contract
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedDate);
 	String sql = SQLUtils.sql("getNotPaidTransaction.sql", dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 
