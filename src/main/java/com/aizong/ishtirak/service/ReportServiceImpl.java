@@ -389,4 +389,11 @@ public class ReportServiceImpl implements ReportService {
 	return new ReportTableModel(cols.toArray(new String[0]), rows, clazzes(rows, cols.toArray(new String[0])));
     }
     
+    @Override
+    public ReportTableModel getCounterReport(String fromDate, String toDate) {
+	String[] cols = {"contract_unique_code","fullName","counter"};
+	List<Object[]> rows = reportDao.getCounterReport(fromDate, toDate);
+	
+	return new ReportTableModel(cols, rows, clazzes(rows, cols));
+    }
 }

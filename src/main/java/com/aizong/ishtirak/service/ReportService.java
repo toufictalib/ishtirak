@@ -42,4 +42,6 @@ public interface ReportService {
     ReportTableModel getContractHistoryPerContractOrALl(List<String> uniqueContractIds, String fromDate, String toDate, Boolean paid);
     
     ReportTableModel getExportedFiles(boolean counterInput);
+
+    ReportTableModel getCounterReport(String fromDate, String toDate);
 }

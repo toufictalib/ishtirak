@@ -1,11 +1,15 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.common.form.BasicForm;
-import com.aizong.ishtirak.gui.SummaryTablePanel;
+import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.WindowUtils;
 import com.aizong.ishtirak.gui.table.EmployeeTablePanel;
+import com.aizong.ishtirak.gui.table.SearchTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
@@ -36,7 +40,22 @@ public class GeneralReportButtonsPanel extends BasicForm {
 
 	
 	
+	 JideButton button = button(message("contract.report"), "subreport.png");
+	    button.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    SearchTablePanel searchTablePanel = new SearchTablePanel(e.getActionCommand());
+		    searchTablePanel.setPreferredSize(ComponentUtils.getDimension(90, 85));
+	            WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),searchTablePanel);
+		}
+	    });
+	    
+	
+	
 	builder.append(btnMonthlyReports);
+	builder.append(button);
+	
 	
 	return builder.getPanel();
     }

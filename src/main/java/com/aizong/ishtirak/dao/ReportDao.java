@@ -43,5 +43,7 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getExportedFiles(String date);
 
+    List<Object[]> getCounterReport(String fromDate, String toDate);
+
     
 }

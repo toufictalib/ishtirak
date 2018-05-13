@@ -277,4 +277,10 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	return toList(sql);
     }
     
+    @Override
+    public List<Object[]> getCounterReport(String fromDate, String toDate){
+	String sql = SQLUtils.sql("counter_report.sql", fromDate, toDate);
+	return toList(sql);
+    }
+    
 }
