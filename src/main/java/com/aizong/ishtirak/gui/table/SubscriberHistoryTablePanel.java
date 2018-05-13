@@ -46,7 +46,7 @@ import com.aizong.ishtirak.common.misc.utils.SearchMonthPanel;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
 import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.demo.ReceiptDesign;
-import com.aizong.ishtirak.gui.form.TransactionForm;
+import com.aizong.ishtirak.gui.form.TransactionEditingForm;
 import com.aizong.ishtirak.gui.table.service.Response;
 import com.aizong.ishtirak.model.Company;
 import com.aizong.ishtirak.model.Transaction;
@@ -68,6 +68,8 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
     private JCheckBox cbAll;
     private ExCombo<String> comboPaid;
     private JButton btnSearch;
+    private DateRange fromDateRange;
+    private DateRange toDateRange;
 
     public SubscriberHistoryTablePanel(String title) {
 	super(title, null);
@@ -165,6 +167,10 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
     private ActionListener printReceipts(boolean all) {
 	return l -> {
 
+	    if(fromDateRange==null || fromDateRange ==null) {
+		MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("subscription.search.missing"));
+		return;
+	    }
 	    
 	    Optional<List<Long>> transactionId = getSelectedRowsId(false);
 	    
@@ -190,44 +196,11 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 
 			@Override
 			public JasperConcatenatedReportBuilder onBackground() throws Exception {
-			    DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth();
 			     List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService().getReceipts(
-				    selectedTransactions.isEmpty() ? null : selectedTransactions, dateRange.getStartDateAsString(),
-				    dateRange.getEndDateAsString());
+				    selectedTransactions.isEmpty() ? null : selectedTransactions, fromDateRange.getStartDateAsString(),
+				    toDateRange.getEndDateAsString());
 			     
-			     List<JasperReportBuilder> list = new ArrayList<>();
-				    ReceiptDesign design = new ReceiptDesign();
-				    
-				    AlphanumComparator alphanumComparator = new AlphanumComparator();
-				    Collections.sort(receipts, new Comparator<ReceiptBean>() {
-
-					@Override
-					public int compare(ReceiptBean o1, ReceiptBean o2) {
-					    return alphanumComparator.compare(o1.getCounterCode(), o2.getCounterCode());
-					}
-
-				    });
-				    for (ReceiptBean receiptBean : receipts) {
-
-					JasperReportBuilder report;
-					try {
-					    Company company = ServiceProvider.get().getCompany();
-					    report = design.build(receiptBean, company.getName(),
-						    company.getMaintenanceNumber());
-					    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-					    if (report != null) {
-						list.add(report);
-					    }
-					} catch (DRException e) {
-					    e.printStackTrace();
-					}
-
-				    }
-				    
-				    if(list.isEmpty()) {
-					return null;
-				    }
-				   return concatenatedReport().concatenate(list.toArray(new JasperReportBuilder[0]));
+			     return getReportBuilder(receipts);
 			
 			}
 
@@ -260,6 +233,42 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	};
     }
 
+    public static JasperConcatenatedReportBuilder getReportBuilder(List<ReceiptBean> receipts) {
+	    List<JasperReportBuilder> list = new ArrayList<>();
+		    ReceiptDesign design = new ReceiptDesign();
+		    
+		    AlphanumComparator alphanumComparator = new AlphanumComparator();
+		    Collections.sort(receipts, new Comparator<ReceiptBean>() {
+
+			@Override
+			public int compare(ReceiptBean o1, ReceiptBean o2) {
+			    return alphanumComparator.compare(o1.getCounterCode(), o2.getCounterCode());
+			}
+
+		    });
+		    for (ReceiptBean receiptBean : receipts) {
+
+			JasperReportBuilder report;
+			try {
+			    Company company = ServiceProvider.get().getCompany();
+			    report = design.build(receiptBean, company.getName(),
+				    company.getMaintenanceNumber());
+			    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
+			    if (report != null) {
+				list.add(report);
+			    }
+			} catch (DRException e) {
+			    e.printStackTrace();
+			}
+
+		    }
+		    
+		    if(list.isEmpty()) {
+			return null;
+		    }
+		   return concatenatedReport().concatenate(list.toArray(new JasperReportBuilder[0]));
+	}
+    
     private ActionListener paymentAction(JButton btnSearch, JButton btnPaymentStatus) {
 	return e -> {
 
@@ -372,7 +381,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 		    public void success(Transaction transaction) {
 			if(transaction!=null) {
 			MainFrame.openWindow(SubscriberHistoryTablePanel.this.getOwner(), btnEdit.getText(),
-				new TransactionForm(transaction, reSearch()));
+				new TransactionEditingForm(transaction, reSearch()));
 			}
 
 		    }
@@ -415,11 +424,11 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 
 		LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
 			searchMonthPanel.getSelectedFromMonth(), 6);
-		DateRange fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
+		fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
 
 		LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
 			searchMonthPanel.getSelectedToMonth(), 6);
-		DateRange toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
+		toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
 
 		List<String> uniqueContractIds = null;
 		if (!cbAll.isSelected()) {

@@ -255,8 +255,13 @@ public class DateUtil {
     }
     public static boolean isCountedAsCurrentMonth(LocalDate localDate) {
 	if (Boolean.valueOf(ServiceProvider.get().getMessage().getMessage("day.consider.active"))) {
+	    
+	    //today
+	    LocalDate today = LocalDate.now();
+	    
 	    String message = ServiceProvider.get().getMessage().getMessage("day.consider.current");
-	    return localDate.getDayOfMonth() < (Integer.parseInt(message) + 1);
+	    return localDate.getDayOfMonth() < (Integer.parseInt(message) + 1) && today.getMonth()==localDate.getMonth() &&
+		    today.getYear() == localDate.getYear();
 	}
 	return true;
 

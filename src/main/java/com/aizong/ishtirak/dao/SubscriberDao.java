@@ -78,4 +78,6 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Long> getContractIdsBySubscriberId(Long subscriberId);
 
+    List<Long> getTransactionIdsByContractId(Long contractId, String startDate, String endDate);
+
 }

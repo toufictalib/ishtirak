@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
+import com.aizong.ishtirak.bean.LogBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
@@ -52,7 +53,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Autowired
     SubscriberDao subscriberDao;
-   
+
     @Autowired
     Message message;
 
@@ -104,8 +105,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void deleteSubscribers(List<Long> subscriberIds) {
 	subscriberDao.deleteSubscribers(subscriberIds);
-	
-	for(Long subscriberId:subscriberIds) {
+
+	for (Long subscriberId : subscriberIds) {
 	    List<Long> contractIds = subscriberDao.getContractIdsBySubscriberId(subscriberId);
 	    deleteContracts(contractIds);
 	}
@@ -180,35 +181,33 @@ public class SubscriberServiceImpl implements SubscriberService {
 	return subscriberDao.searchSubscribers(criteria);
     }
 
-    
-    
     /**
      * save new contact and deactivate old one
      */
     @Override
-    public void switchSubscription(Contract contract,Integer settelementFees, Long oldContractId) {
-	
-	//deactivate old contract
-	
+    public void switchSubscription(Contract contract, Integer settelementFees, Long oldContractId) {
+
+	// deactivate old contract
+
 	if (oldContractId != null) {
 	    closeSubscription(oldContractId);
 	}
-	
+
 	saveContract(contract, settelementFees, false, null);
-	
-	
+
     }
-    
+
     /**
-     * in case of edit, settelementFees should not be changed because it 
-     * paid once at creation of subscription
+     * in case of edit, settelementFees should not be changed because it paid
+     * once at creation of subscription
      */
     @Override
-    public void saveContract(Contract contract,Integer settelementFees, boolean createEmptyCounterHistory, Integer reatctivateSubscriptionFees) {
-	
+    public void saveContract(Contract contract, Integer settelementFees, boolean createEmptyCounterHistory,
+	    Integer reatctivateSubscriptionFees) {
+
 	if (contract.getId() != null) {
 	    subscriberDao.update(contract);
-	    if(reatctivateSubscriptionFees!=null) {
+	    if (reatctivateSubscriptionFees != null) {
 		Transaction transaction = new Transaction();
 		transaction.setAmount(Double.valueOf(reatctivateSubscriptionFees));
 		transaction.setContractId(contract.getId());
@@ -225,13 +224,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 		transaction.setTransactionType(TransactionType.SETTELMENT_FEES);
 		subscriberDao.save(Arrays.asList(transaction));
 	    }
-	    
-	    if(createEmptyCounterHistory) {
+
+	    if (createEmptyCounterHistory) {
 		CounterHistory counterHistory = new CounterHistory();
 		counterHistory.setConsumption(0l);
 		counterHistory.setContractUniqueCode(contract.getContractUniqueCode());
-		if(DateUtil.isCountedAsCurrentMonth(LocalDate.now())) {
-		    counterHistory.setInsertDate(Date.from(LocalDateTime.now().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant()));
+		if (DateUtil.isCountedAsCurrentMonth(LocalDate.now())) {
+		    counterHistory.setInsertDate(
+			    Date.from(LocalDateTime.now().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant()));
 		}
 		saveCounterHistory(counterHistory);
 	    }
@@ -246,7 +246,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void deleteContracts(List<Long> contractIds) {
-	
+
 	List<Long> relatedTransactionIds = subscriberDao.getTransactionIdsByContractIds(contractIds);
 	subscriberDao.deleteTransactions(relatedTransactionIds);
 	subscriberDao.deleteSubscriptionHistory(relatedTransactionIds);
@@ -258,33 +258,36 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void saveCounterHistory(CounterHistory history) {
 	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	 CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(history.getContractUniqueCode(),effectiveCurrentMonth.getStartDateAsString(),effectiveCurrentMonth.getEndDateAsString() );
-	 if(counterHistoryByContractId==null) {
-	     subscriberDao.save(Arrays.asList(history));
-	 }else {
-	     counterHistoryByContractId.setConsumption(history.getConsumption());
-	     counterHistoryByContractId.setContractUniqueCode(history.getContractUniqueCode());
-	     subscriberDao.updateCounterHistory(counterHistoryByContractId);
-	 }
+	CounterHistory counterHistoryByContractId = subscriberDao.getCounterHistoryByContractId(
+		history.getContractUniqueCode(), effectiveCurrentMonth.getStartDateAsString(),
+		effectiveCurrentMonth.getEndDateAsString());
+	if (counterHistoryByContractId == null) {
+	    subscriberDao.save(Arrays.asList(history));
+	} else {
+	    counterHistoryByContractId.setConsumption(history.getConsumption());
+	    counterHistoryByContractId.setContractUniqueCode(history.getContractUniqueCode());
+	    subscriberDao.updateCounterHistory(counterHistoryByContractId);
+	}
 
     }
 
     @Override
     public CounterHistory getCounterHistoryByContractId(String contractUniqueCode) {
 	DateRange effectiveCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
-	return subscriberDao.getCounterHistoryByContractId(contractUniqueCode, effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
+	return subscriberDao.getCounterHistoryByContractId(contractUniqueCode,
+		effectiveCurrentMonth.getStartDateAsString(), effectiveCurrentMonth.getEndDateAsString());
     }
-    
+
     @Override
     public List<Contract> getCounterContractBySubscriberId(Long subscriberId) {
 	return subscriberDao.getCounterContractBySubscriberId(subscriberId);
     }
-    
+
     @Override
     public List<Contract> getContractBySubscriberId(Long subscriberId) {
 	return subscriberDao.getContractBySubscriberId(subscriberId, null);
     }
-    
+
     @Override
     public List<Contract> getActiveContractBySubscriberId(Long subscriberId) {
 	return subscriberDao.getContractBySubscriberId(subscriberId, true);
@@ -295,26 +298,28 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public List<Contract> generateReceipts(LocalDate selectedMonth) {
+    public List<LogBean> generateReceipts(LocalDate selectedMonth) {
+	return generateReceipts(selectedMonth, getActiveContracts());
+    }
 
-	List<Contract> failedContract = new ArrayList<>();
-	
-	// get active contracts
-	List<Contract> contracts = getActiveContracts();
-	
-	//filter all active contracts created after specific time before they should not
-	//into computation
+    private List<LogBean> generateReceipts(LocalDate selectedMonth, List<Contract> contracts) {
+
+	List<LogBean> failedContract = new ArrayList<>();
+
+	// filter all active contracts created after specific time before they
+	// should not
+	// into computation
 	contracts = contracts.stream()
 		.filter(e -> DateUtil.isCountedAsCurrentMonth(
 			e.getInsertDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
 		.collect(Collectors.toList());
 
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedMonth);
-	
-	//create only the contracts haven't created yet
-	Set<Long> alreadyCreatedContracts = new HashSet<>(
-		subscriberDao.getCreatedContractsForCurrentMonth(contracts,
-			dateRange.getStartDateAsString(), dateRange.getEndDateAsString()));
+
+	// create only the contracts haven't created yet
+	// get contracts that have already created
+	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(contracts,
+		dateRange.getStartDateAsString(), dateRange.getEndDateAsString()));
 
 	// get all bundles monthly and subscription types
 	List<Bundle> allBundles = getAllBundles();
@@ -324,9 +329,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 	List<Transaction> transactions = new ArrayList<>();
 	List<SubscriptionHistory> subscriptionHistoryList = new ArrayList<>();
 
-	//get counter history for curret month and pervious month
-	List<ContractConsumptionBean> counterHistories = subscriberDao.getCounterHistory(
-		dateRange,
+	// get counter history for curret month and pervious month
+	List<ContractConsumptionBean> counterHistories = subscriberDao.getCounterHistory(dateRange,
 		DateUtil.getStartEndDateOfCurrentMonth(selectedMonth.minusMonths(1)));
 	Map<String, ContractConsumptionBean> counterHistory = counterHistories.stream()
 		.collect(Collectors.toMap(e -> e.getContractUniqueCode(), e -> e));
@@ -335,12 +339,14 @@ public class SubscriberServiceImpl implements SubscriberService {
 	// 2-create the subscription history for each counter subscription
 	// N.B amount for counter subscription is : monthly fees + consumption *
 	// price/kb
+
 	for (Contract contract : contracts) {
-	    
-	    if(alreadyCreatedContracts.contains(contract.getId())) {
+
+	    if (alreadyCreatedContracts.contains(contract.getId())) {
+		failedContract.add(LogBean.createWarning(message.getMessage("transaction.generation.alreadyExists", contract.getContractUniqueCode())));
 		continue;
 	    }
-	    
+
 	    Bundle bundle = map.get(contract.getBundleId());
 	    if (bundle instanceof MonthlyBundle) {
 		Transaction transaction = new Transaction();
@@ -348,7 +354,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		transaction.setContractId(contract.getId());
 		transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
 		transaction.setInsertDate(dateRange.getStartDate());
-		
+
 		transactions.add(transaction);
 	    } else if (bundle instanceof SubscriptionBundle) {
 
@@ -372,19 +378,20 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    subscriptionHistory.setSubscriptionFees(subscriptionBundle.getSubscriptionFees());
 		    subscriptionHistory.setTransaction(transaction);
 		    subscriptionHistory.setInsertDate(transaction.getInsertDate());
-		    
+
 		    subscriptionHistoryList.add(subscriptionHistory);
 
-		}else {
-		    failedContract.add(contract);
+		} else {
+		    failedContract.add(LogBean.createWarning(message.getMessage("transaction.generation.noCounter", contract.getContractUniqueCode())));
 		}
 	    }
 	}
 
 	subscriberDao.save(new ArrayList<>(transactions));
 	subscriberDao.save(new ArrayList<>(subscriptionHistoryList));
-	
+    
 	return failedContract;
+	
     }
 
     @Override
@@ -396,7 +403,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	}
 
     }
-    
+
     @Override
     public void saveOutExpenses(OutExpensesLog outExpensesLog) {
 	if (outExpensesLog.getId() != null) {
@@ -486,7 +493,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     public ExpensesLog getExpensesById(Long id) {
 	return subscriberDao.find(ExpensesLog.class, id);
     }
-    
+
     @Override
     public OutExpensesLog getOutExpensesById(Long id) {
 	return subscriberDao.find(OutExpensesLog.class, id);
@@ -495,20 +502,20 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void deleteExpenses(List<Long> ids) {
 	subscriberDao.deleteExpenses(ids);
-	
+
     }
 
     @Override
     public boolean login(String userName, char[] password) {
 	User user = subscriberDao.getUserByName(userName);
 	Optional<String> hashPass = PasswordUtils.hashPass(new String(password));
-	return user!=null && hashPass.isPresent() && hashPass.get().equals(user.getPassword());
+	return user != null && hashPass.isPresent() && hashPass.get().equals(user.getPassword());
     }
 
     @Override
     public void deleteOutExpenses(List<Long> ids) {
 	subscriberDao.deleteOutExpenses(ids);
-	
+
     }
 
     @Override
@@ -553,10 +560,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public void deleteTransactions(List<Long> ids) {
-	subscriberDao.deleteTransactions(ids);
 	subscriberDao.deleteSubscriptionHistory(ids);
-	
-	
+	subscriberDao.deleteTransactions(ids);
+
     }
 
     @Override
@@ -572,9 +578,9 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public void updateTransaction(Transaction transaction) {
 	subscriberDao.update(transaction);
-	
+
     }
-    
+
     @Override
     public void closeSubscription(Long contractId) {
 	Contract oldContract = getContractById(contractId);
@@ -584,5 +590,53 @@ public class SubscriberServiceImpl implements SubscriberService {
 	    subscriberDao.save(Arrays.asList(oldContract));
 	}
     }
-    
+
+    @Override
+    public void generateSelectedContractReceipt(LocalDate now, Long contractId) throws Exception {
+
+	Contract contract = getContractById(contractId);
+	LocalDate contractInsertDate = DateUtil.localDate(contract.getInsertDate());
+	if (contractInsertDate.isBefore(now)
+		|| (contractInsertDate.getMonth() == now.getMonth() && contractInsertDate.getYear() == now.getYear())) {
+	    if (contract != null) {
+		List<LogBean> logs = generateReceipts(now, Arrays.asList(contract));
+		if (!logs.isEmpty()) {
+		    throw new Exception(logs.get(0).getText());
+		}
+	    }
+	} else {
+	    throw new Exception(message.getMessage("transaction.date.passed"));
+	}
+
+    }
+
+    @Override
+    public void saveTransaction(LocalDate now, Transaction transaction) throws Exception {
+
+	Contract contract = getContractById(transaction.getContractId());
+
+	LocalDate contractInsertDate = DateUtil.localDate(contract.getInsertDate());
+	
+	if(contractInsertDate.isBefore(now)) {
+	   subscriberDao.save(Arrays.asList(transaction));
+	}else if(contractInsertDate.getMonth()==now.getMonth() && contractInsertDate.getYear() == now.getYear()) {
+	    transaction.setInsertDate(contract.getInsertDate());
+	    subscriberDao.save(Arrays.asList(transaction));
+	}
+	else {
+	    throw new Exception(message.getMessage("transaction.date.passed"));
+	}
+
+    }
+
+    @Override
+    public List<ReceiptBean> getContractReceipt(Long contractId, String startDate, String endDate ) {
+	
+	List<Long> transactionIds = subscriberDao.getTransactionIdsByContractId(contractId, startDate, endDate);
+	if(transactionIds.isEmpty()) {
+	    return new ArrayList<>();
+	}
+	return getReceipts(transactionIds, startDate, endDate);
+	
+    }
 }

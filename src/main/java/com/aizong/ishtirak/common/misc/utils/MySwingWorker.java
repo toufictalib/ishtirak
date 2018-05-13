@@ -1,7 +1,5 @@
 package com.aizong.ishtirak.common.misc.utils;
 
-import java.util.concurrent.ExecutionException;
-
 import javax.swing.SwingWorker;
 
 import com.aizong.ishtirak.common.form.MyProgressBar;
@@ -34,7 +32,7 @@ public class MySwingWorker<T> extends SwingWorker<T,Void> {
         myProgressBar.dispose();
         try {
 	    progressAction.success(get());
-	} catch (InterruptedException | ExecutionException e) {
+	} catch (Exception e) {
 	    progressAction.failure(e);
 	}
     }

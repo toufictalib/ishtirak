@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -141,16 +142,29 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 
     @Override
     public List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange, DateRange previousDateRange) {
+	String sql = SQLUtils.sql("user_consumption_between_now_previous.sql", previousDateRange.getStartDateAsString(),
+				currentDateRange.getEndDateAsString());
+	NativeQuery sqlQuery = getsession().createNativeQuery(sql, CounterHistory.class);
+	List<CounterHistory> counterHistories = sqlQuery.list();
 
-	String sql = SQLUtils.sql("user_consumption_between_now_previous.sql", currentDateRange.getStartDateAsString(),
-		currentDateRange.getEndDateAsString(), previousDateRange.getStartDateAsString(),
-		previousDateRange.getEndDateAsString());
-	NativeQuery sqlQuery = getsession().createSQLQuery(sql);
-	sqlQuery.addScalar("contractUniqueCode", StandardBasicTypes.STRING)
-		.addScalar("previousCounterValue", StandardBasicTypes.LONG)
-		.addScalar("currentCounterValue", StandardBasicTypes.LONG);
-	sqlQuery.setResultTransformer(Transformers.aliasToBean(ContractConsumptionBean.class));
-	return sqlQuery.list();
+	Map<String, ContractConsumptionBean> map = new HashMap<>();
+	for (CounterHistory counterHistory : counterHistories) {
+	    ContractConsumptionBean contractConsumptionBean = map.get(counterHistory.getContractUniqueCode());
+	    if (contractConsumptionBean == null) {
+		contractConsumptionBean = new ContractConsumptionBean();
+		contractConsumptionBean.setContractUniqueCode(counterHistory.getContractUniqueCode());
+		contractConsumptionBean.setPreviousCounterValue(counterHistory.getConsumption());
+
+		map.put(counterHistory.getContractUniqueCode(), contractConsumptionBean);
+	    } else {
+		contractConsumptionBean.setCurrentCounterValue(counterHistory.getConsumption());
+	    }
+
+	}
+
+	return map.values().stream()
+		.filter(e -> e.getCurrentCounterValue() != null && e.getPreviousCounterValue() != null)
+		.collect(Collectors.toList());
     }
 
     @Override
@@ -504,6 +518,18 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    return createNativeQuery.list();
 	}
 	return new ArrayList<>();
+
+    }
+    
+    @Override
+    public List<Long> getTransactionIdsByContractId(Long contractId, String startDate, String endDate) {
+	String sql = "select id from transaction where id_contract = :contractId and insert_date >= :startDate "
+		+ "and insert_date <= :endDate";
+	NativeQuery createNativeQuery = getsession().createNativeQuery(sql);
+	createNativeQuery.setParameter("contractId", contractId).setParameter("startDate", startDate)
+		.setParameter("endDate", endDate);
+	createNativeQuery.addScalar("id", StandardBasicTypes.LONG);
+	return createNativeQuery.list();
 
     }
 

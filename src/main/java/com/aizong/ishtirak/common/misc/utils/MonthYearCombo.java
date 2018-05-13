@@ -39,6 +39,17 @@ public class MonthYearCombo extends JPanel {
 	datePickerYearFrom.setSelectedItem(localDate.getYear());
     }
     
+    public  MonthYearCombo(int flowLayoutAlignment) {
+	super(new FlowLayout(flowLayoutAlignment));
+	datePickerFrom = monthCombo();
+	datePickerYearFrom = yearsCombo();
+	add(datePickerFrom);
+	add(datePickerYearFrom);
+	LocalDate localDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	datePickerFrom.setSelectedIndex(DateUtil.getEffectiveMonth()-1);
+	datePickerYearFrom.setSelectedItem(localDate.getYear());
+    }
+    
     private JComboBox<Integer> yearsCombo() {
   	JComboBox<Integer> jComboBox = new JComboBox<Integer>(YEARS);
   	jComboBox.setPreferredSize(new Dimension(100, jComboBox.getPreferredSize().height));

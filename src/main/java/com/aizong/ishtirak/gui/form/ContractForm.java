@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,21 +18,32 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.aizong.ishtirak.MainFrame;
+import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.form.BasicForm;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.component.ExCombo;
 import com.aizong.ishtirak.common.misc.utils.AlphanumComparator;
+import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
+import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.IntergerTextField;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.Mode;
+import com.aizong.ishtirak.common.misc.utils.MonthYearCombo;
 import com.aizong.ishtirak.common.misc.utils.ProgressBar;
 import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.demo.ReceiptBean;
+import com.aizong.ishtirak.gui.table.SubscriberHistoryTablePanel;
 import com.aizong.ishtirak.model.Address;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Contract;
@@ -39,6 +52,10 @@ import com.aizong.ishtirak.model.SubscriptionBundle;
 import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
+
+import net.sf.dynamicreports.jasper.builder.JasperConcatenatedReportBuilder;
+import net.sf.dynamicreports.jasper.builder.export.Exporters;
+import net.sf.dynamicreports.report.exception.DRException;
 
 public class ContractForm extends BasicForm {
 
@@ -65,7 +82,7 @@ public class ContractForm extends BasicForm {
     protected Map<Long, Set<String>> counterPerEngine = new HashMap<>();
 
     protected List<String> allKeys = new ArrayList<>();
-    
+
     public ContractForm(Long subscriberId) {
 	this.subscriberId = subscriberId;
 	init();
@@ -81,7 +98,7 @@ public class ContractForm extends BasicForm {
     private void init() {
 	if (mode != Mode.VIEW || mode != Mode.DELETE) {
 	    counterPerEngine = ServiceProvider.get().getSubscriberService().getContractUniqueCodesByEngine();
-	    counterPerEngine.entrySet().forEach(e->allKeys.addAll(e.getValue()));
+	    counterPerEngine.entrySet().forEach(e -> allKeys.addAll(e.getValue()));
 	    Collections.sort(allKeys, new AlphanumComparator());
 	} else {
 	    allKeys = new ArrayList<>();
@@ -125,13 +142,18 @@ public class ContractForm extends BasicForm {
 	comboEngines.addItemListener(e -> {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
 		if (comboEngines.getValue() != null) {
-		    Set<String> set = counterPerEngine.get(comboEngines.getValue().getId());
-		    if (set != null && !set.isEmpty()) {
-			List<String> list = new ArrayList<>(set);
-			Collections.sort(list, new AlphanumComparator());
-			txtCounterId.setText(list.get(list.size() - 1));
+
+		    if (mode == Mode.VIEW) {
+			txtCounterId.setText(contract.getContractUniqueCode());
+		    } else {
+			Set<String> set = counterPerEngine.get(comboEngines.getValue().getId());
+			if (set != null && !set.isEmpty()) {
+			    List<String> list = new ArrayList<>(set);
+			    Collections.sort(list, new AlphanumComparator());
+			    txtCounterId.setText(list.get(list.size() - 1));
+			}
 		    }
-		    
+
 		}
 	    }
 	});
@@ -167,6 +189,80 @@ public class ContractForm extends BasicForm {
 
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.appendSeparator(message("contract.form.seperator"));
+
+	if (mode == Mode.VIEW) {
+	    
+	    txtCounterId.setEditable(false);
+	    
+	    JButton btnCreateReceipt = ButtonFactory.button(message("contract.form.createReceipt"),
+		    ImageUtils.getAddIcon());
+	    btnCreateReceipt.addActionListener(createReceipt());
+
+	    JButton btnPrintReceipt = ButtonFactory.button(message("contract.form.createReceiptAndPrint"),
+		    ImageUtils.getPrintIcon());
+	    btnPrintReceipt.addActionListener(e -> {
+
+		MonthYearCombo monthYearCombo = new MonthYearCombo();
+		Object[] options = { message("contract.print.button"), message("import.counter.close") };
+		int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
+			JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+		if (answer == JOptionPane.YES_OPTION) {
+		    LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
+			    DateUtil.START_MONTH);
+
+		    JFileChooser fc = new JFileChooser();
+		    fc.setSelectedFile(new File(contract.getContractUniqueCode() + "_ايصال.pdf"));
+		    fc.setFileFilter(new FileNameExtensionFilter("pdf Only", "pdf"));
+		    int returnVal = fc.showSaveDialog(ContractForm.this);
+		    if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+
+			ProgressBar.execute(new ProgressBarListener<JasperConcatenatedReportBuilder>() {
+
+			    @Override
+			    public JasperConcatenatedReportBuilder onBackground() throws Exception {
+				DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(now);
+				List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService()
+					.getContractReceipt(contract.getId(), dateRange.getStartDateAsString(),
+						dateRange.getEndDateAsString());
+				return receipts.isEmpty() ? null
+					: SubscriberHistoryTablePanel.getReportBuilder(receipts);
+			    }
+
+			    @Override
+			    public void onDone(JasperConcatenatedReportBuilder jasperConcatenatedReportBuilder) {
+				if (jasperConcatenatedReportBuilder == null) {
+				    MessageUtils.showWarningMessage(ContractForm.this, message("contract.print.empty"));
+				    return;
+				}
+
+				try {
+				    // setPageFormat(PageType.A6,
+				    // PageOrientation.LANDSCAPE);
+				    jasperConcatenatedReportBuilder.toPdf(Exporters.pdfExporter(file));
+				    MessageUtils.showInfoMessage(ContractForm.this, message("receipts.export.success"));
+				} catch (DRException e) {
+				    e.printStackTrace();
+				}
+
+			    }
+			}, ContractForm.this);
+		    }
+		}
+	    });
+	    JButton btnAddSettelmentFees = ButtonFactory.button(message("contract.form.addTransaction"),
+		    ImageUtils.getAddIcon());
+
+	    btnAddSettelmentFees.addActionListener(e -> {
+		MainFrame.openWindow(ContractForm.this.getOwner(), btnAddSettelmentFees.getText(),
+			new TransactionForm(contract.getId(), TransactionType.SETTELMENT_FEES));
+	    });
+	    builder.append(
+		    ButtonBarFactory.buildRightAlignedBar(btnAddSettelmentFees, btnPrintReceipt, btnCreateReceipt),
+		    builder.getColumnCount());
+	}
+
 	builder.setDefaultDialogBorder();
 	builder.append(message("contract.form.counter"), txtCounterId);
 	builder.append(message("contract.form.active"), cbActive);
@@ -197,26 +293,48 @@ public class ContractForm extends BasicForm {
 	return builder.getPanel();
     }
 
+    private ActionListener createReceipt() {
+	return e -> {
+
+	    MonthYearCombo monthYearCombo = new MonthYearCombo();
+	    Object[] options = { message("import.counter.button"), message("import.counter.close") };
+	    int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
+		    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+	    if (answer == JOptionPane.YES_OPTION) {
+		LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(), DateUtil.START_MONTH);
+		try {
+		    ServiceProvider.get().getSubscriberService().generateSelectedContractReceipt(now, contract.getId());
+		    MessageUtils.showInfoMessage(ContractForm.this, message("receipts.export.success"));
+		} catch (Exception e1) {
+		    MessageUtils.showWarningMessage(ContractForm.this, e1.getMessage());
+		}
+	    }
+	};
+    }
+
     private ActionListener deleteSubscription() {
 	return e -> {
-	boolean yes = MessageUtils.showConfirmationMessage(ContractForm.this, message("subscription.delete", contract.getContractUniqueCode()));
-	if (yes) {
-	    ProgressBar.execute(new ProgressBarListener<Void>() {
+	    boolean yes = MessageUtils.showConfirmationMessage(ContractForm.this,
+		    message("subscription.delete", contract.getContractUniqueCode()));
+	    if (yes) {
 
-		@Override
-		public Void onBackground() throws Exception {
-		    ServiceProvider.get().getSubscriberService().deleteContracts(Arrays.asList(contract.getId()));
-		    return null;
-		}
+		ProgressBar.execute(new ProgressBarListener<Void>() {
 
-		@Override
-		public void onDone(Void response) {
-		    closeWindow();
-		    MessageUtils.showInfoMessage(ContractForm.this, message("subscription.success"));
-		    
-		}
-	    }, ContractForm.this);
-	}
+		    @Override
+		    public Void onBackground() throws Exception {
+			ServiceProvider.get().getSubscriberService().deleteContracts(Arrays.asList(contract.getId()));
+			return null;
+		    }
+
+		    @Override
+		    public void onDone(Void response) {
+			closeWindow();
+			MessageUtils.showInfoMessage(ContractForm.this, message("subscription.success"));
+
+		    }
+		}, ContractForm.this);
+	    }
 	};
     }
 
@@ -229,21 +347,21 @@ public class ContractForm extends BasicForm {
 	}
 
 	Integer reatctivateSubscriptionFees = null;
-	
+
 	if (mode == Mode.UPDATE && contract != null && !contract.isActive() && cbActive.isSelected()) {
 	    String input = MessageUtils.showInputDialog(ContractForm.this, message("subscription.reactivate.fees"));
 	    try {
-		if(input==null || input.isEmpty()) {
-		    
-		}else {
+		if (input == null || input.isEmpty()) {
+
+		} else {
 		    reatctivateSubscriptionFees = Integer.parseInt(input);
 		}
-	    }catch (Exception e) {
+	    } catch (Exception e) {
 		MessageUtils.showWarningMessage(ContractForm.this, message("input.integer"));
 		return;
 	    }
 	}
-	
+
 	contract = contract == null ? new Contract() : contract;
 	contract.setActive(cbActive.isSelected());
 
@@ -263,9 +381,9 @@ public class ContractForm extends BasicForm {
 	if (comboBundles.getValue() instanceof SubscriptionBundle && contract.getId() == null) {
 	    createEmptyCounterHistory = true;
 	}
-	
-	
-	ServiceProvider.get().getSubscriberService().saveContract(contract, txtSettelementFees.getValue(), createEmptyCounterHistory, reatctivateSubscriptionFees);
+
+	ServiceProvider.get().getSubscriberService().saveContract(contract, txtSettelementFees.getValue(),
+		createEmptyCounterHistory, reatctivateSubscriptionFees);
 	closeWindow();
 
     }
@@ -291,7 +409,7 @@ public class ContractForm extends BasicForm {
 	}
 
 	if (!txtCounterId.getText().isEmpty() && comboEngines.getValue() != null) {
-	    
+
 	    boolean checkCounter = true;
 	    if (mode == Mode.UPDATE && contract.getContractUniqueCode().equals(txtCounterId.getText())) {
 		checkCounter = false;

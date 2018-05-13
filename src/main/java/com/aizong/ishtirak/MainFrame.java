@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 
+import com.aizong.ishtirak.bean.LogBean;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
@@ -62,7 +63,6 @@ import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriberHistoryTablePanel;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
-import com.aizong.ishtirak.model.Contract;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
@@ -170,7 +170,7 @@ public class MainFrame extends JFrame {
 			LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
 			    DateUtil.START_MONTH);
 			
-			List<Contract> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts(now);
+			List<LogBean> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts(now);
 			if (!generateReceipts.isEmpty()) {
 			    DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
 			    builder.appendSeparator("");

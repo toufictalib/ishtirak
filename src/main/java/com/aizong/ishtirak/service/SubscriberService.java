@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.aizong.ishtirak.bean.LogBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
 import com.aizong.ishtirak.demo.ReceiptBean;
@@ -70,7 +71,7 @@ public interface SubscriberService {
     
     List<Contract> getCounterContractBySubscriberId(Long contractId);
 
-    List<Contract> generateReceipts(LocalDate selectedMonth);
+    List<LogBean> generateReceipts(LocalDate selectedMonth);
 
     void saveMaintenanceLog(ExpensesLog maintenaceLog);
 
@@ -141,5 +142,11 @@ public interface SubscriberService {
     void updateTransaction(Transaction transaction);
 
     void closeSubscription(Long contractId);
+
+    void generateSelectedContractReceipt(LocalDate now, Long contractId) throws Exception;
+
+    void saveTransaction(LocalDate now, Transaction transaction) throws Exception;
+
+    List<ReceiptBean> getContractReceipt(Long contractId, String startDate, String endDate);
     
 }

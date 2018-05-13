@@ -1,8 +1,6 @@
 package com.aizong.ishtirak.gui.form;
 
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,18 +8,18 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
-import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.component.DoubleTextField;
-import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
-import com.aizong.ishtirak.common.misc.utils.MonthYearCombo;
 import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.common.misc.utils.VoidProgressAction;
+import com.aizong.ishtirak.common.misc.utils.VoidSwingWorker;
+import com.aizong.ishtirak.gui.table.service.Response;
 import com.aizong.ishtirak.model.Transaction;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
-public class TransactionForm extends BasicForm {
+public class TransactionEditingForm extends BasicForm {
 
     /**
      * 
@@ -30,16 +28,19 @@ public class TransactionForm extends BasicForm {
 
     private JTextField txtCode;
     private DoubleTextField txtAmount;
-    private MonthYearCombo monthYearCombo;
 
-    private Long contractId;
-    private TransactionType transactionType;
+    private Transaction transaction;
 
-    public TransactionForm(Long contractId, TransactionType transactionType) {
-	this.contractId = contractId;
-	this.transactionType = transactionType;
+   private  Response response;
+    public TransactionEditingForm(Transaction transaction, Response response) {
+	this.transaction = transaction;
+	this.response =  response;
+	if(transaction==null) {
+	    throw new IllegalArgumentException("Transaction must not be null");
+	}
 	initializePanel();
     }
+    
 
     @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
@@ -47,7 +48,6 @@ public class TransactionForm extends BasicForm {
 	builder.setDefaultDialogBorder();
 	builder.append(message("codeId"), txtCode);
 	builder.append(message("transaction.amount"), txtAmount);
-	builder.append(message("subscriptionMonth"), monthYearCombo);
 	builder.appendSeparator();
 
 	JButton btnSave = btnSave();
@@ -59,24 +59,28 @@ public class TransactionForm extends BasicForm {
 
     @Override
     protected String getLayoutSpecs() {
-	return "right:pref, 4dlu, fill:p:grow";
+	return "right:pref, 4dlu, fill:100dlu:grow";
     }
 
     @Override
     protected void save() {
-	Transaction transaction = new Transaction();
-	transaction.setAmount(txtAmount.getValue());
-	transaction.setContractId(contractId);
-	LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(), DateUtil.START_MONTH);
-	transaction.setInsertDate(DateUtil.fromLocalDate(now));
-	transaction.setTransactionType(transactionType);
-	try {
-	    ServiceProvider.get().getSubscriberService().saveTransaction(now, transaction);
-	    MessageUtils.showInfoMessage(TransactionForm.this, message("transaction.input.success"));
-	    closeWindow();
-	} catch (Exception e) {
-	    MessageUtils.showErrorMessage(TransactionForm.this, e.getMessage());
-	}
+	VoidSwingWorker.execute(new VoidProgressAction() {
+	    
+	    @Override
+	    public void success() {
+		
+		closeWindow();
+		MessageUtils.showInfoMessage(TransactionEditingForm.this.getOwner(), message("modification.success", message("transaction.amount")));
+		response.success(null);
+	    }
+	    
+	    @Override
+	   public void apply() {
+		
+		transaction.setAmount(txtAmount.getValue());
+		ServiceProvider.get().getSubscriberService().updateTransaction(transaction);
+	    }
+	});
     };
 
     @Override
@@ -84,7 +88,7 @@ public class TransactionForm extends BasicForm {
 	List<String> errors = new ArrayList<String>();
 
 	if (txtAmount.getValue() == null) {
-	    errors.add(errorPerfix("transaction.amount"));
+	    errors.add(message("transaction.amount"));
 	}
 
 	return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
@@ -92,11 +96,13 @@ public class TransactionForm extends BasicForm {
 
     @Override
     protected void initComponents() {
-	txtCode = new JTextField();
+	txtCode  = new JTextField();
 	txtCode.setEditable(false);
 	txtAmount = new DoubleTextField();
-	monthYearCombo = new MonthYearCombo(FlowLayout.LEFT);
-
+	
+	
+	txtCode.setText(String.valueOf(transaction.getId()));
+	txtAmount.setValue(transaction.getAmount());
     }
 
 }

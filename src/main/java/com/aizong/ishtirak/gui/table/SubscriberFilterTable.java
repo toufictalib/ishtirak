@@ -124,8 +124,9 @@ public class SubscriberFilterTable extends CommonFilterTable {
 
 	JButton btnEditContract = createEditContractBtn(message("subscription.form.edit"), Mode.UPDATE, false);
 
-	JButton btnStopContract = ButtonFactory.button(message("subscription.form.stop"),
-		ImageHelperCustom.get().getImageIcon("stop.png"));
+	JButton btnStopContract = new JButton(message("subscription.form.stop"), ImageHelperCustom.get().getImageIcon("stop.png"));
+	btnStopContract.setToolTipText(btnStopContract.getText());
+	
 	btnStopContract.addActionListener(createStopContractBtn());
 
 	JButton btnViewContract = createEditContractBtn(message("subscription.form.view"), Mode.VIEW, false);
