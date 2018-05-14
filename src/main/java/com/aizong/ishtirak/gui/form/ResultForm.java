@@ -185,7 +185,7 @@ public class ResultForm extends BasicForm implements ActionListener {
     private JPanel createIncomeExpenses(String title, List<Tuple<String, Double>> result, Class<?> enumClass,
 	    boolean expenses) {
 
-	DefaultFormBuilder builder = BasicForm.createBuilder("p,20dlu,fill:150dlu:grow");
+	DefaultFormBuilder builder = BasicForm.createBuilder("p,20dlu,fill:140dlu:grow");
 
 	Double amount = 0d;
 

@@ -44,6 +44,7 @@ import com.aizong.ishtirak.gui.table.tablemodel.ConsumptionTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.ExpensesTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.IncomeTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.ResultTableModel;
+import com.aizong.ishtirak.model.Engine;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
@@ -141,11 +142,10 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 
 	JPanel panel2 = builder.getPanel();
 	JScrollPane scrollPane = new JScrollPane();
-	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-	panel2.setPreferredSize(ComponentUtils.getDimension(85, 95));
+	panel2.setPreferredSize(ComponentUtils.getDimension(97, 90));
 	scrollPane.setViewportView(panel2);
-	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(88, 70)));
+	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(100, 88)));
 	
 	add(scrollPane,BorderLayout.CENTER);
 	add(panel, BorderLayout.SOUTH);
@@ -173,7 +173,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	return map;
     }
 
-    private void fillTableConsumption(List<Object[]> rows) {
+    private Map<String, Map<String, Double>>  getConsupmtions(List<Object[]> rows) {
 
 	Map<String, Map<String, Double>> map = new HashMap<>();
 	for (Object[] row : rows) {
@@ -194,7 +194,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	    }
 	}
 
-	tableConsumption.setModel(new ConsumptionTableModel(map));
+	return map;
 
     }
 
@@ -214,7 +214,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	    values.put(expensesType, amount);
 	}
 
-	map.put(message("noEngine"), new HashMap<String, Double>());
+	//map.put(message("noEngine"), new HashMap<String, Double>());
 	return map;
     }
 
@@ -241,9 +241,27 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 		@Override
 		public void success(SummaryBean t) {
 		    Map<String, Map<String, Double>> expensesValues = getExpensesValues(t.getExpenses());
-		    tableExpenses.setModel(new ExpensesTableModel(expensesValues));
-		    fillTableConsumption(t.getConsumptions());
 		    Map<String, Map<String, Double>> incomeValues = getIncomeValues(t.getIncome());
+		    Map<String, Map<String, Double>> consumptions = getConsupmtions(t.getConsumptions());
+		    
+		    for (Engine engine : t.getEngines()) {
+			if(incomeValues.get(engine.getName())==null) {
+			    incomeValues.put(engine.getName(), new HashMap<>());
+			}
+			
+			if(expensesValues.get(engine.getName())==null) {
+			    expensesValues.put(engine.getName(), new HashMap<>());
+			}
+			
+			if(consumptions.get(engine.getName())==null) {
+			    consumptions.put(engine.getName(), new HashMap<>());
+			}
+			
+			
+		    }
+		    
+		    tableExpenses.setModel(new ExpensesTableModel(expensesValues));
+		    tableConsumption.setModel(new ConsumptionTableModel(consumptions));
 		    tableIncome.setModel(new IncomeTableModel(incomeValues));
 		    fillResult(incomeValues, expensesValues);
 		}

@@ -1,8 +1,9 @@
 package com.aizong.ishtirak.demo;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Locale;
-
-import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 
 public class ReceiptBean {
 
@@ -103,16 +104,28 @@ public class ReceiptBean {
     }
 
     public String getAmountToPay() {
-	return CurrencyUtils.formatCurrency(new Locale("ar", "LB"), amountTopay);
+	return formatCurrency(new Locale("ar", "LB"), amountTopay) +"  ل.ل.";
     }
     
+    private String formatCurrency(Locale locale, Double amountTopay2) {
+	
+	DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(new Locale.Builder().setLanguageTag("ar-LB-u-nu-arab").build());
+	DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+	symbols.setGroupingSeparator(',');
+	formatter.setDecimalFormatSymbols(symbols);
+	
+	return formatter.format(amountTopay2);
+    }
     public void setAmountTopay(Double amountTopay) {
         this.amountTopay = amountTopay;
     }
     public static void main(String[]args) {
 	
-	Locale locale = new Locale("ar", "LB");
-	CurrencyUtils.formatCurrency(locale, 120000d);
+	ReceiptBean bean = ReceiptBean.create(true);
+	
+	System.out.println(bean.formatCurrency(Locale.CANADA, 125000d));
+	
     }
     
     
