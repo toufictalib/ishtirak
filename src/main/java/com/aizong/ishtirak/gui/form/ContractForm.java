@@ -200,57 +200,7 @@ public class ContractForm extends BasicForm {
 
 	    JButton btnPrintReceipt = ButtonFactory.button(message("contract.form.createReceiptAndPrint"),
 		    ImageUtils.getPrintIcon());
-	    btnPrintReceipt.addActionListener(e -> {
-
-		MonthYearCombo monthYearCombo = new MonthYearCombo();
-		Object[] options = { message("contract.print.button"), message("import.counter.close") };
-		int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
-			JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-
-		if (answer == JOptionPane.YES_OPTION) {
-		    LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
-			    DateUtil.START_MONTH);
-
-		    JFileChooser fc = new JFileChooser();
-		    fc.setSelectedFile(new File(contract.getContractUniqueCode() + "_ايصال.pdf"));
-		    fc.setFileFilter(new FileNameExtensionFilter("pdf Only", "pdf"));
-		    int returnVal = fc.showSaveDialog(ContractForm.this);
-		    if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-
-			ProgressBar.execute(new ProgressBarListener<JasperConcatenatedReportBuilder>() {
-
-			    @Override
-			    public JasperConcatenatedReportBuilder onBackground() throws Exception {
-				DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(now);
-				List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService()
-					.getContractReceipt(contract.getId(), dateRange.getStartDateAsString(),
-						dateRange.getEndDateAsString());
-				return receipts.isEmpty() ? null
-					: SubscriberHistoryTablePanel.getReportBuilder(receipts);
-			    }
-
-			    @Override
-			    public void onDone(JasperConcatenatedReportBuilder jasperConcatenatedReportBuilder) {
-				if (jasperConcatenatedReportBuilder == null) {
-				    MessageUtils.showWarningMessage(ContractForm.this, message("contract.print.empty"));
-				    return;
-				}
-
-				try {
-				    // setPageFormat(PageType.A6,
-				    // PageOrientation.LANDSCAPE);
-				    jasperConcatenatedReportBuilder.toPdf(Exporters.pdfExporter(file));
-				    MessageUtils.showInfoMessage(ContractForm.this, message("receipts.export.success"));
-				} catch (DRException e) {
-				    e.printStackTrace();
-				}
-
-			    }
-			}, ContractForm.this);
-		    }
-		}
-	    });
+	    btnPrintReceipt.addActionListener(printReceipt());
 	    JButton btnAddSettelmentFees = ButtonFactory.button(message("contract.form.addTransaction"),
 		    ImageUtils.getAddIcon());
 
@@ -293,12 +243,69 @@ public class ContractForm extends BasicForm {
 	return builder.getPanel();
     }
 
+    private ActionListener printReceipt() {
+	return e -> {
+
+	MonthYearCombo monthYearCombo = new MonthYearCombo();
+	Object[] options = { message("contract.print.button"), message("import.counter.close") };
+	int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
+		JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+	if (answer == JOptionPane.YES_OPTION) {
+	    LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
+		    DateUtil.START_MONTH);
+
+	   
+
+		ProgressBar.execute(new ProgressBarListener<JasperConcatenatedReportBuilder>() {
+
+		    @Override
+		    public JasperConcatenatedReportBuilder onBackground() throws Exception {
+			DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(now);
+			List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService()
+				.getContractReceipt(contract.getId(), dateRange);
+			return receipts.isEmpty() ? null
+				: SubscriberHistoryTablePanel.getReportBuilder(receipts);
+		    }
+
+		    @Override
+		    public void onDone(JasperConcatenatedReportBuilder jasperConcatenatedReportBuilder) {
+
+			if (jasperConcatenatedReportBuilder == null) {
+			    MessageUtils.showWarningMessage(ContractForm.this, message("contract.print.empty"));
+			    return;
+			}
+
+			JFileChooser fc = new JFileChooser();
+			fc.setSelectedFile(new File(contract.getContractUniqueCode() + "_ايصال.pdf"));
+			fc.setFileFilter(new FileNameExtensionFilter("pdf Only", "pdf"));
+			int returnVal = fc.showSaveDialog(ContractForm.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+			    File file = fc.getSelectedFile();
+
+			    try {
+				// setPageFormat(PageType.A6,
+				// PageOrientation.LANDSCAPE);
+				jasperConcatenatedReportBuilder.toPdf(Exporters.pdfExporter(file));
+				MessageUtils.showInfoMessage(ContractForm.this, message("receipts.export.success"));
+			    } catch (DRException e) {
+				e.printStackTrace();
+			    }
+
+			}
+
+		    }
+		}, ContractForm.this);
+	    }
+	};
+    }
+
     private ActionListener createReceipt() {
 	return e -> {
 
 	    MonthYearCombo monthYearCombo = new MonthYearCombo();
-	    Object[] options = { message("import.counter.button"), message("import.counter.close") };
-	    int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
+	    Object[] options = { message("contract.form.createReceipt"), message("import.counter.close") };
+	    int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("contract.form.createReceipt"),
 		    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 	    if (answer == JOptionPane.YES_OPTION) {

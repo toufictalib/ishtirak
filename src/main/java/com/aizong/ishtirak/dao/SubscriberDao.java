@@ -46,7 +46,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     void deleteExpenses(List<Long> ids);
 
-    List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, String fromDate, String toDate);
+    List<Long> getCreatedContractsForCurrentMonth(List<Long> activeContractIds, String fromDate, String toDate);
 
     List<Contract> getContractBySubscriberId(Long subscriberId, Boolean active);
 
@@ -68,7 +68,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     void updatePayment(List<Long> transactionIds, boolean paid);
 
-    List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
+    List<ReceiptBean> getReceipts(List<Long> transactionIds, DateRange dateRange);
 
     void deleteSubscriptionHistory(List<Long> transactionIds);
 

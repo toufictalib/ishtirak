@@ -8,6 +8,7 @@ import java.util.Set;
 import com.aizong.ishtirak.bean.LogBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.demo.ReceiptBean;
 import com.aizong.ishtirak.model.Bundle;
 import com.aizong.ishtirak.model.Company;
@@ -137,7 +138,7 @@ public interface SubscriberService {
 
     void updatePayment(List<Long> transactionIds, boolean paid);
     
-    List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate);
+    List<ReceiptBean> getReceipts(List<Long> transactionIds, DateRange dateRange);
 
     void updateTransaction(Transaction transaction);
 
@@ -147,6 +148,6 @@ public interface SubscriberService {
 
     void saveTransaction(LocalDate now, Transaction transaction) throws Exception;
 
-    List<ReceiptBean> getContractReceipt(Long contractId, String startDate, String endDate);
+    List<ReceiptBean> getContractReceipt(Long contractId, DateRange dateRange);
     
 }

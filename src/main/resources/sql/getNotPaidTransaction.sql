@@ -10,4 +10,3 @@ WHERE
         AND c.is_active = 1
         AND t.is_paid != 1
         AND transaction_type <> "SETTELMENT_FEES"
-        and c.insert_date <= "{1}";

@@ -167,69 +167,81 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
     private ActionListener printReceipts(boolean all) {
 	return l -> {
 
-	    if(fromDateRange==null || fromDateRange ==null) {
-		MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("subscription.search.missing"));
+	    if (fromDateRange == null || fromDateRange == null) {
+		MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this,
+			message("subscription.search.missing"));
 		return;
 	    }
-	    
+
 	    Optional<List<Long>> transactionId = getSelectedRowsId(false);
-	    
+
 	    List<Long> selectedTransactions = new ArrayList<>();
 	    if (!all) {
-		if(transactionId.isPresent()) {
+		if (transactionId.isPresent()) {
 		    selectedTransactions.addAll(transactionId.get());
-		}else {
-		    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("table.row.select.missing"));
-			return;
+		} else {
+		    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this,
+			    message("table.row.select.missing"));
+		    return;
 		}
+
+	    }
+	    
+	    if (!fromDateRange.getStartDate().equals(toDateRange.getStartDate())) {
+		MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this,
+			message("receipt.printing.difference.monthes"));
+		return;
 	    }
 
+	    JFileChooser fc = new JFileChooser();
+	    fc.setSelectedFile(new File("ايصالات.pdf"));
+	    fc.setFileFilter(new FileNameExtensionFilter("pdf Only", "pdf"));
+	    int returnVal = fc.showSaveDialog(SubscriberHistoryTablePanel.this);
+	    if (returnVal == JFileChooser.APPROVE_OPTION) {
+		File file = fc.getSelectedFile();
 
-		JFileChooser fc = new JFileChooser();
-		fc.setSelectedFile(new File("ايصالات.pdf"));
-		fc.setFileFilter(new FileNameExtensionFilter("pdf Only", "pdf"));
-		int returnVal = fc.showSaveDialog(SubscriberHistoryTablePanel.this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-		    File file = fc.getSelectedFile();
-		    
-		    ProgressBar.execute(new ProgressBarListener<JasperConcatenatedReportBuilder>() {
+		DateRange commonRange = new DateRange(fromDateRange.getStartDate(), toDateRange.getEndDate());
+		
+		ProgressBar.execute(new ProgressBarListener<JasperConcatenatedReportBuilder>() {
 
-			@Override
-			public JasperConcatenatedReportBuilder onBackground() throws Exception {
-			     List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService().getReceipts(
-				    selectedTransactions.isEmpty() ? null : selectedTransactions, fromDateRange.getStartDateAsString(),
-				    toDateRange.getEndDateAsString());
-			     
-			     return getReportBuilder(receipts);
-			
+		    @Override
+		    public JasperConcatenatedReportBuilder onBackground() throws Exception {
+			List<ReceiptBean> receipts = ServiceProvider.get().getSubscriberService().getReceipts(
+				selectedTransactions.isEmpty() ? null : selectedTransactions, commonRange);
+
+			return getReportBuilder(receipts);
+
+		    }
+
+		    @Override
+		    public void onDone(JasperConcatenatedReportBuilder jasperConcatenatedReportBuilder) {
+
+			if (jasperConcatenatedReportBuilder == null) {
+			    if (!all) {
+				MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this,
+					message("receipts.empty"));
+			    } else {
+				MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this,
+					message("receipts.empty.all"));
+			    }
+			    return;
 			}
 
-			@Override
-			public void onDone(JasperConcatenatedReportBuilder jasperConcatenatedReportBuilder) {
-			    
-			    if(jasperConcatenatedReportBuilder==null) {
-				if(!all) {
-				    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("receipts.empty"));
-				}else {
-				    MessageUtils.showWarningMessage(SubscriberHistoryTablePanel.this, message("receipts.empty.all"));
-				}
-				return;
-			    }
-			    
-			    try {
-				//setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-				
-				jasperConcatenatedReportBuilder.toPdf(Exporters.pdfExporter(file));
-				MessageUtils.showInfoMessage(SubscriberHistoryTablePanel.this, message("receipts.export.success"));
-			    } catch (DRException e) {
-				e.printStackTrace();
-			    }
-			
-			    
+			try {
+			    // setPageFormat(PageType.A6,
+			    // PageOrientation.LANDSCAPE);
+
+			    jasperConcatenatedReportBuilder.toPdf(Exporters.pdfExporter(file));
+			    MessageUtils.showInfoMessage(SubscriberHistoryTablePanel.this,
+				    message("receipts.export.success"));
+			} catch (DRException e) {
+			    e.printStackTrace();
 			}
-		    }, SubscriberHistoryTablePanel.this);
-		}
-	    
+
+		    }
+		}, SubscriberHistoryTablePanel.this);
+	    }
+
 	};
     }
 

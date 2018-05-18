@@ -240,16 +240,16 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<Long> getCreatedContractsForCurrentMonth(List<Contract> activeContracts, String fromDate,
+    public List<Long> getCreatedContractsForCurrentMonth(List<Long> activeContractIds, String fromDate,
 	    String toDate) {
 
-	if (!activeContracts.isEmpty()) {
+	if (!activeContractIds.isEmpty()) {
 	    String sql = "select id_contract from transaction t "
 		    + "where insert_date>=:fromDate and insert_date<= :toDate "
 		    + "and t.id_contract in (:activeContracts) and t.transaction_type <> :transactionType";
 
 	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
-	    sqlQuery.setParameterList("activeContracts", activeContracts).setParameter("fromDate", fromDate)
+	    sqlQuery.setParameterList("activeContracts", activeContractIds).setParameter("fromDate", fromDate)
 		    .setParameter("transactionType", TransactionType.SETTELMENT_FEES.name())
 		    .setParameter("toDate", toDate);
 	    sqlQuery.addScalar("id_contract", StandardBasicTypes.LONG);
@@ -385,20 +385,13 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	DateRange dateRange = DateUtil.getStartEndDateOfCurrentMonth(selectedDate);
 	deleteCounterHistory(e.keySet(), dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 
-
-	//update counters
-	String sql = "select contract_unique_code from contract where insert_date <= \""+dateRange.getEndDateAsString()+"\"";
-	Set<String> contractUniqueCodes = new HashSet<>(getsession().createNativeQuery(sql).list());
 	List<CounterHistory> counterHistories = new ArrayList<>();
 	for (Entry<String, Long> p : e.entrySet()) {
-	    if (contractUniqueCodes.contains(p.getKey())) {
-		CounterHistory counterHistory = new CounterHistory();
-		counterHistory.setContractUniqueCode(p.getKey());
-		counterHistory.setConsumption(p.getValue());
-		counterHistory.setInsertDate(DateUtil.fromLocalDate(selectedDate));
-		counterHistories.add(counterHistory);
-	    }
-
+	    CounterHistory counterHistory = new CounterHistory();
+	    counterHistory.setContractUniqueCode(p.getKey());
+	    counterHistory.setConsumption(p.getValue());
+	    counterHistory.setInsertDate(DateUtil.fromLocalDate(selectedDate));
+	    counterHistories.add(counterHistory);
 	}
 
 	save(new ArrayList<>(counterHistories));
@@ -489,12 +482,12 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
   
     @Override
-    public List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate) {
-	String sql = SQLUtils.sql("receipt.sql", startDate, endDate);
+    public List<ReceiptBean> getReceipts(List<Long> transactionIds, DateRange dateRange) {
+	String sql = SQLUtils.sql("receipt.sql", dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 	
 	if(transactionIds!=null && !transactionIds.isEmpty()) {
 	    String parameterList = SQLUtils.toParameterList(transactionIds);
-	    sql = SQLUtils.sql("receipt_selected_transactions.sql", startDate, endDate, parameterList);
+	    sql = SQLUtils.sql("receipt_selected_transactions.sql", dateRange.getStartDateAsString(), dateRange.getEndDateAsString(), parameterList);
 	}
 	return jdbcTemplate.query(sql, new ResultSetExtractor<List<ReceiptBean>>() {
 
@@ -505,7 +498,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 		    
 		    
 		    ReceiptBean bean = new ReceiptBean(rs.getString("Full Name"), rs.getString("Village"),
-			    rs.getString("address"), DateUtil.getCurrentMonthLabel(), rs.getLong("previous_counter"),
+			    rs.getString("address"), DateUtil.getCurrentMonthLabel(DateUtil.localDate(dateRange.getStartDate())), rs.getLong("previous_counter"),
 			    rs.getLong("current_counter"), rs.getString("Bundle"),
 			    !TransactionType.COUNTER_PAYMENT.name().equals(rs.getString("transaction_type")),
 			    rs.getString("contract_unique_code"), rs.getDouble("amount"));

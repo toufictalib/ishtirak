@@ -318,7 +318,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	// create only the contracts haven't created yet
 	// get contracts that have already created
-	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(contracts,
+	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(contracts.stream().map(e->e.getId()).collect(Collectors.toList()),
 		dateRange.getStartDateAsString(), dateRange.getEndDateAsString()));
 
 	// get all bundles monthly and subscription types
@@ -382,7 +382,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    subscriptionHistoryList.add(subscriptionHistory);
 
 		} else {
-		    failedContract.add(LogBean.createWarning(message.getMessage("transaction.generation.noCounter", contract.getContractUniqueCode())));
+		    failedContract.add(LogBean.createWarning(message.getMessage("transaction.generation.noCounter",
+			    contract.getContractUniqueCode(), DateUtil.getCurrentMonthLabel(selectedMonth))));
 		}
 	    }
 	}
@@ -571,8 +572,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public List<ReceiptBean> getReceipts(List<Long> transactionIds, String startDate, String endDate) {
-	return subscriberDao.getReceipts(transactionIds, startDate, endDate);
+    public List<ReceiptBean> getReceipts(List<Long> transactionIds, DateRange dateRange) {
+	return subscriberDao.getReceipts(transactionIds, dateRange);
     }
 
     @Override
@@ -595,17 +596,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void generateSelectedContractReceipt(LocalDate now, Long contractId) throws Exception {
 
 	Contract contract = getContractById(contractId);
-	LocalDate contractInsertDate = DateUtil.localDate(contract.getInsertDate());
-	if (contractInsertDate.isBefore(now)
-		|| (contractInsertDate.getMonth() == now.getMonth() && contractInsertDate.getYear() == now.getYear())) {
-	    if (contract != null) {
-		List<LogBean> logs = generateReceipts(now, Arrays.asList(contract));
-		if (!logs.isEmpty()) {
-		    throw new Exception(logs.get(0).getText());
-		}
+	if (contract != null) {
+	    List<LogBean> logs = generateReceipts(now, Arrays.asList(contract));
+	    if (!logs.isEmpty()) {
+		throw new Exception(logs.get(0).getText());
 	    }
-	} else {
-	    throw new Exception(message.getMessage("transaction.date.passed"));
 	}
 
     }
@@ -630,13 +625,13 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public List<ReceiptBean> getContractReceipt(Long contractId, String startDate, String endDate ) {
+    public List<ReceiptBean> getContractReceipt(Long contractId, DateRange dateRange) {
 	
-	List<Long> transactionIds = subscriberDao.getTransactionIdsByContractId(contractId, startDate, endDate);
+	List<Long> transactionIds = subscriberDao.getTransactionIdsByContractId(contractId, dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 	if(transactionIds.isEmpty()) {
 	    return new ArrayList<>();
 	}
-	return getReceipts(transactionIds, startDate, endDate);
+	return getReceipts(transactionIds, dateRange);
 	
     }
 }

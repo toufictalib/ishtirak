@@ -6,6 +6,7 @@
 package com.aizong.ishtirak.common.misc.utils;
 
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -246,7 +247,10 @@ public class DateUtil {
     }
 
     public static String getCurrentMonthLabel() {
-	LocalDate date = LocalDate.now();
+	return getCurrentMonthLabel(LocalDate.now());
+    }
+    
+    public static String getCurrentMonthLabel(LocalDate date) {
 	if(date.getDayOfMonth()<6) {
 	    date = date.minusMonths(1);
 	}
@@ -289,7 +293,9 @@ public class DateUtil {
 	System.out.println(DateUtil.getStartEndDateOfCurrentMonth(date).getEndDateAsString());
     }
     
-
+    public static Date toDate(String date) throws ParseException {
+	return new SimpleDateFormat(SHORT_SQL_DATE_FORMAT).parse(date);
+    }
     
  /*   public static void main(String[]args) {
    	DateRange startEndDateOfCurrentMonth = getStartEndDateOfCurrentMonth();
