@@ -364,7 +364,7 @@ public class SubscriberFilterTable extends CommonFilterTable {
     }
 
     private JButton showCounterHistory(String title) {
-	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> MainFrame.openWindow(getOwner(),
+	return applyAction(title, ImageUtils.getHistoryIcon(), (title1, subscriber) -> MainFrame.openFullWindow(getOwner(),
 		title1, new CounterHistoryTablePanel(title1, subscriber.getId())));
 
     }

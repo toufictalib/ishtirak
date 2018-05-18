@@ -435,11 +435,11 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 		}
 
 		LocalDate fromLocaleDate = LocalDate.of(searchMonthPanel.getSelectedFromYear(),
-			searchMonthPanel.getSelectedFromMonth(), 6);
+			searchMonthPanel.getSelectedFromMonth(), DateUtil.START_MONTH);
 		fromDateRange = DateUtil.getStartEndDateOfCurrentMonth(fromLocaleDate);
 
 		LocalDate toLocaleDate = LocalDate.of(searchMonthPanel.getSelectedToYear(),
-			searchMonthPanel.getSelectedToMonth(), 6);
+			searchMonthPanel.getSelectedToMonth(), DateUtil.START_MONTH);
 		toDateRange = DateUtil.getStartEndDateOfCurrentMonth(toLocaleDate);
 
 		List<String> uniqueContractIds = null;

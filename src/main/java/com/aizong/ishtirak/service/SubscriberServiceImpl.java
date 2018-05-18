@@ -634,4 +634,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 	return getReceipts(transactionIds, dateRange);
 	
     }
+
+    @Override
+    public void deleteCounterHistory(List<Long> ids) {
+	subscriberDao.deleteCounterHistoryByIds(ids);
+	
+    }
 }

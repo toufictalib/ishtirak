@@ -80,4 +80,6 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Long> getTransactionIdsByContractId(Long contractId, String startDate, String endDate);
 
+    void deleteCounterHistoryByIds(List<Long> ids);
+
 }

@@ -6,6 +6,7 @@ import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.bean.SearchBean;
 import com.aizong.ishtirak.bean.SummaryBean;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 
 public interface ReportService {
 
@@ -33,7 +34,7 @@ public interface ReportService {
     
     ReportTableModel getEmployeesPayments(Long employeeId, SearchBean searchBean);
     
-    ReportTableModel getCounterHistory(Long subscriberId,  SearchBean searchBean);
+    ReportTableModel getCounterHistory(Long subscriberId, DateRange dateRange);
 
     ReportTableModel getExpenses(ExpensesType expensesType, SearchBean searchBean);
     

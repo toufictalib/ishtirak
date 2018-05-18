@@ -336,10 +336,10 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ReportTableModel getCounterHistory(Long subscriberId, SearchBean searchBean) {
-	List<Object[]> rows = reportDao.getCounterHistory(subscriberId, searchBean.getFromDate(), searchBean.getEndDate());
+    public ReportTableModel getCounterHistory(Long subscriberId, DateRange dateRange) {
+	List<Object[]> rows = reportDao.getCounterHistory(subscriberId, dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
 
-	String[] cols = {  "counter","engine", "counterAmount", "insert_date" };
+	String[] cols = { "codeId", "counter","engine", "counterAmount", "insert_date" };
 
 	Class<?>[] clazzes = clazzes(rows, cols);
 	return new ReportTableModel(cols, rows, clazzes);

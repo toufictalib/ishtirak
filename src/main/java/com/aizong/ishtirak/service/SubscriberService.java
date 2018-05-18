@@ -150,4 +150,6 @@ public interface SubscriberService {
 
     List<ReceiptBean> getContractReceipt(Long contractId, DateRange dateRange);
     
+    void deleteCounterHistory(List<Long> ids);
+    
 }

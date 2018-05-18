@@ -557,4 +557,15 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
   	criteria.add(Restrictions.eq("subscriberId", subscriberId));
   	return criteria.list();
       }
+
+    @Override
+    public void deleteCounterHistoryByIds(List<Long> ids) {
+	if(!ids.isEmpty()) {
+	    String sql = "delete from counter_history where id  in :ids";
+	    SQLQuery sqlQuery = getsession().createSQLQuery(sql);
+	    sqlQuery.setParameterList("ids", ids);
+	    sqlQuery.executeUpdate();
+	}
+	
+    }
 }
