@@ -90,6 +90,10 @@ public class ExpensesFitlerTable extends CommonFilterTable {
     }
 
     @Override
+    protected int getTotalTargetedColumn() {
+        return 2;
+    }
+    @Override
     protected JPanel initUI() {
 
 	String leftToRightSpecs = "fill:p:grow,5dlu,p";

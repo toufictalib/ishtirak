@@ -356,7 +356,7 @@ public class MainFrame extends JFrame {
     
     public static JDialog openWindow(Window owner, String text, JPanel component) {
 	if (component instanceof CommonFilterTable || component instanceof ReportTablePanel) {
-	    component.setPreferredSize(ComponentUtils.getDimension(90, 90));
+	    component.setPreferredSize(ComponentUtils.getDimension(90, 93));
 	}
 	JDialog createDialog = WindowUtils.createDialog(owner, text, component);
 

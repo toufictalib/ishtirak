@@ -295,10 +295,12 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
     }
 
     private void applyRenderer() {
-	TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
-	column.setCellEditor(new RssFeedCell());
-	column.setMinWidth(150);
-	column.setCellRenderer(new RssFeedCell());
+	if (table.getColumnCount() > 0) {
+	    TableColumn column = table.getColumnModel().getColumn(table.getModel().getColumnCount() - 1);
+	    column.setCellEditor(new RssFeedCell());
+	    column.setMinWidth(150);
+	    column.setCellRenderer(new RssFeedCell());
+	}
     }
 
     public static Object[] add(Object[] arr, Object... elements) {

@@ -143,7 +143,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	panel2.add(btnPrint);
 	panel2.add(btnPrintAll);
 
-	DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow", "p,p,p,p,fill:p:grow,p,p,p");
+	DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow", "p,p,p,p,fill:p:grow,p,p,p,p");
 	builder.setDefaultDialogBorder();
 
 	builder.appendSeparator(title);
@@ -158,7 +158,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	builder.append(scrollPane, builder.getColumnCount());
 
 	builder.append(txtRowCount, builder.getColumnCount());
-
+	builder.append(txtTotal, builder.getColumnCount());
 	// builder.append("المجموع", txtTotal);
 
 	return builder.getPanel();

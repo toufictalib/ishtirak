@@ -131,8 +131,8 @@ public class ExpensesForm extends BasicForm {
 	}
 
 	txtDesc.setText(expensesLog.getDesc());
-	txtAmount.setText(String.valueOf(expensesLog.getAmount()));
 	comboMaintenaceTypes.setSelectedItem(new SearchResult(expensesLog.getMaintenanceType(), null));
+	txtAmount.setValue(expensesLog.getAmount());
 	if (expensesLog.getEngineId() != null) {
 	    comboEngines.setSelectedItem(new Engine(expensesLog.getEngineId()));
 	}
@@ -143,7 +143,7 @@ public class ExpensesForm extends BasicForm {
 	}
 	
 	if (isOil()) {
-	    txtDieselQuantity.setValue(txtDieselQuantity.getValue());
+	    txtDieselQuantity.setValue(expensesLog.getOilConsumption());
 	}
 	
 	if (expensesLog.getEmployeeId() != null) {
