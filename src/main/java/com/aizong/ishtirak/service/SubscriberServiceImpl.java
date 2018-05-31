@@ -318,8 +318,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	// create only the contracts haven't created yet
 	// get contracts that have already created
-	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(contracts.stream().map(e->e.getId()).collect(Collectors.toList()),
-		dateRange.getStartDateAsString(), dateRange.getEndDateAsString()));
+	Set<Long> alreadyCreatedContracts = new HashSet<>(subscriberDao.getCreatedContractsForCurrentMonth(
+		contracts.stream().map(e -> e.getId()).collect(Collectors.toList()), dateRange.getStartDateAsString(),
+		dateRange.getEndDateAsString()));
 
 	// get all bundles monthly and subscription types
 	List<Bundle> allBundles = getAllBundles();
@@ -340,10 +341,12 @@ public class SubscriberServiceImpl implements SubscriberService {
 	// N.B amount for counter subscription is : monthly fees + consumption *
 	// price/kb
 
+	Double amount = null;
 	for (Contract contract : contracts) {
 
 	    if (alreadyCreatedContracts.contains(contract.getId())) {
-		failedContract.add(LogBean.createWarning(message.getMessage("transaction.generation.alreadyExists", contract.getContractUniqueCode())));
+		failedContract.add(LogBean.createWarning(
+			message.getMessage("transaction.generation.alreadyExists", contract.getContractUniqueCode())));
 		continue;
 	    }
 
@@ -363,8 +366,11 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    long consumption = contractConsumptionBean.getConsumption().get();
 		    SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
 		    Transaction transaction = new Transaction();
-		    transaction.setAmount(
-			    subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * consumption);
+
+		    amount = subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * consumption;
+		    amount = getTheRightValue(amount);
+
+		    transaction.setAmount(amount);
 		    transaction.setContractId(contract.getId());
 		    transaction.setTransactionType(TransactionType.COUNTER_PAYMENT);
 		    transaction.setInsertDate(dateRange.getStartDate());
@@ -390,9 +396,19 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 	subscriberDao.save(new ArrayList<>(transactions));
 	subscriberDao.save(new ArrayList<>(subscriptionHistoryList));
-    
+
 	return failedContract;
-	
+
+    }
+
+    private Double getTheRightValue(Double amount) {
+
+	Double a = Math.floor(amount / 1000) * 1000;
+	if ((amount - a) >= 500) {
+	    return a + 1000;
+	}
+	return a;
+
     }
 
     @Override
@@ -611,10 +627,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 	Contract contract = getContractById(transaction.getContractId());
 
 	LocalDate contractInsertDate = DateUtil.localDate(contract.getInsertDate());
-	
-	if(contractInsertDate.isBefore(now)) {
-	   subscriberDao.save(Arrays.asList(transaction));
-	}else if(contractInsertDate.getMonth()==now.getMonth() && contractInsertDate.getYear() == now.getYear()) {
+
+	if (contractInsertDate.isBefore(now)) {
+	    subscriberDao.save(Arrays.asList(transaction));
+	} else if (contractInsertDate.getMonth() == now.getMonth() && contractInsertDate.getYear() == now.getYear()) {
 	    transaction.setInsertDate(contract.getInsertDate());
 	    subscriberDao.save(Arrays.asList(transaction));
 	}
@@ -626,18 +642,18 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public List<ReceiptBean> getContractReceipt(Long contractId, DateRange dateRange) {
-	
+
 	List<Long> transactionIds = subscriberDao.getTransactionIdsByContractId(contractId, dateRange.getStartDateAsString(), dateRange.getEndDateAsString());
-	if(transactionIds.isEmpty()) {
+	if (transactionIds.isEmpty()) {
 	    return new ArrayList<>();
 	}
 	return getReceipts(transactionIds, dateRange);
-	
+
     }
 
     @Override
     public void deleteCounterHistory(List<Long> ids) {
 	subscriberDao.deleteCounterHistoryByIds(ids);
-	
+
     }
 }
