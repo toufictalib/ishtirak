@@ -32,7 +32,7 @@ public interface SubscriberDao extends GenericDao<Object> {
 
     List<Contract> getActiveContracts();
 
-    List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange, DateRange previousDateRange);
+    List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange);
 
     void deleteVillages(List<Long> ids);
     

@@ -331,8 +331,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 	List<SubscriptionHistory> subscriptionHistoryList = new ArrayList<>();
 
 	// get counter history for curret month and pervious month
-	List<ContractConsumptionBean> counterHistories = subscriberDao.getCounterHistory(dateRange,
-		DateUtil.getStartEndDateOfCurrentMonth(selectedMonth.minusMonths(1)));
+	List<ContractConsumptionBean> counterHistories = subscriberDao.getCounterHistory(dateRange);
 	Map<String, ContractConsumptionBean> counterHistory = counterHistories.stream()
 		.collect(Collectors.toMap(e -> e.getContractUniqueCode(), e -> e));
 

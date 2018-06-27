@@ -121,8 +121,8 @@ public class ImportButtonsPanel extends BasicForm {
 
 			    String uniqueCode = currentRow.getCell(0).getStringCellValue();
 			    try {
-				if (currentRow.getCell(2) != null) {
-				    double amount = currentRow.getCell(2).getNumericCellValue();
+				if (currentRow.getCell(3) != null) {
+				    double amount = currentRow.getCell(3).getNumericCellValue();
 				    if (amount >= 0) {
 					values.put(uniqueCode, new Double(amount).longValue());
 				    }
@@ -188,8 +188,13 @@ public class ImportButtonsPanel extends BasicForm {
 
 		    try {
 
-			List<String> header = Arrays.asList(message("contract_unique_code"), message("fullName"),
-				message(counterInput ? "counter.current" : "paid"));
+			List<String> header = null;
+			if(counterInput) {
+			    header =    Arrays.asList(message("contract_unique_code"), message("fullName"),
+					message("counter.previous"),message("counter.current"));
+			}else {
+			    header = Arrays.asList(message("contract_unique_code"), message("fullName"),message("paid"));
+			}
 
 			Vector<Vector> rows = new Vector<>();
 			for (Object[] row : reportTableModel.getRows()) {

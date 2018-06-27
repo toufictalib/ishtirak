@@ -372,13 +372,20 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportTableModel getExportedFiles(boolean counterInput) {
         
-	
-	List<Object[]> rows = reportDao.getExportedFiles(DateUtil.getContractDate());
+	DateRange dateRangeOfCurrentMonth = DateUtil.getStartEndDateOfCurrentMonth();
+	List<Object[]> rows = null;
+	if(counterInput) {
+	    rows = reportDao.getExportedFiles(dateRangeOfCurrentMonth);
+	}else {
+	    rows = reportDao.getPaymentExportedFiles(dateRangeOfCurrentMonth.getStartDateAsString(), DateUtil.getContractDate());
+	    
+	}
 	
 	List<String> cols = new ArrayList<>();
 	    cols.add("fullName");
 	    cols.add("contract_unique_code");
 	if(counterInput) {
+	    cols.add("previousCounter");
 	    cols.add("counterAmount");
 	}else {
 	    cols.add("paid");

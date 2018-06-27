@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.TransactionType;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 
 public interface ReportDao extends GenericDao<Object>{
 
@@ -41,9 +42,18 @@ public interface ReportDao extends GenericDao<Object>{
 
     List<Object[]> getIncomePerEngine(String engine, String fromDate, String toDate);
 
-    List<Object[]> getExportedFiles(String date);
+    /**
+     * 
+     * @param previousCounterDate this date is precisely the start of current date because we need
+     * to get the previous counter that it is the first one before the current date
+     * @param date
+     * @return
+     */
+    List<Object[]> getExportedFiles(DateRange dateRangeOfCurrentMonth);
 
     List<Object[]> getCounterReport(String fromDate, String toDate);
+
+    List<Object[]> getPaymentExportedFiles(String previousCounterDate, String date);
 
     
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.TransactionType;
+import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.SQLUtils;
 
 @Repository
@@ -272,8 +273,14 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
     }
 
     @Override
-    public List<Object[]> getExportedFiles(String date) {
-	String sql = SQLUtils.sql("export.sql", date);
+    public List<Object[]> getExportedFiles(DateRange dateRangeOfCurrentMonth) {
+	String sql = SQLUtils.sql("export_counter.sql", dateRangeOfCurrentMonth.getStartDateAsString(), dateRangeOfCurrentMonth.getEndDateAsString());
+	return toList(sql);
+    }
+    
+    @Override
+    public List<Object[]> getPaymentExportedFiles(String previousCounterDate, String date) {
+	String sql = SQLUtils.sql("export.sql", date, previousCounterDate);
 	return toList(sql);
     }
     

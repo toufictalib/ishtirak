@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -141,30 +140,25 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
     }
 
     @Override
-    public List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange, DateRange previousDateRange) {
-	String sql = SQLUtils.sql("user_consumption_between_now_previous.sql", previousDateRange.getStartDateAsString(),
-				currentDateRange.getEndDateAsString());
-	NativeQuery sqlQuery = getsession().createNativeQuery(sql, CounterHistory.class);
-	List<CounterHistory> counterHistories = sqlQuery.list();
+    public List<ContractConsumptionBean> getCounterHistory(DateRange currentDateRange) {
+	String sql = SQLUtils.sql("user_consumption_between_now_previous.sql", currentDateRange.getStartDateAsString(), currentDateRange.getEndDateAsString());
 
-	Map<String, ContractConsumptionBean> map = new HashMap<>();
-	for (CounterHistory counterHistory : counterHistories) {
-	    ContractConsumptionBean contractConsumptionBean = map.get(counterHistory.getContractUniqueCode());
-	    if (contractConsumptionBean == null) {
-		contractConsumptionBean = new ContractConsumptionBean();
-		contractConsumptionBean.setContractUniqueCode(counterHistory.getContractUniqueCode());
-		contractConsumptionBean.setPreviousCounterValue(counterHistory.getConsumption());
+	return jdbcTemplate.query(sql,
+		new ResultSetExtractor<List<ContractConsumptionBean>>() {
 
-		map.put(counterHistory.getContractUniqueCode(), contractConsumptionBean);
-	    } else {
-		contractConsumptionBean.setCurrentCounterValue(counterHistory.getConsumption());
-	    }
+		    @Override
+		    public List<ContractConsumptionBean> extractData(ResultSet rs)
+			    throws SQLException, DataAccessException {
+			List<ContractConsumptionBean> list = new ArrayList<>();
+			while (rs.next()) {
+			    
+			    list.add(new ContractConsumptionBean(rs.getString("contract_unique_code"),
+				    rs.getLong("previous_counter"), rs.getLong("current_counter")));
+			}
+			return list;
+		    }
+		});
 
-	}
-
-	return map.values().stream()
-		.filter(e -> e.getCurrentCounterValue() != null && e.getPreviousCounterValue() != null)
-		.collect(Collectors.toList());
     }
 
     @Override
@@ -437,11 +431,13 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    if (!data.isEmpty()) {
 		String batchSql = "update transaction set is_paid = ?,date_paid = now() where id = ?";
 		jdbcTemplate.batchUpdate(batchSql, new BatchPreparedStatementSetter() {
+		    @Override
 		    public void setValues(PreparedStatement ps, int i) throws SQLException {
 			ps.setBoolean(1, (Boolean) data.get(i)[1]);
 			ps.setLong(2, (Long) data.get(i)[0]);
 		    }
 
+		    @Override
 		    public int getBatchSize() {
 			return data.size();
 		    }
