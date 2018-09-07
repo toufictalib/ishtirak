@@ -15,4 +15,5 @@ WHERE
         AND c.subscriber_id = {0}
          AND ch.insert_date >= "{1}"
         AND ch.insert_date <= "{2}"
+        AND c.is_active
         order by ch.insert_date desc;

@@ -280,7 +280,7 @@ public class ReportServiceImpl implements ReportService {
 	Class<?>[] clazzes = null;
 	if(isCounter) {
 	    cols = new String [] { "maintenanceId",  "amount", "subscriptionBundle",
-		    "transactionType","consumption","previous_counter","current_counter",
+		    "transactionType", "current_counter","previous_counter","consumption",
 		    "costPerKb","subtotal_kb_multiply_consumption",
 			"counterRenting", "insertDate" };
 	    
