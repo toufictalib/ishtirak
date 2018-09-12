@@ -25,7 +25,7 @@ WHERE
     c.contract_unique_code in ({0}) and
     t.insert_date >= "{1}" and
     t.insert_date <= "{2}"
-    ORDER by  LENGTH(c.contract_unique_code),c.contract_unique_code
+    ORDER by  LENGTH(c.contract_unique_code),c.contract_unique_code,t.insert_date asc
     
     
     

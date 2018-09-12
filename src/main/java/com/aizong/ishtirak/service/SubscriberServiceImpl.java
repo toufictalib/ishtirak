@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.LogBean;
+import com.aizong.ishtirak.bean.OrderBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
@@ -654,5 +655,20 @@ public class SubscriberServiceImpl implements SubscriberService {
     public void deleteCounterHistory(List<Long> ids) {
 	subscriberDao.deleteCounterHistoryByIds(ids);
 
+    }
+    
+    /**
+     * contract only has id, 
+     * @return
+     */
+    @Override
+    public List<OrderBean> getContractsForOrderingPurpose(Long villageId){
+	return subscriberDao.getContractsForOrderingPurpose(villageId);
+    }
+
+    @Override
+    public void updateContactOrdering(List<OrderBean> rows) {
+	subscriberDao.updateContactOrdering(rows);
+	
     }
 }

@@ -1,6 +1,7 @@
 SELECT 
 	t.id,
-    c.contract_unique_code, CONCAT(s.name, " ", s.last_name) "Full Name",
+    c.contract_unique_code, 
+    CONCAT(s.name, " ", s.last_name) "Full Name",
     t.amount,
     t.is_paid,
     t.transaction_type,
@@ -24,6 +25,7 @@ WHERE
     v.id = c.id_village and
     t.insert_date >= "{0}" and
     t.insert_date <= "{1}"
-    ORDER by  LENGTH(c.contract_unique_code),c.contract_unique_code
+    
+    ORDER by  LENGTH(c.contract_unique_code),c.contract_unique_code,t.insert_date asc
     
     

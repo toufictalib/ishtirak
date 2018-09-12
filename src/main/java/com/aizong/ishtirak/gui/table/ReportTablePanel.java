@@ -178,6 +178,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	btnPrint = ButtonFactory.createBtnPrint();
 
 	btnPrint.addActionListener(new ActionListener() {
+	    @Override
 	    public void actionPerformed(ActionEvent ae) {
 		ReportUtils.printTable(table, ReportTablePanel.this.getOwner());
 	    }

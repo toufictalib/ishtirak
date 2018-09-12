@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
+import com.aizong.ishtirak.bean.OrderBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.Tuple;
 import com.aizong.ishtirak.common.misc.component.DateRange;
@@ -81,5 +82,9 @@ public interface SubscriberDao extends GenericDao<Object> {
     List<Long> getTransactionIdsByContractId(Long contractId, String startDate, String endDate);
 
     void deleteCounterHistoryByIds(List<Long> ids);
+
+    List<OrderBean> getContractsForOrderingPurpose(Long villageId);
+
+    void updateContactOrdering(List<OrderBean> rows);
 
 }

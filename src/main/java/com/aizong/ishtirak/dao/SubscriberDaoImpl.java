@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
+import com.aizong.ishtirak.bean.OrderBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
@@ -562,6 +563,40 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	    sqlQuery.setParameterList("ids", ids);
 	    sqlQuery.executeUpdate();
 	}
+	
+    }
+    
+    @Override
+    public List<OrderBean> getContractsForOrderingPurpose(Long villageId){
+	String sql = SQLUtils.sql("sorting_subscribers.sql", villageId);
+
+	return jdbcTemplate.query(sql,
+		new ResultSetExtractor<List<OrderBean>>() {
+
+		    @Override
+		    public List<OrderBean> extractData(ResultSet rs)
+			    throws SQLException, DataAccessException {
+			List<OrderBean> list = new ArrayList<>();
+			while (rs.next()) {
+			    
+			    list.add(new OrderBean(rs.getLong(1), rs.getString(2), rs.getString(3), 
+				    rs.getString(4), rs.getInt(5)));
+			}
+			return list;
+		    }
+		});
+    }
+
+    @Override
+    public void updateContactOrdering(List<OrderBean> rows) {
+	String sql = "update contract set order_index = ? where id = ?";
+	
+	List<Object[]> batch = new ArrayList<Object[]>();
+	for(OrderBean orderBean : rows) {
+	    Object[] row = new Object[] {orderBean.getOrderIndex(), orderBean.getContractId()};
+	    batch.add(row);
+	}
+	jdbcTemplate.batchUpdate(sql, batch);
 	
     }
 }

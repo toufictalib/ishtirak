@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -51,6 +52,7 @@ import com.aizong.ishtirak.gui.form.ExpensesReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.GeneralReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ReportButtonsPanel;
 import com.aizong.ishtirak.gui.form.ResultForm;
+import com.aizong.ishtirak.gui.form.SortingSubscribersPanel;
 import com.aizong.ishtirak.gui.table.CommonFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeFilterTable;
 import com.aizong.ishtirak.gui.table.EmployeeTypeFilterTable;
@@ -63,6 +65,7 @@ import com.aizong.ishtirak.gui.table.SubscriberFilterTable;
 import com.aizong.ishtirak.gui.table.SubscriberHistoryTablePanel;
 import com.aizong.ishtirak.gui.table.SubscriptionBundleFilterTable;
 import com.aizong.ishtirak.gui.table.VillageFilterTable;
+import com.aizong.ishtirak.model.Village;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jidesoft.swing.JideButton;
@@ -100,22 +103,13 @@ public class MainFrame extends JFrame {
 
     private void buildPanel() {
 
+	//Section 1
 	JButton btnSubscriberManagement = button("إدارة المشتركين", "48px_customer.png");
-	btnSubscriberManagement.addActionListener(e -> {
-	    ProgressBar.execute(new ProgressBarListener<ReportTableModel>() {
-
-		    @Override
-		    public ReportTableModel onBackground() throws Exception {
-			return ServiceProvider.get().getReportServiceImpl().getSubscribers();
-		    }
-
-		    @Override
-		    public void onDone(ReportTableModel response) {
-			 SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand(),response);
-			    openWindow(e.getActionCommand(), subscriberFilterTable);
-		    }}
-		    ,MainFrame.this);
-	   
+	btnSubscriberManagement.addActionListener(manageSubscribers());
+	
+	JButton btnSubscription = button("ادارة الإشتراكات", "subreport.png");
+	btnSubscription.addActionListener(e->{
+	    openFullWindow(MainFrame.this, e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
 	});
 
 	JButton btnEngineManagement = button("إدارة المولدات", "engine.png");
@@ -123,6 +117,19 @@ public class MainFrame extends JFrame {
 	    JPanel innerPanel = new EngineFitlerTable(e.getActionCommand());
 	    openWindow(e.getActionCommand(), innerPanel);
 	});
+	
+	JButton btnReceipts = button("إنشاء كل الايصالات", "receipts.png");
+	btnReceipts.addActionListener(generateReceipts());
+	
+	JButton btnImport = button("إدخال المعلومات", "import.png");
+	btnImport.addActionListener(e->{
+	    openWindow(btnImport.getActionCommand(), new ImportButtonsPanel());
+	});
+	
+	JButton btnSortSubscribers = button("رتب المشتركين", "sort.png");
+	btnSortSubscribers.addActionListener(sortSubscribers(btnSortSubscribers));
+	
+	
 	JButton btnVillage = button("إدارة القرى", "village.png");
 	btnVillage.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new VillageFilterTable(e.getActionCommand()));
@@ -158,35 +165,6 @@ public class MainFrame extends JFrame {
 	    openWindow(e.getActionCommand(), new ExpensesFitlerTable(e.getActionCommand()));
 	});
 
-	JButton btnReceipts = button("إنشاء كل الايصالات", "receipts.png");
-	btnReceipts.addActionListener(e -> {
-	    
-	    MonthYearCombo monthYearCombo = new MonthYearCombo();
-	    Object[] options = { message("إصدار كل الايصالات"), message("import.counter.close") };
-	    int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
-		    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-
-	    if (answer == JOptionPane.YES_OPTION) {
-			LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
-			    DateUtil.START_MONTH);
-			
-			List<LogBean> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts(now);
-			if (!generateReceipts.isEmpty()) {
-			    DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
-			    builder.appendSeparator("");
-			    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
-			} else {
-			    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
-			}
-
-	    }
-	});
-	
-	JButton btnImport = button("إدخال المعلومات", "import.png");
-	btnImport.addActionListener(e->{
-	    openWindow(btnImport.getActionCommand(), new ImportButtonsPanel());
-	});
-
 	JButton btnMonthlyReports = button("تقارير شهرية", "reports.png");
 	btnMonthlyReports.addActionListener(e -> {
 	    openWindow(e.getActionCommand(), new ReportButtonsPanel());
@@ -214,10 +192,6 @@ public class MainFrame extends JFrame {
 	    openWindow(e.getActionCommand(), new ExpensesReportButtonsPanel());
 	});
 	
-	JButton btnSubscription = button("ادارة الإشتراكات", "subreport.png");
-	btnSubscription.addActionListener(e->{
-	    openFullWindow(MainFrame.this, e.getActionCommand(),new SubscriberHistoryTablePanel(e.getActionCommand()));
-	});
 	JButton btnSummary = button(message("reports.subscirption.incomeExpenses"), "subreport.png");
 	btnSummary.addActionListener(e -> {
 	    
@@ -237,11 +211,14 @@ public class MainFrame extends JFrame {
 	JPanel ishtirakMenu = createMenuPanel(message("subscritpions"));
 	JPanel expensesMenu = createMenuPanel(message("expenses"));
 	JPanel miscMenu = createMenuPanel(message("misc"));
+	
 	JPanel reportsMenu = createMenuPanel(message("reports"));
 	ishtirakMenu.add(btnSubscriberManagement);
 	ishtirakMenu.add(btnSubscription);
 	ishtirakMenu.add(btnReceipts);
 	ishtirakMenu.add(btnImport);
+	ishtirakMenu.add(btnSortSubscribers);
+	
 	expensesMenu.add(btnEmployee);
 	expensesMenu.add(btnEmployeeJob);
 	expensesMenu.add(btnExpensesManagement);
@@ -302,6 +279,70 @@ public class MainFrame extends JFrame {
 	WindowUtils.applyRtl(this);
 	setVisible(true);
 
+    }
+
+    private ActionListener sortSubscribers(JButton btnSortSubscribers) {
+	return e->{
+	    ProgressBar.execute(new ProgressBarListener<List<Village>>() {
+
+		    @Override
+		    public List<Village> onBackground() throws Exception {
+			return ServiceProvider.get().getSubscriberService().getVillages();
+		    }
+
+		    @Override
+		    public void onDone(List<Village> villages) {
+			openWindow(btnSortSubscribers.getActionCommand(), new SortingSubscribersPanel(villages));
+			
+		    }
+		}, MainFrame.this);
+	    
+	    
+	};
+    }
+
+    private ActionListener manageSubscribers() {
+	return e -> {
+	    ProgressBar.execute(new ProgressBarListener<ReportTableModel>() {
+
+		    @Override
+		    public ReportTableModel onBackground() throws Exception {
+			return ServiceProvider.get().getReportServiceImpl().getSubscribers();
+		    }
+
+		    @Override
+		    public void onDone(ReportTableModel response) {
+			 SubscriberFilterTable subscriberFilterTable = new SubscriberFilterTable(e.getActionCommand(),response);
+			    openWindow(e.getActionCommand(), subscriberFilterTable);
+		    }}
+		    ,MainFrame.this);
+	   
+	};
+    }
+
+    private ActionListener generateReceipts() {
+	return e -> {
+	    
+	    MonthYearCombo monthYearCombo = new MonthYearCombo();
+	    Object[] options = { message("إصدار كل الايصالات"), message("import.counter.close") };
+	    int answer = JOptionPane.showOptionDialog(null, monthYearCombo, message("import.title"),
+		    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+	    if (answer == JOptionPane.YES_OPTION) {
+			LocalDate now = LocalDate.of(monthYearCombo.getYear(), monthYearCombo.getMonth(),
+			    DateUtil.START_MONTH);
+			
+			List<LogBean> generateReceipts = ServiceProvider.get().getSubscriberService().generateReceipts(now);
+			if (!generateReceipts.isEmpty()) {
+			    DefaultFormBuilder builder = BasicForm.createBuilder("fill:p:grow");
+			    builder.appendSeparator("");
+			    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+			} else {
+			    MessageUtils.showInfoMessage(MainFrame.this, "نجاح", "تم اصدار الايصالات بنجاح");
+			}
+
+	    }
+	};
     }
 
     private JPanel createMenuPanel(String title) {

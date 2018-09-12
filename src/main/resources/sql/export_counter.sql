@@ -26,5 +26,5 @@ WHERE
         AND c.subscriber_id = s.id
         AND c.is_active = TRUE
         AND c.insert_date <= "{1}"
-ORDER BY v.order_index , LENGTH(contract_unique_code),c.contract_unique_code ;
+ORDER BY v.order_index , c.order_index, LENGTH(contract_unique_code),c.contract_unique_code ;
 ;

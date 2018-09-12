@@ -39,6 +39,9 @@ public class Contract extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date closeDate;
 
+    @Column(name = "order_index")
+    private Integer orderIndex;
+    
     @Embedded
     private Address address;
 
@@ -101,6 +104,14 @@ public class Contract extends BaseEntity {
 
     public void setCloseDate(Date closeDate) {
 	this.closeDate = closeDate;
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
     }
 
 }
