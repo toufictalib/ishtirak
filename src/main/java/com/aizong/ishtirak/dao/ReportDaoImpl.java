@@ -250,7 +250,19 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	if(paid!=null) {
 	    sql+=" and is_paid = "+paid;
 	}
-	return toList(sql);
+	List<Map<String,Object>> rows = jdbcTemplate.queryForList(sql);
+	return rows.stream().map(e->{
+	    Object[] row = new Object[e.size()];
+	    AtomicInteger counter = new AtomicInteger();
+	    e.entrySet().forEach(v->{
+		if (v.getKey().equalsIgnoreCase("is_paid") && v.getValue() != null) {
+		    row[counter.getAndIncrement()] = ((Integer)v.getValue()).intValue()==1;
+		}else {
+		    row[counter.getAndIncrement()] = v.getValue();
+		}
+	    });
+	    return row;
+	}).collect(Collectors.toList());
     }
 
 
