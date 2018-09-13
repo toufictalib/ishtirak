@@ -53,7 +53,18 @@ public class ExCombo<T> extends JComboBox {
     private void init(boolean withNone, Collection<T> items) {
 	this.withNone = withNone;
 	List<T> list = new ArrayList<T>(items);
+	sort(list);
+	DefaultComboBoxModel boxModel = new DefaultComboBoxModel(list.toArray());
+	if (withNone)
+	    boxModel.insertElementAt(firstLabel, 0);
+	setModel(boxModel);
+	if (boxModel.getSize() > 0)
+	    setSelectedIndex(0);
+	// ((Component)
+	// getRenderer()).applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+    }
 
+    protected void sort(List<T> list) {
 	try {
 	    Collections.sort(list, new Comparator<T>() {
 
@@ -71,15 +82,6 @@ public class ExCombo<T> extends JComboBox {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-
-	DefaultComboBoxModel boxModel = new DefaultComboBoxModel(list.toArray());
-	if (withNone)
-	    boxModel.insertElementAt(firstLabel, 0);
-	setModel(boxModel);
-	if (boxModel.getSize() > 0)
-	    setSelectedIndex(0);
-	// ((Component)
-	// getRenderer()).applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
     }
 
     @SuppressWarnings("unchecked")

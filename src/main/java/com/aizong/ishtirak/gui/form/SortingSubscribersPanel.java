@@ -42,7 +42,12 @@ public class SortingSubscribersPanel extends BasicForm {
 
     @Override
     protected void initComponents() {
-	comboVillages = new ExCombo<>(villages);
+	comboVillages = new ExCombo<Village>(villages) {
+	    @Override
+	    protected void sort(List<Village> list) {
+	        //keep empty to stop default sorting
+	    }
+	};
 	btnSearch = ButtonFactory.createBtnSearch();
 	btnSearch.addActionListener(search());
 	btnClose = ButtonFactory.createBtnClose();

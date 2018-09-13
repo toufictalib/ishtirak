@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -60,7 +62,15 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public List<Village> getVillages() {
-	return subscriberDao.findAll(Village.class);
+	List<Village> villages = subscriberDao.findAll(Village.class);
+	Collections.sort(villages, new Comparator<Village>() {
+
+	    @Override
+	    public int compare(Village o1, Village o2) {
+		return o1.getOrderIndex()-o2.getOrderIndex();
+	    }
+	});
+	return villages;
     }
 
     @Override
