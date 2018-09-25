@@ -11,4 +11,4 @@ WHERE
     c.subscriber_id = s.id
         AND c.closed_date IS NULL
         AND c.id_village = {0}
-        
+        order by c.order_index;
