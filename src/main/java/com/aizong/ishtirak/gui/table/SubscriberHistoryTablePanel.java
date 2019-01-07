@@ -284,8 +284,8 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
     private ActionListener paymentAction(JButton btnSearch, JButton btnPaymentStatus) {
 	return e -> {
 
-	    Optional<Long> selectedRowId = getSelectedRowId();
-	    if (selectedRowId.isPresent()) {
+	    Optional<List<Long>> selectedRowIds = getSelectedRowsId(true);
+	    if (selectedRowIds.isPresent()) {
 
 		JRadioButton rdpayement = new JRadioButton(message("payment.btnPayment"));
 		rdpayement.setSelected(true);
@@ -303,8 +303,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 
 			@Override
 			public Void action() {
-			    List<Long> transactionIds = Arrays.asList(selectedRowId.get());
-			    ServiceProvider.get().getSubscriberService().updatePayment(transactionIds,
+			    ServiceProvider.get().getSubscriberService().updatePayment(selectedRowIds.get(),
 				    rdpayement.isSelected());
 			    return null;
 			}

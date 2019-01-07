@@ -36,6 +36,7 @@ import com.aizong.ishtirak.common.misc.utils.Message;
 	 ActiveMQAutoConfiguration.class,JmxAutoConfiguration.class
 	 })
 @ConditionalOnNotWebApplication
+//credentials >> manager/manager
 public class Application {
     @SuppressWarnings("deprecation")
     public static void main(String[] args) {

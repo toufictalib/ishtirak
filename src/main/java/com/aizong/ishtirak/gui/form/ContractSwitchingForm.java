@@ -29,6 +29,7 @@ public class ContractSwitchingForm extends ContractForm {
 	super(contract, mode);
     }
 
+    @Override
     protected void fillData() {
 	super.fillData();
 	if (contract == null) {
@@ -56,12 +57,13 @@ public class ContractSwitchingForm extends ContractForm {
 	allowEdit(true);
     }
 
+    @Override
     protected Component buildPanel(DefaultFormBuilder builder) {
 	builder.appendSeparator(message("contract.form.seperator"));
 	builder.setDefaultDialogBorder();
 	builder.append(message("contract.form.counter"), txtCounterId);
 	builder.append(message("contract.form.oldBundle"), txtOldCounter);
-	builder.append(message("contract.form.bundle"), comboBundles);
+	builder.append(message("contract.form.switchTo"), comboBundles);
 	builder.append(message("bundle.form.settelementFees"), txtSettelementFees);
 	builder.append(message("contract.form.engine"), comboEngines);
 	builder.appendSeparator();
