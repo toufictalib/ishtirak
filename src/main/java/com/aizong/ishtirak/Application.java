@@ -37,6 +37,7 @@ import com.aizong.ishtirak.common.misc.utils.Message;
 	 })
 @ConditionalOnNotWebApplication
 //credentials >> manager/manager
+//The contract_unique_code column need alawys to be modified into contract and counter_history tables
 public class Application {
     @SuppressWarnings("deprecation")
     public static void main(String[] args) {

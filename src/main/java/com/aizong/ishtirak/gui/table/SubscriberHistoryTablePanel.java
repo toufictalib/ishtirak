@@ -348,14 +348,14 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 	    boolean yes = MessageUtils.showConfirmationMessage(SubscriberHistoryTablePanel.this.getOwner(),
 		    message("deleteRow.confirmation"), message("delete"));
 	    if (yes) {
-		Optional<Long> selectedRowId = getSelectedRowId();
-		if (selectedRowId.isPresent()) {
+		Optional<List<Long>> selectedRowIds = getSelectedRowsId(true);
+		if (selectedRowIds.isPresent()) {
 		    MySwingWorker.execute(new ProgressAction<Void>() {
 
 			@Override
 			public Void action() {
 			    ServiceProvider.get().getSubscriberService()
-				    .deleteTransactions(Arrays.asList(selectedRowId.get()));
+				    .deleteTransactions(selectedRowIds.get());
 			    return null;
 			}
 
