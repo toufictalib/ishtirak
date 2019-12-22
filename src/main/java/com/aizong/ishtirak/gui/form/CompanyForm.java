@@ -30,7 +30,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
     private JTextField txtLandLine;
     private JTextField txtMainMobilePhone;
     private JTextField txtOtherMobilePhone;
-    private JTextField txtMaintenanceNumber;
+    private JTextArea txtNote;
 
     private Company company;
 
@@ -48,7 +48,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	    txtAddress.setText(company.getAddress());
 	    txtLandLine.setText(company.getLandLine());
 	    txtMainMobilePhone.setText(company.getMainMobilePhone());
-	    txtMaintenanceNumber.setText(company.getMaintenanceNumber());
+	    txtNote.setText(company.getNote());
 	    txtOtherMobilePhone.setText(company.getOtherMobilePhone());
 	}
     }
@@ -60,7 +60,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	txtLandLine = new JTextField();
 	txtMainMobilePhone = new JTextField();
 	txtOtherMobilePhone = new JTextField();
-	txtMaintenanceNumber = new JTextField();
+	txtNote = ComponentUtils.createTextArea(3, 1);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	builder.append(message("subsriber.form.landLine"), txtLandLine);
 	builder.append(message("subsriber.form.mainPhone"), txtMainMobilePhone);
 	builder.append(message("subsriber.form.alternativePhone"), txtOtherMobilePhone);
-	builder.append(message("subsriber.form.maintenace"), txtMaintenanceNumber);
+	builder.append(message("subsriber.form.note"), txtNote);
 
 	builder.appendSeparator();
 
@@ -97,7 +97,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	newCompany.setAddress(txtAddress.getText());
 	newCompany.setLandLine(txtLandLine.getText());
 	newCompany.setMainMobilePhone(txtMainMobilePhone.getText());
-	newCompany.setMaintenanceNumber(txtMaintenanceNumber.getText());
+	newCompany.setNote(txtNote.getText());
 	newCompany.setOtherMobilePhone(txtOtherMobilePhone.getText());
 	ServiceProvider.get().getSubscriberService().saveCompany(newCompany);
 	ServiceProvider.get().revalidate();

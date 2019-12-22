@@ -32,6 +32,9 @@ public class Company extends BaseEntity {
 
     @Column(name = "maitenance_number")
     private String maintenanceNumber;
+    
+    @Column(name = "note")
+    private String note;
 
     public String getName() {
 	return name;
@@ -81,4 +84,13 @@ public class Company extends BaseEntity {
 	this.maintenanceNumber = maintenanceNumber;
     }
 
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+    
 }

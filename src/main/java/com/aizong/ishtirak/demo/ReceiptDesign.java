@@ -30,13 +30,16 @@ public class ReceiptDesign {
     
     private static final String RECEIPT_NUMBER = "وصل تحصيل";
 
-    private static final String MAINTENANCE_NUMBER = "رقم الصيانة";
+    @SuppressWarnings("unused")
+	private static final String NOTE = "ملاحظة";
 
-    private static final String OLD_COUNTER_VALUE = "عداد قديم";
+    @SuppressWarnings("unused")
+	private static final String OLD_COUNTER_VALUE = "عداد قديم";
 
     private static final String NEW_COUNTER_VALUE = "عداد جديد ";
 
-    private static final String SIGNATURE = "التوقيع";
+    @SuppressWarnings("unused")
+	private static final String SIGNATURE = "التوقيع";
 
     private static final String SUBSCRIPTION_TYPE = "مقطوعية";
 
@@ -56,11 +59,11 @@ public class ReceiptDesign {
 
     StyleBuilder STYLE_RTL;
     
-    String maintenancePhone;
+    String note;
 
-    public JasperReportBuilder build(ReceiptBean bean,String companyName,String maintenancePhone) throws DRException {
+    public JasperReportBuilder build(ReceiptBean bean,String companyName,String note) throws DRException {
 	this.bean = bean;
-	this.maintenancePhone = maintenancePhone;
+	this.note = note;
 	STYLE_RTL = stl.style().setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE)
 		.setPadding(7);
 	JasperReportBuilder report = report();
@@ -76,6 +79,8 @@ public class ReceiptDesign {
     private HorizontalListBuilder createCustomerInfo() {
 	HorizontalListBuilder horizontalList = cmp.horizontalList();
 
+	//Add gap between header and body
+	horizontalList.newRow(10);
 	addLine(horizontalList, MR, bean.getName());
 	addLine(horizontalList, ADDRESS, bean.getAddress());
 	addLine(horizontalList, AMOUNT, bean.getAmountToPay());
@@ -86,8 +91,7 @@ public class ReceiptDesign {
 		    .newRow().add(cmp.hListCell(cmp.horizontalList().add(cmp.text(""))).heightFixedOnTop());
 		    
 	} else {
-	    horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(counter()).heightFixedOnTop())).newRow()
-		    .add(cmp.horizontalList(counter2()));
+	    horizontalList.add(cmp.horizontalList().newRow(5).add(counter2()));
 	}
 	return horizontalList;
     }
@@ -103,7 +107,7 @@ public class ReceiptDesign {
 	HorizontalListBuilder list = cmp.horizontalList();
 	addCounerLine(list, NEW_COUNTER_VALUE, String.valueOf(bean.getNewCounter()), 5);
 	//list.add(cmp.text("").setFixedColumns(2));
-	addCounerLine(list, OLD_COUNTER_VALUE, String.valueOf(bean.getOldCounter()), 6);
+	//addCounerLine(list, OLD_COUNTER_VALUE, String.valueOf(bean.getOldCounter()), 6);
 
 	return cmp.verticalList(list);
     }
@@ -156,10 +160,13 @@ public class ReceiptDesign {
 		.setBottomBorder(penDouble);
     }
 
+    private StyleBuilder getNoteStyle() {
+    	return stl.style(STYLE_RTL).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFontSize(10).bold();
+    }
     public ComponentBuilder<?, ?> createTitleComponent(String label) {
 	return cmp.horizontalList(
-		cmp.verticalList().add(cmp.text(MAINTENANCE_NUMBER).setStyle(Templates.bold12CenteredStyle),
-			cmp.text(maintenancePhone).setStyle(Templates.bold12CenteredStyle)),
+		cmp.verticalList().add(/*cmp.text(NOTE).setStyle(Templates.bold12CenteredStyle),*/
+			cmp.text(note).setStyle(getNoteStyle())),
 
 		cmp.verticalList().add(
 
@@ -178,13 +185,13 @@ public class ReceiptDesign {
 	    JasperReportBuilder[] array = new JasperReportBuilder[asList.size()];
 	    int i=0;
 	    for(ReceiptBean receiptBean:asList) {
-		  JasperReportBuilder report = design.build(receiptBean,"اشتراكات الجرد","71040284");
+		  JasperReportBuilder report = design.build(receiptBean,"اشتراكات الجرد"," ملاحظة:في حال عدم الدفع الاشتراك قبل 10من الشهر الجاري سيتم قطع الكهرباء.");
 		  report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
 		  array[i++] = report;
 	    }
 	    
 	    
-	    concatenatedReport().concatenate(array).toPdf(Exporters.pdfExporter("/home/ubility/all.pdf"));
+	    concatenatedReport().concatenate(array).toPdf(Exporters.pdfExporter("C:\\Users\\QSC\\Documents\\all.pdf"));
 	  
 	    /*mainReport.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
 	    mainReport.show();*/

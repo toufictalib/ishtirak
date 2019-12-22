@@ -264,7 +264,7 @@ public class SubscriberHistoryTablePanel extends ReportTablePanel {
 			try {
 			    Company company = ServiceProvider.get().getCompany();
 			    report = design.build(receiptBean, company.getName(),
-				    company.getMaintenanceNumber());
+				    company.getNote());
 			    report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
 			    if (report != null) {
 				list.add(report);

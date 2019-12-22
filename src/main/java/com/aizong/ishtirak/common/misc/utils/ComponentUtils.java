@@ -67,13 +67,17 @@ public class ComponentUtils {
         return new Dimension(width, height);
     }
     
-    public static JTextArea createTextArea() {
-	JTextArea txtArea = new JTextArea(2, 1);
-	txtArea.setLineWrap(true);
+    public static JTextArea createTextArea(int rows, int cols) {
+    	JTextArea txtArea = new JTextArea(rows, cols);
+		txtArea.setLineWrap(true);
 
-	txtArea.setBorder(UIManager.getBorder("TextField.border"));
-	return txtArea;
+		txtArea.setBorder(UIManager.getBorder("TextField.border"));
+		return txtArea;
     }
+
+    public static JTextArea createTextArea() {
+		return createTextArea(2,1);
+	}
     
     public static void addTitleBorder(JComponent component,String title)
     {
