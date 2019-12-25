@@ -349,7 +349,7 @@ public class ReportServiceImpl implements ReportService {
     public SummaryBean getSummaryResult(String fromDate, String toDate) {
 	String engine = null;
 	return new SummaryBean(subscriberService.getEngines(), reportDao.getExpensesPerEngine(engine, fromDate, toDate),
-		reportDao.getConsumptionPerEngine(engine, fromDate, toDate), reportDao.getIncomePerEngine(engine, fromDate, toDate));
+		reportDao.getConsumptionPerEngine(engine, fromDate, toDate), reportDao.getIncomePerEngine(engine, fromDate, toDate),reportDao.getIncomePerEnginePaid(engine, fromDate, toDate));
     }
 
     @Override

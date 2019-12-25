@@ -119,34 +119,37 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	controlPanel.add(btnSearch);
 	
 	
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,100dlu,p,120dlu,p,50dlu,50dlu"));
+	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,100dlu,p,110dlu,p,40dlu,p,40dlu"));
 	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 	builder.setDefaultDialogBorder();
  	builder.setLeftToRight(false);
 	// starting build panel
 	builder.appendSeparator(message("income"));
 	builder.append(ComponentUtils.createScrollPane(tableIncome));
+	
 	builder.appendSeparator(message("expenses"));
 	builder.append(ComponentUtils.createScrollPane(tableExpenses));
 	
 	builder.appendSeparator(message("result"));
 	builder.append(ComponentUtils.createScrollPane(tableResult));
-
+	
+	builder.appendSeparator(message("result"));
 	builder.append(ComponentUtils.createScrollPane(tableConsumption));
+	
+
+	JPanel panel2 = builder.getPanel();
+	panel2.setPreferredSize(ComponentUtils.getDimension(97, 90));
+	JScrollPane scrollPane = new JScrollPane();
+	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+	scrollPane.setViewportView(panel2);
+	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(100, 88)));
+	
 	
 	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	panel.add(btnPrint);
 	builder.append(panel);
 	
 	add(controlPanel,BorderLayout.NORTH);
-
-	JPanel panel2 = builder.getPanel();
-	JScrollPane scrollPane = new JScrollPane();
-	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-	panel2.setPreferredSize(ComponentUtils.getDimension(97, 90));
-	scrollPane.setViewportView(panel2);
-	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(100, 88)));
-	
 	add(scrollPane,BorderLayout.CENTER);
 	add(panel, BorderLayout.SOUTH);
     }
@@ -243,7 +246,9 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 		    Map<String, Map<String, Double>> expensesValues = getExpensesValues(t.getExpenses());
 		    Map<String, Map<String, Double>> incomeValues = getIncomeValues(t.getIncome());
 		    Map<String, Map<String, Double>> consumptions = getConsupmtions(t.getConsumptions());
+		    Map<String, Double> incomeValuesPaid = getIncomeValuesPaid(t.getIncomePaid());
 		    
+			// add all engine even there no data for them
 		    for (Engine engine : t.getEngines()) {
 			if(incomeValues.get(engine.getName())==null) {
 			    incomeValues.put(engine.getName(), new HashMap<>());
@@ -257,13 +262,27 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 			    consumptions.put(engine.getName(), new HashMap<>());
 			}
 			
+			if(incomeValuesPaid.get(engine.getName())==null) {
+							incomeValuesPaid.put(engine.getName(), -1d);
+			}
 			
 		    }
 		    
 		    tableExpenses.setModel(new ExpensesTableModel(expensesValues));
 		    tableConsumption.setModel(new ConsumptionTableModel(consumptions));
-		    tableIncome.setModel(new IncomeTableModel(incomeValues));
-		    fillResult(incomeValues, expensesValues);
+			tableIncome.setModel(new IncomeTableModel(incomeValues, incomeValuesPaid));
+			fillResult(incomeValues, expensesValues);
+		}
+
+		private Map<String, Double> getIncomeValuesPaid(List<Object[]> rows) {
+			Map<String, Double> incomeValuesPaid = new HashMap<>();
+		    
+		    for (Object[] row : rows) {
+						if (row[0] != null) {
+							incomeValuesPaid.put(row[0].toString(), (Double) row[1]);
+						}
+			}
+			return incomeValuesPaid;
 		}
 
 		private void fillResult(Map<String, Map<String, Double>> incomeValues,

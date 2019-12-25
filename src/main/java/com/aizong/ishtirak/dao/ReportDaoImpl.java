@@ -283,6 +283,12 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	String sql = SQLUtils.sql("income_per_engine.sql", fromDate, toDate);
 	return toList(sql);
     }
+    
+    @Override
+    public List<Object[]> getIncomePerEnginePaid(String engine, String fromDate, String toDate) {
+	String sql = SQLUtils.sql("income_per_engine_paid.sql", fromDate, toDate);
+	return toList(sql);
+    }
 
     @Override
     public List<Object[]> getExportedFiles(DateRange dateRangeOfCurrentMonth) {

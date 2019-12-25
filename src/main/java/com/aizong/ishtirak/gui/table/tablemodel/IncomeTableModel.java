@@ -15,13 +15,14 @@ public class IncomeTableModel extends AbstractTableModel {
     Map<String, Map<String, Double>> map;
 
     List<String> cols = new ArrayList<>();
-
-    public IncomeTableModel(Map<String, Map<String, Double>> map) {
+    Map<String, Double> incomeValuesPaid;
+    public IncomeTableModel(Map<String, Map<String, Double>> map , Map<String, Double> incomeValuesPaid) {
 	super();
 	cols.add(message("income"));
 	cols.addAll(map.keySet());
 	cols.add(message("total"));
 	this.map = map;
+	this.incomeValuesPaid = incomeValuesPaid;
     }
 
     @Override
@@ -44,17 +45,30 @@ public class IncomeTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-	return TransactionType.values().length + 1;
+	return TransactionType.values().length + 3;
     }
 
     @Override
     public Object getValueAt(int row, int col) {
-	if (col == 0) {
-	    if (row < getRowCount() - 1) {
-		return ServiceProvider.get().getMessage().getEnumLabel(TransactionType.values()[row].toString(), TransactionType.class);
-	    }
-	    return message("total");
-	}
+		if (col == 0) {
+			switch (row) {
+			case 0:
+			case 1:
+			case 2:
+				return ServiceProvider.get().getMessage().getEnumLabel(TransactionType.values()[row].toString(),
+						TransactionType.class);
+			case 3:
+				return message("total");
+			case 4:
+				return message("payment");
+			case 5:
+				return message("remain");
+
+			default:
+				break;
+			}
+
+		}
 
 	if (col == cols.size() - 1) {
 
@@ -69,9 +83,9 @@ public class IncomeTableModel extends AbstractTableModel {
 	    }
 	    return total;
 	}
-	if (row == getRowCount() - 1) {
+	if (row == 3) {
 	    Double total = null;
-	    for (int i = 0; i < getRowCount() - 1; i++) {
+	    for (int i = 0; i < 3; i++) {
 		if (getValueAt(i, col) instanceof Double) {
 		    if (total == null) {
 			total = 0d;
@@ -80,6 +94,34 @@ public class IncomeTableModel extends AbstractTableModel {
 		}
 	    }
 	    return total;
+	}
+	
+	if (row == 4) {
+		if(col==cols.size()-1) {
+			Double total = 0d;
+			Double value = 0d;
+			for (int i = 0; i < getColumnCount(); i++) {
+				String colName = getColumnName(i);
+				value = incomeValuesPaid.get(colName);
+				if (value != null && value!=-1) {
+					total += value;
+				}
+			}
+			return total;
+		}
+		
+		Double returnValue = incomeValuesPaid.get(getColumnName(col));
+		return returnValue ==-1 ? null : returnValue;
+		
+		
+		
+	}
+	
+	if (row == 5) {
+			if (getValueAt(4, col) instanceof Double && getValueAt(3, col) instanceof Double) {
+				return (Double) getValueAt(3, col) - (Double) getValueAt(4, col);
+			}
+			return null;
 	}
 	Map<String, Double> map2 = map.get(getColumnName(col));
 	Double double1 = map2.get(getValueAt(row, 0));
