@@ -14,3 +14,6 @@ mvn install:install-file -Dfile=C:\Users\QSC\eclipse-workspace\ishtirak\src\main
 mvn install:install-file -Dfile=C:\Users\QSC\eclipse-workspace\ishtirak\src\main\resources\libs\jgoodies-forms-1.4.0.jar -DgroupId=com.ishtirak  -DartifactId=jgoodies-forms -Dversion=1.0.0 -Dpackaging=jar
 
 mvn install:install-file -Dfile=C:\Users\QSC\eclipse-workspace\ishtirak\src\main\resources\libs\jide-oss-3.4.0.jar -DgroupId=com.ishtirak  -DartifactId=jide-oss -Dversion=1.0.0 -Dpackaging=jar
+
+#Build
+- mvn clean install

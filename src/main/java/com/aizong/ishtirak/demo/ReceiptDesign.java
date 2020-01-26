@@ -91,7 +91,7 @@ public class ReceiptDesign {
 		    .newRow().add(cmp.hListCell(cmp.horizontalList().add(cmp.text(""))).heightFixedOnTop());
 		    
 	} else {
-	    horizontalList.add(cmp.horizontalList().newRow(5).add(counter2()));
+	    //horizontalList.add(cmp.horizontalList().newRow(5).add(counter2()));
 	}
 	return horizontalList;
     }
