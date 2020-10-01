@@ -91,7 +91,8 @@ public class ReceiptDesign {
 		    .newRow().add(cmp.hListCell(cmp.horizontalList().add(cmp.text(""))).heightFixedOnTop());
 		    
 	} else {
-	    //horizontalList.add(cmp.horizontalList().newRow(5).add(counter2()));
+	    horizontalList.add(cmp.horizontalList().newRow(5).add(cmp.hListCell(counter()).heightFixedOnTop())).newRow()
+		    .add(cmp.horizontalList(counter2()));
 	}
 	return horizontalList;
     }
@@ -107,7 +108,7 @@ public class ReceiptDesign {
 	HorizontalListBuilder list = cmp.horizontalList();
 	addCounerLine(list, NEW_COUNTER_VALUE, String.valueOf(bean.getNewCounter()), 5);
 	//list.add(cmp.text("").setFixedColumns(2));
-	//addCounerLine(list, OLD_COUNTER_VALUE, String.valueOf(bean.getOldCounter()), 6);
+	addCounerLine(list, OLD_COUNTER_VALUE, String.valueOf(bean.getOldCounter()), 6);
 
 	return cmp.verticalList(list);
     }
