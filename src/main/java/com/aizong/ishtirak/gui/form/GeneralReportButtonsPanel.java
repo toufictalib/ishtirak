@@ -8,6 +8,7 @@ import com.aizong.ishtirak.MainFrame;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.WindowUtils;
+import com.aizong.ishtirak.gui.table.CounterConsumptionSumTablePanel;
 import com.aizong.ishtirak.gui.table.EmployeeTablePanel;
 import com.aizong.ishtirak.gui.table.SearchTablePanel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -51,10 +52,22 @@ public class GeneralReportButtonsPanel extends BasicForm {
 		}
 	    });
 	    
+	    JideButton counterConsumptionSumTablePanelButton = button(message("report.counter.consumption.sum"), "subreport.png");
+	    counterConsumptionSumTablePanelButton.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			CounterConsumptionSumTablePanel consumptionSumTablePanel = new CounterConsumptionSumTablePanel(e.getActionCommand());
+			consumptionSumTablePanel.setPreferredSize(ComponentUtils.getDimension(90, 85));
+	            WindowUtils.createDialog(GeneralReportButtonsPanel.this.getOwner(), e.getActionCommand(),consumptionSumTablePanel);
+		}
+	    });
+	    
 	
 	
 	builder.append(btnMonthlyReports);
 	builder.append(button);
+	builder.append(counterConsumptionSumTablePanelButton);
 	
 	
 	return builder.getPanel();

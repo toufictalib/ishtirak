@@ -1,9 +1,6 @@
 package com.aizong.ishtirak.demo;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Locale;
+import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 
 public class ReceiptBean {
 
@@ -17,12 +14,15 @@ public class ReceiptBean {
     private boolean monthlySubscription;
     private String counterCode;
     private Double amountTopay;
+    private  Double subscriptionFees;
+	private  SupportedCurrency selectedCurrency;
     
     public ReceiptBean() {
 	
     }
     public ReceiptBean(String name, String village, String address, String date, Long oldCounter,
-		       Long newCounter, String subscriptionType, boolean monthlySubscription, String counterCode, Double amountTopay) {
+		       Long newCounter, String subscriptionType, boolean monthlySubscription, String counterCode, Double amountTopay, Double subscriptionFees,
+		       SupportedCurrency selectedCurrency) {
 	super();
 	this.name = name;
 	this.village = village;
@@ -34,6 +34,8 @@ public class ReceiptBean {
 	this.monthlySubscription = monthlySubscription;
 	this.counterCode = counterCode;
 	this.amountTopay = amountTopay;
+	this.subscriptionFees = subscriptionFees;
+	this.selectedCurrency = selectedCurrency;
     }
 
     public String getName() {
@@ -89,46 +91,35 @@ public class ReceiptBean {
 	receiptBean.setName("توفيق طالب");
 	receiptBean.setAddress("السفيرة, بناية عويضة");
 	receiptBean.setDate("كانون الثاني  2018");
-	receiptBean.setNewCounter(100000L);
-	receiptBean.setOldCounter(150000L);
+	receiptBean.setNewCounter(150000L);
+	receiptBean.setOldCounter(100000L);
 	receiptBean.setVillage("السفيرة");
 	receiptBean.setSubscriptionType("5 أمبير");
 	receiptBean.setMonthlySubscription(monthlySubscription);
 	receiptBean.setCounterCode("ب م 100");
-	receiptBean.setAmountTopay(100000d);
+	receiptBean.setAmountTopay(16D);
+	receiptBean.setSubscriptionFees(23000D);
+	receiptBean.setSelectedCurrency(SupportedCurrency.DOLLAR);
 	return receiptBean;
     }
 
     public String getFullName() {
 	return "توفيق طالب";
     }
-
-    public String getAmountToPay() {
-	return formatCurrency(new Locale("ar", "LB"), amountTopay) +"  ل.ل.";
-    }
-    
-    private String formatCurrency(Locale locale, Double amountTopay2) {
-	
-	DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(new Locale.Builder().setLanguageTag("ar-LB-u-nu-arab").build());
-	DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
-
-	symbols.setGroupingSeparator(',');
-	formatter.setDecimalFormatSymbols(symbols);
-	
-	return formatter.format(amountTopay2);
-    }
-    public void setAmountTopay(Double amountTopay) {
+  
+    public Double getAmountTopay() {
+		return amountTopay;
+	}
+	public Double getSubscriptionFees() {
+		return subscriptionFees;
+	}
+	public SupportedCurrency getSelectedCurrency() {
+		return selectedCurrency;
+	}
+	public void setAmountTopay(Double amountTopay) {
         this.amountTopay = amountTopay;
     }
-    public static void main(String[]args) {
-	
-	ReceiptBean bean = ReceiptBean.create(true);
-	
-	System.out.println(bean.formatCurrency(Locale.CANADA, 125000d));
-	
-    }
-    
-    
+   
     public String getSubscriptionType() {
         return subscriptionType;
     }
@@ -140,8 +131,14 @@ public class ReceiptBean {
     public void setMonthlySubscription(boolean monthlySubscription) {
         this.monthlySubscription = monthlySubscription;
     }
-
-    public boolean  isMonthlySubscription() {
+    
+    public void setSubscriptionFees(Double subscriptionFees) {
+		this.subscriptionFees = subscriptionFees;
+	}
+	public void setSelectedCurrency(SupportedCurrency selectedCurrency) {
+		this.selectedCurrency = selectedCurrency;
+	}
+	public boolean  isMonthlySubscription() {
 	return monthlySubscription;
     }
 

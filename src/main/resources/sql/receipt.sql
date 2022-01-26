@@ -11,6 +11,7 @@ SELECT
     t.insert_date "Transaction Date",
     sh.current_counter,
     sh.previous_counter,
+    sh.subscription_fees,
     c.address
     
      

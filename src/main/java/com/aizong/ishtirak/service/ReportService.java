@@ -45,4 +45,6 @@ public interface ReportService {
     ReportTableModel getExportedFiles(boolean counterInput);
 
     ReportTableModel getCounterReport(String fromDate, String toDate);
+
+	ReportTableModel getCounterConsumptionSumByEngine(String fromDate, String toDate);
 }

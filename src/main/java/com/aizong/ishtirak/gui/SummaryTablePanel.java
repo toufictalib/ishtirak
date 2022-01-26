@@ -44,6 +44,7 @@ import com.aizong.ishtirak.gui.table.tablemodel.ConsumptionTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.ExpensesTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.IncomeTableModel;
 import com.aizong.ishtirak.gui.table.tablemodel.ResultTableModel;
+import com.aizong.ishtirak.gui.table.tablemodel.SubscriptionFeesTableModel;
 import com.aizong.ishtirak.model.Engine;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
@@ -60,6 +61,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
     private JTable tableConsumption;
     private JTable tableIncome;
     private JTable tableResult;
+    private JTable tableSubscriptionFees;
     private JButton btnPrint;
 
     public SummaryTablePanel(String title) {
@@ -86,6 +88,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	tableConsumption = createTable();
 	tableIncome = createTable();
 	tableResult = createTable();
+	tableSubscriptionFees = createTable();
 
 	btnPrint = ButtonFactory.createBtnPrint();
 	btnPrint.addActionListener(this);
@@ -119,7 +122,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	controlPanel.add(btnSearch);
 	
 	
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,100dlu,p,110dlu,p,40dlu,p,40dlu"));
+	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,100dlu,p,110dlu,p,40dlu,p,40dlu,p,40dlu"));
 	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 	builder.setDefaultDialogBorder();
  	builder.setLeftToRight(false);
@@ -133,9 +136,11 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	builder.appendSeparator(message("result"));
 	builder.append(ComponentUtils.createScrollPane(tableResult));
 	
-	builder.appendSeparator(message("result"));
+	builder.appendSeparator(message("diesel_result"));
 	builder.append(ComponentUtils.createScrollPane(tableConsumption));
 	
+	builder.appendSeparator(message("subscription_fees"));
+	builder.append(ComponentUtils.createScrollPane(tableSubscriptionFees));
 
 	JPanel panel2 = builder.getPanel();
 	panel2.setPreferredSize(ComponentUtils.getDimension(97, 90));
@@ -247,6 +252,7 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 		    Map<String, Map<String, Double>> incomeValues = getIncomeValues(t.getIncome());
 		    Map<String, Map<String, Double>> consumptions = getConsupmtions(t.getConsumptions());
 		    Map<String, Double> incomeValuesPaid = getIncomeValuesPaid(t.getIncomePaid());
+		    Map<String, Map<String, Double>> subscriptionFees = getIncomeValues(t.getSubscriptionFees());
 		    
 			// add all engine even there no data for them
 		    for (Engine engine : t.getEngines()) {
@@ -266,11 +272,16 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 							incomeValuesPaid.put(engine.getName(), -1d);
 			}
 			
-		    }
+			if(subscriptionFees.get(engine.getName())==null) {
+				subscriptionFees.put(engine.getName(), new HashMap<>());
+			}
+			}
+			
 		    
 		    tableExpenses.setModel(new ExpensesTableModel(expensesValues));
 		    tableConsumption.setModel(new ConsumptionTableModel(consumptions));
 			tableIncome.setModel(new IncomeTableModel(incomeValues, incomeValuesPaid));
+			tableSubscriptionFees.setModel(new SubscriptionFeesTableModel(subscriptionFees));
 			fillResult(incomeValues, expensesValues);
 		}
 

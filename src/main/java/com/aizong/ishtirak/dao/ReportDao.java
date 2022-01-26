@@ -57,5 +57,8 @@ public interface ReportDao extends GenericDao<Object>{
 
 	List<Object[]> getIncomePerEnginePaid(String engine, String fromDate, String toDate);
 
+	List<Object[]> getCounterConsumptionSumByEngine(String fromDate, String toDate);
+	
+	List<Object[]> getCounterConsumptionFeesSumByEngine(String fromDate, String toDate);
     
 }

@@ -8,6 +8,9 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import java.util.Arrays;
 import java.util.List;
 
+import com.aizong.ishtirak.bean.CurrencyManager;
+import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
+
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
@@ -83,7 +86,7 @@ public class ReceiptDesign {
 	horizontalList.newRow(10);
 	addLine(horizontalList, MR, bean.getName());
 	addLine(horizontalList, ADDRESS, bean.getAddress());
-	addLine(horizontalList, AMOUNT, bean.getAmountToPay());
+	addLine(horizontalList, AMOUNT,  displayAmount());
 	addLine(horizontalList, MONTH, bean.getDate());
 
 	if (bean.isMonthlySubscription()) {
@@ -96,6 +99,22 @@ public class ReceiptDesign {
 	}
 	return horizontalList;
     }
+
+	private String displayAmount() {
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(CurrencyManager.formatCurrencyLbp(bean.getAmountTopay()) + " "
+				+ bean.getSelectedCurrency().getCode());
+
+		if (!bean.isMonthlySubscription()) {
+			builder.append(" + ");
+			builder.append(CurrencyManager.formatCurrencyLbp(bean.getSubscriptionFees()) + " "
+					+ SupportedCurrency.LBP.getCode());
+			builder.append("(اشتراك عداد)");
+		}
+
+		return builder.toString();
+	}
 
     public ComponentBuilder<?, ?> counter() {
 	HorizontalListBuilder list = cmp.horizontalList();

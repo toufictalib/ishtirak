@@ -308,4 +308,17 @@ public class ReportDaoImpl extends GenericDaoImpl<Object> implements ReportDao {
 	return toList(sql);
     }
     
+    @Override
+    public List<Object[]>  getCounterConsumptionSumByEngine(String fromDate, String toDate){
+	String sql = SQLUtils.sql("counter_consumption_sum_by_engine.sql", fromDate, toDate);
+	return toList(sql);
+    }
+
+
+	@Override
+	public List<Object[]> getCounterConsumptionFeesSumByEngine(String fromDate, String toDate) {
+		String sql = SQLUtils.sql("counter_consumption_fees_sum_by_engine.sql", fromDate, toDate);
+		return toList(sql);
+	}
+   
 }

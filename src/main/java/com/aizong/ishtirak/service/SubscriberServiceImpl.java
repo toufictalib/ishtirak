@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
+import com.aizong.ishtirak.bean.CurrencyManager;
 import com.aizong.ishtirak.bean.LogBean;
 import com.aizong.ishtirak.bean.OrderBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
@@ -56,6 +57,9 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Autowired
     SubscriberDao subscriberDao;
+    
+    @Autowired
+    CurrencyManager currencyManager;
 
     @Autowired
     Message message;
@@ -377,8 +381,8 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    SubscriptionBundle subscriptionBundle = (SubscriptionBundle) bundle;
 		    Transaction transaction = new Transaction();
 
-		    amount = subscriptionBundle.getSubscriptionFees() + subscriptionBundle.getCostPerKb() * consumption;
-		    amount = getTheRightValue(amount);
+		    amount = subscriptionBundle.getCostPerKb() * consumption;
+		    amount = currencyManager.getTheRightValue(amount);
 
 		    transaction.setAmount(amount);
 		    transaction.setContractId(contract.getId());
@@ -408,16 +412,6 @@ public class SubscriberServiceImpl implements SubscriberService {
 	subscriberDao.save(new ArrayList<>(subscriptionHistoryList));
 
 	return failedContract;
-
-    }
-
-    private Double getTheRightValue(Double amount) {
-
-	Double a = Math.floor(amount / 1000) * 1000;
-	if ((amount - a) >= 500) {
-	    return a + 1000;
-	}
-	return a;
 
     }
 

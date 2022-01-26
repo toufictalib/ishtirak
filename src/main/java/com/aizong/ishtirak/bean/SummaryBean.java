@@ -11,14 +11,16 @@ public class SummaryBean {
     private final List<Object[]> consumptions;
     private final List<Object[]> income;
     private final List<Object[]> incomePaid;
+    private final List<Object[]> subscriptionFees;
 
-    public SummaryBean(List<Engine> engines, List<Object[]> expenses, List<Object[]> consumptions, List<Object[]> income, List<Object[]> incomePaid) {
+    public SummaryBean(List<Engine> engines, List<Object[]> expenses, List<Object[]> consumptions, List<Object[]> income, List<Object[]> incomePaid, List<Object[]> subscriptionFees) {
 	super();
 	this.engines = engines;
 	this.expenses = expenses;
 	this.consumptions = consumptions;
 	this.income = income;
 	this.incomePaid = incomePaid;
+	this.subscriptionFees = subscriptionFees;
     }
 
     
@@ -43,7 +45,9 @@ public class SummaryBean {
 	public List<Object[]> getIncomePaid() {
 		return incomePaid;
 	}
-    
-    
 
+
+	public List<Object[]> getSubscriptionFees() {
+		return subscriptionFees;
+	}
 }

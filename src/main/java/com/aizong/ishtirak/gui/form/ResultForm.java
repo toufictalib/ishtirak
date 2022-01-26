@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.DoubleAdder;
 
@@ -60,7 +61,6 @@ import com.aizong.ishtirak.common.misc.component.DateRange;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.Constant;
-import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 import com.aizong.ishtirak.common.misc.utils.DateUtil;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.MySwingWorker;
@@ -166,7 +166,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 	lbl.setFont(new Font("Tahoma", Font.PLAIN, 24));
 	lbl.setForeground(Color.DARK_GRAY);
 
-	JLabel lblAmount = new JLabel(CurrencyUtils.formatCurrency(LoginForm.getCurrentLocale(), profit),
+	JLabel lblAmount = new JLabel(formatCurrency(LoginForm.getCurrentLocale(), profit),
 		SwingConstants.CENTER);
 	lblAmount.setBorder(ComponentUtils.emptyBorder(padding));
 	lblAmount.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -182,7 +182,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 	return panelTop;
     }
 
-    private JPanel createIncomeExpenses(String title, List<Tuple<String, Double>> result, Class<?> enumClass,
+	private JPanel createIncomeExpenses(String title, List<Tuple<String, Double>> result, Class<?> enumClass,
 	    boolean expenses) {
 
 	DefaultFormBuilder builder = BasicForm.createBuilder("p,20dlu,fill:140dlu:grow");
@@ -208,7 +208,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 
     private JPanel createTotalPanel(Double amount) {
 
-	JLabel txtField = new JLabel(CurrencyUtils.formatCurrency(LoginForm.getCurrentLocale(), amount) + "");
+	JLabel txtField = new JLabel(formatCurrency(LoginForm.getCurrentLocale(), amount) + "");
 	txtField.setFont(new Font("Tahoma", Font.PLAIN, 24));
 	txtField.setForeground(Color.DARK_GRAY);
 
@@ -236,14 +236,14 @@ public class ResultForm extends BasicForm implements ActionListener {
 
     private void addLine(DefaultFormBuilder builder, String label, Double value) {
 
-	JTextField txtField = new JTextField(CurrencyUtils.formatCurrency(LoginForm.getCurrentLocale(), value) + "");
+	JTextField txtField = new JTextField(formatCurrency(LoginForm.getCurrentLocale(), value) + "");
 	txtField.setEditable(false);
 	builder.append(label, txtField);
     }
 
     @SuppressWarnings("unused")
     private void addTotal(DefaultFormBuilder builder, String label, Double value) {
-	JLabel txtField = new JLabel(CurrencyUtils.formatCurrency(LoginForm.getCurrentLocale(), value) + "");
+	JLabel txtField = new JLabel(formatCurrency(LoginForm.getCurrentLocale(), value) + "");
 	txtField.setFont(new Font("Tahoma", Font.PLAIN, 24));
 	txtField.setForeground(Color.DARK_GRAY);
 	builder.append(label, txtField);
@@ -537,5 +537,8 @@ public class ResultForm extends BasicForm implements ActionListener {
 	}
 
     }
-
+    
+	private String formatCurrency(Locale currentLocale, Double profit) {
+		return ServiceProvider.get().getCurrencyManager().formatCurrency(profit);
+	}
 }

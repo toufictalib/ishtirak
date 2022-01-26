@@ -31,12 +31,12 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import com.aizong.ishtirak.bean.CurrencyManager;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
-import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
@@ -290,7 +290,7 @@ public abstract class ReportTablePanel extends BasicPanel implements RefreshTabl
 	    }
 
 	}
-	txtTotal.setText(message("table.total", CurrencyUtils.format(total)));
+	txtTotal.setText(message("table.total", CurrencyManager.format(total)));
     }
 
     private void applyRenderer() {

@@ -349,7 +349,8 @@ public class ReportServiceImpl implements ReportService {
     public SummaryBean getSummaryResult(String fromDate, String toDate) {
 	String engine = null;
 	return new SummaryBean(subscriberService.getEngines(), reportDao.getExpensesPerEngine(engine, fromDate, toDate),
-		reportDao.getConsumptionPerEngine(engine, fromDate, toDate), reportDao.getIncomePerEngine(engine, fromDate, toDate),reportDao.getIncomePerEnginePaid(engine, fromDate, toDate));
+		reportDao.getConsumptionPerEngine(engine, fromDate, toDate), reportDao.getIncomePerEngine(engine, fromDate, toDate),
+		reportDao.getIncomePerEnginePaid(engine, fromDate, toDate), reportDao.getCounterConsumptionFeesSumByEngine(fromDate, toDate));
     }
 
     @Override
@@ -402,5 +403,14 @@ public class ReportServiceImpl implements ReportService {
 	List<Object[]> rows = reportDao.getCounterReport(fromDate, toDate);
 	
 	return new ReportTableModel(cols, rows, clazzes(rows, cols));
+    }
+    
+    
+    @Override
+    public ReportTableModel getCounterConsumptionSumByEngine(String fromDate, String toDate) {
+    	String[] cols = {"engine","counter_usage"};
+    	List<Object[]> rows = reportDao.getCounterConsumptionSumByEngine(fromDate, toDate);
+    	
+    	return new ReportTableModel(cols, rows, clazzes(rows, cols));
     }
 }

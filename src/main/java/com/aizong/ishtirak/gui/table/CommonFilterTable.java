@@ -34,19 +34,19 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import com.aizong.ishtirak.bean.CurrencyManager;
 import com.aizong.ishtirak.bean.ReportTableModel;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.form.BasicPanel;
 import com.aizong.ishtirak.common.misc.component.HeaderRenderer;
 import com.aizong.ishtirak.common.misc.utils.ButtonFactory;
-import com.aizong.ishtirak.common.misc.utils.CurrencyUtils;
 import com.aizong.ishtirak.common.misc.utils.DateCellRenderer;
 import com.aizong.ishtirak.common.misc.utils.ImageUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
 import com.aizong.ishtirak.common.misc.utils.ProgressBar;
 import com.aizong.ishtirak.common.misc.utils.ProgressBar.ProgressBarListener;
-import com.aizong.ishtirak.common.misc.utils.reporting.ReportUtils;
 import com.aizong.ishtirak.common.misc.utils.TableUtils;
+import com.aizong.ishtirak.common.misc.utils.reporting.ReportUtils;
 import com.aizong.ishtirak.gui.table.service.MyTableListener;
 import com.aizong.ishtirak.gui.table.service.RefreshTableInterface;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -183,7 +183,8 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	btnPrint = ButtonFactory.createBtnPrint();
 
 	btnPrint.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent ae) {
+	    @Override
+		public void actionPerformed(ActionEvent ae) {
 		ReportUtils.printTable(table, CommonFilterTable.this.getOwner());
 	    }
 	});
@@ -321,6 +322,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	public RssFeedCellComponent() {
 	    showButton = new JButton("View Articles");
 	    showButton.addActionListener(new ActionListener() {
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 		    JOptionPane.showMessageDialog(null, "Reading");
 		}
@@ -395,6 +397,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	 * javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.
 	 * swing.JTable, java.lang.Object, boolean, int, int)
 	 */
+	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
 		int column) {
 	    updateData(table, isSelected, row);
@@ -411,10 +414,12 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	    this.selectedValue = table.getModel().getValueAt(table.convertRowIndexToModel(row), 0);
 	}
 
+	@Override
 	public Object getCellEditorValue() {
 	    return null;
 	}
 
+	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 		int row, int column) {
 	    updateData(table, isSelected, row);
@@ -477,7 +482,7 @@ public abstract class CommonFilterTable extends BasicPanel implements RefreshTab
 	    }
 
 	}
-	txtTotal.setText(message("table.total", CurrencyUtils.format(total)));
+	txtTotal.setText(message("table.total", CurrencyManager.format(total)));
     }
 
 }
