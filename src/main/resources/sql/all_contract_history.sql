@@ -3,6 +3,10 @@ SELECT
     c.contract_unique_code, 
     CONCAT(s.name, " ", s.last_name) "Full Name",
     t.amount,
+    (CASE
+    WHEN YEAR(t.insert_date) >=2022 THEN (select subscription_fees from subscription_history where subscription_history.transaction=t.id)
+    ELSE null
+	END) "subscription_fees",
     t.is_paid,
     t.transaction_type,
     b.name "Bundle",

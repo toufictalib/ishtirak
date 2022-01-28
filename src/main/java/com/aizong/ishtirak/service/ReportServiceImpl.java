@@ -356,14 +356,14 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportTableModel getContractHistoryPerContractOrALl(List<String> uniqueContractIds, String fromDate,
 	    String toDate, Boolean paid) {
-	String[] cols = {"codeId","contract_unique_code","fullName","amount","paid","transactionType","subscriptionBundle","engine","village","receiptCreationDate"};
+	String[] cols = {"codeId","contract_unique_code","fullName","amount", "subscription_fees_col", "paid","transactionType","subscriptionBundle","engine","village","receiptCreationDate"};
 	List<Object[]> rows = reportDao.getContractHistoryPerContractOrALl(uniqueContractIds, fromDate, toDate, paid);
 	
 	Object value = null;
 	for (Object[] row : rows) {
-	    value = row[5];
+	    value = row[6];
 	    if (value!=null) {
-		row[5] = message.getEnumLabel(value.toString(), TransactionType.class);
+		row[6] = message.getEnumLabel(value.toString(), TransactionType.class);
 	    }
 	}
 	
