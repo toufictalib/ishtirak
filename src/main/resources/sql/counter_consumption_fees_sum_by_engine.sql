@@ -11,4 +11,5 @@ WHERE
         AND e.id = c.engine_id
         AND t.insert_date >= "{0}"
         AND t.insert_date <= "{1}"
+        AND year(t.insert_date) >=2022
 GROUP BY e.name

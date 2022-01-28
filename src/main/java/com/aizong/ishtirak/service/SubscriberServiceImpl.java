@@ -539,20 +539,27 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     }
 
-    @Override
-    public void saveCompany(Company newCompany) {
-	if (newCompany.getId() != null) {
-	    subscriberDao.update(newCompany);
-	} else {
-	    subscriberDao.save(Arrays.asList(newCompany));
+	@Override
+	public void saveCompany(Company newCompany) {
+		if (newCompany.getId() != null) {
+			subscriberDao.update(newCompany);
+		} else {
+			subscriberDao.save(Arrays.asList(newCompany));
+		}
+
+		currencyManager.setSelectCurrency(newCompany.getSelectedCurrency());
 	}
-    }
 
     @Override
-    public Company getCompany() {
-	List<Company> companies = subscriberDao.findAll(Company.class);
-	return companies.isEmpty() ? null : companies.get(0);
-    }
+	public Company getCompany() {
+		List<Company> companies = subscriberDao.findAll(Company.class);
+		if (companies.isEmpty()) {
+			return null;
+		}
+		Company company = companies.get(0);
+		company.setSelectedCurrency(currencyManager.getselectCurrency());
+		return company;
+	}
 
     @Override
     public Map<String, List<Tuple<String, Double>>> getResult(String fromDate, String endDate) {

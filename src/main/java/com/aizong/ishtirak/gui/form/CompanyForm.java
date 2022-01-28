@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 import com.aizong.ishtirak.common.form.BasicForm;
 import com.aizong.ishtirak.common.misc.utils.ComponentUtils;
 import com.aizong.ishtirak.common.misc.utils.MessageUtils;
@@ -31,6 +33,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
     private JTextField txtMainMobilePhone;
     private JTextField txtOtherMobilePhone;
     private JTextArea txtNote;
+    private JComboBox<SupportedCurrency> supportedCurrencyCombobox;
 
     private Company company;
 
@@ -50,6 +53,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	    txtMainMobilePhone.setText(company.getMainMobilePhone());
 	    txtNote.setText(company.getNote());
 	    txtOtherMobilePhone.setText(company.getOtherMobilePhone());
+	    supportedCurrencyCombobox.setSelectedItem(company.getSelectedCurrency());
 	}
     }
 
@@ -60,6 +64,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	txtLandLine = new JTextField();
 	txtMainMobilePhone = new JTextField();
 	txtOtherMobilePhone = new JTextField();
+	supportedCurrencyCombobox = new JComboBox<>(SupportedCurrency.values());
 	txtNote = ComponentUtils.createTextArea(3, 1);
     }
 
@@ -72,6 +77,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	builder.append(message("subsriber.form.landLine"), txtLandLine);
 	builder.append(message("subsriber.form.mainPhone"), txtMainMobilePhone);
 	builder.append(message("subsriber.form.alternativePhone"), txtOtherMobilePhone);
+	builder.append(message("subsriber.form.currency"), supportedCurrencyCombobox);
 	builder.append(message("subsriber.form.note"), txtNote);
 
 	builder.appendSeparator();
@@ -99,6 +105,7 @@ public class CompanyForm extends BasicForm implements RefreshTableInterface {
 	newCompany.setMainMobilePhone(txtMainMobilePhone.getText());
 	newCompany.setNote(txtNote.getText());
 	newCompany.setOtherMobilePhone(txtOtherMobilePhone.getText());
+	newCompany.setSelectedCurrency((SupportedCurrency) supportedCurrencyCombobox.getSelectedItem());
 	ServiceProvider.get().getSubscriberService().saveCompany(newCompany);
 	ServiceProvider.get().revalidate();
 	closeWindow();

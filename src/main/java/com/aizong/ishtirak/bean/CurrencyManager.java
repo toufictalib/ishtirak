@@ -23,7 +23,7 @@ public class CurrencyManager {
 
 	}
 
-	private final SupportedCurrency selectCurrency;
+	private SupportedCurrency selectCurrency;
 
 	public CurrencyManager(SupportedCurrency selectCurrency) {
 		this.selectCurrency = selectCurrency;
@@ -31,6 +31,10 @@ public class CurrencyManager {
 
 	public SupportedCurrency getselectCurrency() {
 		return selectCurrency;
+	}
+	
+	public void setSelectCurrency(SupportedCurrency selectCurrency) {
+		this.selectCurrency = selectCurrency;
 	}
 
 	private Locale getLocale() {

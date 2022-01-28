@@ -3,7 +3,9 @@ package com.aizong.ishtirak.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
 @Entity
@@ -35,6 +37,9 @@ public class Company extends BaseEntity {
     
     @Column(name = "note")
     private String note;
+    
+    @Transient
+    private SupportedCurrency selectedCurrency;
 
     public String getName() {
 	return name;
@@ -92,5 +97,11 @@ public class Company extends BaseEntity {
 		this.note = note;
 	}
 
-    
+	public SupportedCurrency getSelectedCurrency() {
+		return selectedCurrency;
+	}
+
+	public void setSelectedCurrency(SupportedCurrency selectedCurrency) {
+		this.selectedCurrency = selectedCurrency;
+	}
 }
