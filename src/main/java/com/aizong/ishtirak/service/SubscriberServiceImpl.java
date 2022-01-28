@@ -556,9 +556,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		if (companies.isEmpty()) {
 			return null;
 		}
-		Company company = companies.get(0);
-		company.setSelectedCurrency(currencyManager.getselectCurrency());
-		return company;
+		return companies.get(0);
 	}
 
     @Override

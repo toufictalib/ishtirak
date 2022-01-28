@@ -5,6 +5,9 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import com.aizong.ishtirak.common.misc.utils.ServiceProvider;
+import com.aizong.ishtirak.model.Company;
+
 public class CurrencyManager {
 
 	public enum SupportedCurrency {
@@ -25,11 +28,17 @@ public class CurrencyManager {
 
 	private SupportedCurrency selectCurrency;
 
-	public CurrencyManager(SupportedCurrency selectCurrency) {
-		this.selectCurrency = selectCurrency;
+	
+	public CurrencyManager() {
 	}
 
 	public SupportedCurrency getselectCurrency() {
+		if(selectCurrency==null) {
+			Company company = ServiceProvider.get().getSubscriberService().getCompany();
+			if (company != null) {
+				setSelectCurrency(company.getSelectedCurrency());
+			}
+		}
 		return selectCurrency;
 	}
 	
@@ -38,7 +47,7 @@ public class CurrencyManager {
 	}
 
 	private Locale getLocale() {
-		if (selectCurrency == SupportedCurrency.DOLLAR) {
+		if (getselectCurrency() == SupportedCurrency.DOLLAR) {
 			return new Locale("en", "US");
 		}
 		return new Locale("ar", "LB");

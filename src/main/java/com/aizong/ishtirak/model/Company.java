@@ -2,8 +2,9 @@ package com.aizong.ishtirak.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 import com.aizong.ishtirak.common.misc.utils.BaseEntity;
@@ -38,7 +39,8 @@ public class Company extends BaseEntity {
     @Column(name = "note")
     private String note;
     
-    @Transient
+    @Enumerated(EnumType.STRING)
+	@Column(name = "selected_currency")
     private SupportedCurrency selectedCurrency;
 
     public String getName() {

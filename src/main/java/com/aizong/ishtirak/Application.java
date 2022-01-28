@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.aizong.ishtirak.bean.CurrencyManager;
-import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 import com.aizong.ishtirak.common.misc.utils.Message;
 
 @Configuration
@@ -55,10 +54,10 @@ public class Application {
 	return new Message(getCurrentLocale(), messageSource());
     }
     
-    @Bean
-    public CurrencyManager currencyManager() {
-    	return new CurrencyManager(SupportedCurrency.LBP);
-    }
+	@Bean
+	public CurrencyManager currencyManager() {
+		return new CurrencyManager();
+	}
 
     public static Locale getCurrentLocale() {
 	return new Locale("ar", "LB");
