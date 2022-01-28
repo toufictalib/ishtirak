@@ -315,6 +315,8 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 	String income = SQLUtils.sql("income.sql", fromDate, endDate);
 
 	String expenses = SQLUtils.sql("expenses.sql",fromDate, endDate);
+	
+	String counterSubscriptionFeesResult = SQLUtils.sql("counter_subscription_fees_result.sql", fromDate, endDate);
 
 	List<Tuple<String, Double>> incomeList = jdbcTemplate.query(income,
 		new ResultSetExtractor<List<Tuple<String, Double>>>() {
@@ -345,10 +347,25 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 			return list;
 		    }
 		});
+	
+	List<Tuple<String, Double>> counterSubscriptionFeesResultList = jdbcTemplate.query(counterSubscriptionFeesResult,
+			new ResultSetExtractor<List<Tuple<String, Double>>>() {
+
+			    @Override
+			    public List<Tuple<String, Double>> extractData(ResultSet resultSet)
+				    throws SQLException, DataAccessException {
+				List<Tuple<String, Double>> list = new ArrayList<>();
+				while (resultSet.next()) {
+				    list.add(new Tuple<String, Double>("COUNTER_PAYMENT", resultSet.getDouble(1)));
+				}
+				return list;
+			    }
+			});
 
 	Map<String, List<Tuple<String, Double>>> map = new HashMap<>();
 	map.put(Constant.INCOME, incomeList);
 	map.put(Constant.EXPENSES, expensesList);
+	map.put(Constant.SUBSCRIPTION_FEES_RESULT, counterSubscriptionFeesResultList);
 
 	return map;
     }

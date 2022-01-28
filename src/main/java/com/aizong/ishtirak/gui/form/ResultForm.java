@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.DoubleAdder;
 
@@ -53,6 +52,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
 import com.aizong.ishtirak.LoginForm;
+import com.aizong.ishtirak.bean.CurrencyManager;
 import com.aizong.ishtirak.bean.ExpensesType;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.bean.Tuple;
@@ -166,7 +166,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 	lbl.setFont(new Font("Tahoma", Font.PLAIN, 24));
 	lbl.setForeground(Color.DARK_GRAY);
 
-	JLabel lblAmount = new JLabel(formatCurrency(LoginForm.getCurrentLocale(), profit),
+	JLabel lblAmount = new JLabel(formatCurrency(profit),
 		SwingConstants.CENTER);
 	lblAmount.setBorder(ComponentUtils.emptyBorder(padding));
 	lblAmount.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -183,7 +183,7 @@ public class ResultForm extends BasicForm implements ActionListener {
     }
 
 	private JPanel createIncomeExpenses(String title, List<Tuple<String, Double>> result, Class<?> enumClass,
-	    boolean expenses) {
+	    boolean expenses, boolean subscriptionFeesResult) {
 
 	DefaultFormBuilder builder = BasicForm.createBuilder("p,20dlu,fill:140dlu:grow");
 
@@ -191,7 +191,8 @@ public class ResultForm extends BasicForm implements ActionListener {
 
 	builder.appendSeparator(toBold(title));
 	for (Tuple<String, Double> tuple : result) {
-	    addLine(builder, enumMessage(tuple.getKey(), enumClass), tuple.getValue());
+		String currency = subscriptionFeesResult ? CurrencyManager.formatWithLBP(tuple.getValue()) : formatCurrency(tuple.getValue());
+		addLine(builder, enumMessage(tuple.getKey(), enumClass), currency);
 	    amount += tuple.getValue();
 	}
 
@@ -202,13 +203,16 @@ public class ResultForm extends BasicForm implements ActionListener {
 	panel2.setBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
 		BorderFactory.createEmptyBorder(padding, padding, padding, padding)));
 	panel.add(panel2, BorderLayout.CENTER);
-	panel.add(createTotalPanel(amount), BorderLayout.SOUTH);
+		panel.add(
+				createTotalPanel(
+						subscriptionFeesResult ? CurrencyManager.formatWithLBP(amount) : formatCurrency(amount)),
+				BorderLayout.SOUTH);
 	return panel;
     }
 
-    private JPanel createTotalPanel(Double amount) {
+    private JPanel createTotalPanel(String formattedAmount) {
 
-	JLabel txtField = new JLabel(formatCurrency(LoginForm.getCurrentLocale(), amount) + "");
+	JLabel txtField = new JLabel(formattedAmount);
 	txtField.setFont(new Font("Tahoma", Font.PLAIN, 24));
 	txtField.setForeground(Color.DARK_GRAY);
 
@@ -234,16 +238,16 @@ public class ResultForm extends BasicForm implements ActionListener {
 	return "<html><b>" + text + "</b></html>";
     }
 
-    private void addLine(DefaultFormBuilder builder, String label, Double value) {
+    private void addLine(DefaultFormBuilder builder, String label, String formattedValue) {
 
-	JTextField txtField = new JTextField(formatCurrency(LoginForm.getCurrentLocale(), value) + "");
+	JTextField txtField = new JTextField(formattedValue);
 	txtField.setEditable(false);
 	builder.append(label, txtField);
     }
 
     @SuppressWarnings("unused")
     private void addTotal(DefaultFormBuilder builder, String label, Double value) {
-	JLabel txtField = new JLabel(formatCurrency(LoginForm.getCurrentLocale(), value) + "");
+	JLabel txtField = new JLabel(formatCurrency(value) + "");
 	txtField.setFont(new Font("Tahoma", Font.PLAIN, 24));
 	txtField.setForeground(Color.DARK_GRAY);
 	builder.append(label, txtField);
@@ -458,6 +462,10 @@ public class ResultForm extends BasicForm implements ActionListener {
     private List<Tuple<String, Double>> getExpensesResult() {
 	return result.get(Constant.EXPENSES) == null ? new ArrayList<>() : result.get(Constant.EXPENSES);
     }
+    
+    private List<Tuple<String, Double>> getSubscriptionFeesResult() {
+    	return result.get(Constant.SUBSCRIPTION_FEES_RESULT) == null ? new ArrayList<>() : result.get(Constant.SUBSCRIPTION_FEES_RESULT);
+        }
 
     private Double getProfit() {
 	    Double income = 0d;
@@ -503,14 +511,20 @@ public class ResultForm extends BasicForm implements ActionListener {
 		    result = results;
 		    panel.removeAll();
 		    JPanel incomePanel = createIncomeExpenses(message("income"), getIncomeResult(),
-			    TransactionType.class, false);
+			    TransactionType.class, false, false);
 
 		    JPanel expensesPanel = createIncomeExpenses(message("expenses"), getExpensesResult(),
-			    ExpensesType.class, true);
+			    ExpensesType.class, true, false);
+		    
+		    List<Tuple<String,Double>> subscriptionFeesResult = getSubscriptionFeesResult();
+		    JPanel subscriptionFeesTotal = createIncomeExpenses(message("subscription_fees.total"), subscriptionFeesResult, TransactionType.class, false, true);
 
 		    JPanel panels = new JPanel(new BorderLayout());
-		    panels.add(expensesPanel, BorderLayout.WEST);
-		    panels.add(incomePanel, BorderLayout.EAST);
+		    panels.add(expensesPanel, BorderLayout.LINE_START);
+		    panels.add(incomePanel, BorderLayout.LINE_END);
+		    if(subscriptionFeesResult.get(0).getValue()>0) {
+		    	panels.add(subscriptionFeesTotal, BorderLayout.CENTER);
+		    }
 
 		    panel.add(createTopPanel(getProfit()), BorderLayout.PAGE_START);
 
@@ -538,7 +552,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 
     }
     
-	private String formatCurrency(Locale currentLocale, Double profit) {
+	private String formatCurrency(Double profit) {
 		return ServiceProvider.get().getCurrencyManager().formatCurrency(profit);
 	}
 }

@@ -63,6 +63,11 @@ public class CurrencyManager {
 		DecimalFormat decimalFormat = new DecimalFormat("###,###");
 		return decimalFormat.format(value);
 	}
+	
+	public static String formatWithLBP(Double value) {
+		DecimalFormat decimalFormat = new DecimalFormat("###,###");
+		return decimalFormat.format(value)+" "+SupportedCurrency.LBP.getCode();
+	}
 
 	public static String formatCurrencyLbp(Double amountTopay2) {
 
