@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 
 import com.aizong.ishtirak.bean.ContractConsumptionBean;
 import com.aizong.ishtirak.bean.CurrencyManager;
+import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 import com.aizong.ishtirak.bean.Enums.SearchCustomerType;
 import com.aizong.ishtirak.bean.OrderBean;
 import com.aizong.ishtirak.bean.SearchCustomerCriteria;
@@ -519,7 +520,7 @@ public class SubscriberDaoImpl extends GenericDaoImpl<Object> implements Subscri
 			    rs.getString("address"), DateUtil.getCurrentMonthLabel(DateUtil.localDate(dateRange.getStartDate())), rs.getLong("previous_counter"),
 			    rs.getLong("current_counter"), rs.getString("Bundle"),
 			    !TransactionType.COUNTER_PAYMENT.name().equals(rs.getString("transaction_type")),
-			    rs.getString("contract_unique_code"), rs.getDouble("amount"),rs.getDouble("subscription_fees"), currencyManager.getselectCurrency());
+			    rs.getString("contract_unique_code"), rs.getDouble("amount"),rs.getDouble("subscription_fees"), SupportedCurrency.valueOf(rs.getString("selected_currency")));
 		    receiptBeans.add(bean);
 		}
 		return receiptBeans;

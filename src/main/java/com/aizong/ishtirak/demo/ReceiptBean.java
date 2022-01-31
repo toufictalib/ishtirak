@@ -86,23 +86,6 @@ public class ReceiptBean {
 	this.newCounter = newCounter;
     }
 
-    public static ReceiptBean create(boolean monthlySubscription) {
-	ReceiptBean receiptBean = new ReceiptBean();
-	receiptBean.setName("توفيق طالب");
-	receiptBean.setAddress("السفيرة, بناية عويضة");
-	receiptBean.setDate("كانون الثاني  2018");
-	receiptBean.setNewCounter(150000L);
-	receiptBean.setOldCounter(100000L);
-	receiptBean.setVillage("السفيرة");
-	receiptBean.setSubscriptionType("5 أمبير");
-	receiptBean.setMonthlySubscription(monthlySubscription);
-	receiptBean.setCounterCode("ب م 100");
-	receiptBean.setAmountTopay(16D);
-	receiptBean.setSubscriptionFees(23000D);
-	receiptBean.setSelectedCurrency(SupportedCurrency.DOLLAR);
-	return receiptBean;
-    }
-
     public String getFullName() {
 	return "توفيق طالب";
     }

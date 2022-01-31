@@ -1,2 +1,6 @@
 ALTER TABLE `company` 
 ADD COLUMN `selected_currency` VARCHAR(10) NULL DEFAULT 'LBP' AFTER `note`;
+
+
+ALTER TABLE `transaction` 
+ADD COLUMN `selected_currency` VARCHAR(10) NULL DEFAULT 'LBP';

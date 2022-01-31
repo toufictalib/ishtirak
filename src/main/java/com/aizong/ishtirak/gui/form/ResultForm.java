@@ -520,8 +520,8 @@ public class ResultForm extends BasicForm implements ActionListener {
 		    JPanel subscriptionFeesTotal = createIncomeExpenses(message("subscription_fees.total"), subscriptionFeesResult, TransactionType.class, false, true);
 
 		    JPanel panels = new JPanel(new BorderLayout());
-		    panels.add(expensesPanel, BorderLayout.LINE_START);
-		    panels.add(incomePanel, BorderLayout.LINE_END);
+		    panels.add(expensesPanel, BorderLayout.LINE_END);
+		    panels.add(incomePanel, BorderLayout.LINE_START);
 		    if(subscriptionFeesResult.get(0).getValue()>0) {
 		    	panels.add(subscriptionFeesTotal, BorderLayout.CENTER);
 		    }

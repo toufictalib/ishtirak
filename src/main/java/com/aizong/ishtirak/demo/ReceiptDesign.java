@@ -103,17 +103,36 @@ public class ReceiptDesign {
 	private String displayAmount() {
 
 		StringBuilder builder = new StringBuilder();
-		builder.append(CurrencyManager.formatCurrencyLbp(bean.getAmountTopay()) + " "
-				+ bean.getSelectedCurrency().getCode());
+		
+		if(bean.isMonthlySubscription()) {
+			builder.append(CurrencyManager.formatArabicNumber(bean.getAmountTopay()) + " "
+					+ bean.getSelectedCurrency().getCode());
+		}
 
 		if (!bean.isMonthlySubscription()) {
-			builder.append(" + ");
-			builder.append(CurrencyManager.formatCurrencyLbp(bean.getSubscriptionFees()) + " "
-					+ SupportedCurrency.LBP.getCode());
-			builder.append("(اشتراك عداد)");
+			
+			if (bean.getSelectedCurrency() == SupportedCurrency.LBP) {
+				builder.append(CurrencyManager.formatArabicNumber(calculateTotal()) + " "
+						+ bean.getSelectedCurrency().getCode());
+			} else {
+				builder.append(CurrencyManager.formatArabicNumber(bean.getAmountTopay()) + " "
+						+ bean.getSelectedCurrency().getCode());
+				builder.append(" + ");
+				builder.append(CurrencyManager.formatArabicNumber(bean.getSubscriptionFees()) + " "
+						+ SupportedCurrency.LBP.getCode());
+				builder.append("(اشتراك عداد)");
+			}
 		}
 
 		return builder.toString();
+	}
+
+	/**
+	 * In case the amount is LBP, so sum the subscription fees and the amount together
+	 * @return
+	 */
+	private double calculateTotal() {
+		return bean.getAmountTopay()+bean.getSubscriptionFees();
 	}
 
     public ComponentBuilder<?, ?> counter() {
@@ -196,27 +215,63 @@ public class ReceiptDesign {
 			cmp.text(bean.getCounterCode()).setStyle(Templates.bold12CenteredStyle)));
     }
 
-    public static void main(String[] args) {
-	ReceiptDesign design = new ReceiptDesign();
-	try {
-	    
-	    
-	    List<ReceiptBean> asList = Arrays.asList(ReceiptBean.create(true),ReceiptBean.create(false));
-	    JasperReportBuilder[] array = new JasperReportBuilder[asList.size()];
-	    int i=0;
-	    for(ReceiptBean receiptBean:asList) {
-		  JasperReportBuilder report = design.build(receiptBean,"اشتراكات الجرد"," ملاحظة:في حال عدم الدفع الاشتراك قبل 10من الشهر الجاري سيتم قطع الكهرباء.");
-		  report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-		  array[i++] = report;
-	    }
-	    
-	    
-	    concatenatedReport().concatenate(array).toPdf(Exporters.pdfExporter("C:\\Users\\QSC\\Documents\\all.pdf"));
-	  
-	    /*mainReport.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
-	    mainReport.show();*/
-	} catch (DRException e) {
-	    e.printStackTrace();
+	public static void main(String[] args) {
+		ReceiptDesign design = new ReceiptDesign();
+		try {
+
+			List<ReceiptBean> asList = Arrays.asList(createReceipt(true), createReceipt(false), createReceipt(false, SupportedCurrency.DOLLAR, 16D, 23000D));
+			JasperReportBuilder[] array = new JasperReportBuilder[asList.size()];
+			int i = 0;
+			for (ReceiptBean receiptBean : asList) {
+				JasperReportBuilder report = design.build(receiptBean, "اشتراكات الجرد",
+						" ملاحظة:في حال عدم الدفع الاشتراك قبل 10من الشهر الجاري سيتم قطع الكهرباء.");
+				report.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
+				array[i++] = report;
+			}
+
+			concatenatedReport().concatenate(array).toPdf(Exporters.pdfExporter("C:\\Users\\QSC\\Documents\\all.pdf"));
+
+			/*
+			 * mainReport.setPageFormat(PageType.A6, PageOrientation.LANDSCAPE);
+			 * mainReport.show();
+			 */
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
 	}
-    }
+	
+	public static ReceiptBean createReceipt(boolean monthlySubscription) {
+		ReceiptBean receiptBean = new ReceiptBean();
+		receiptBean.setName("توفيق طالب");
+		receiptBean.setAddress("السفيرة, بناية عويضة");
+		receiptBean.setDate("كانون الثاني  2018");
+		receiptBean.setNewCounter(150000L);
+		receiptBean.setOldCounter(100000L);
+		receiptBean.setVillage("السفيرة");
+		receiptBean.setSubscriptionType("5 أمبير");
+		receiptBean.setMonthlySubscription(monthlySubscription);
+		receiptBean.setCounterCode("ب م 100");
+		receiptBean.setAmountTopay(137000D);
+		receiptBean.setSubscriptionFees(23000D);
+		receiptBean.setSelectedCurrency(SupportedCurrency.LBP);
+		
+		return createReceipt(monthlySubscription, SupportedCurrency.LBP, 137000D, 23000D);
+	}
+	
+	public static ReceiptBean createReceipt(boolean monthlySubscription, SupportedCurrency supportedCurrency, double amountToPay, double subscriptionFees) {
+		ReceiptBean receiptBean = new ReceiptBean();
+		receiptBean.setName("توفيق طالب");
+		receiptBean.setAddress("السفيرة, بناية عويضة");
+		receiptBean.setDate("كانون الثاني  2018");
+		receiptBean.setNewCounter(150000L);
+		receiptBean.setOldCounter(100000L);
+		receiptBean.setVillage("السفيرة");
+		receiptBean.setSubscriptionType("5 أمبير");
+		receiptBean.setMonthlySubscription(monthlySubscription);
+		receiptBean.setCounterCode("ب م 100");
+		receiptBean.setAmountTopay(amountToPay);
+		receiptBean.setSubscriptionFees(subscriptionFees);
+		receiptBean.setSelectedCurrency(supportedCurrency);
+		return receiptBean;
+	}
 }

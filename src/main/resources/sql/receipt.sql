@@ -5,6 +5,7 @@ SELECT
     t.amount,
     t.is_paid,
     t.transaction_type,
+    t.selected_currency,
     b.name "Bundle",
     e.name "Engine",
     v.name "Village",

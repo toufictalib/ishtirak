@@ -69,7 +69,7 @@ public class CurrencyManager {
 		return decimalFormat.format(value)+" "+SupportedCurrency.LBP.getCode();
 	}
 
-	public static String formatCurrencyLbp(Double amountTopay2) {
+	public static String formatArabicNumber(Double amountTopay2) {
 
 		DecimalFormat formatter = (DecimalFormat) NumberFormat
 				.getInstance(new Locale.Builder().setLanguageTag("ar-LB-u-nu-arab").build());

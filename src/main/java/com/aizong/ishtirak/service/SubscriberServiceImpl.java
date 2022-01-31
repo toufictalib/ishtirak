@@ -371,6 +371,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		transaction.setContractId(contract.getId());
 		transaction.setTransactionType(TransactionType.MONTHLY_PAYMENT);
 		transaction.setInsertDate(dateRange.getStartDate());
+		transaction.setSelectedCurrency(currencyManager.getselectCurrency());
 
 		transactions.add(transaction);
 	    } else if (bundle instanceof SubscriptionBundle) {
@@ -388,6 +389,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 		    transaction.setContractId(contract.getId());
 		    transaction.setTransactionType(TransactionType.COUNTER_PAYMENT);
 		    transaction.setInsertDate(dateRange.getStartDate());
+		    transaction.setSelectedCurrency(currencyManager.getselectCurrency());
 		    transactions.add(transaction);
 
 		    SubscriptionHistory subscriptionHistory = new SubscriptionHistory();

@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
+import com.aizong.ishtirak.bean.CurrencyManager.SupportedCurrency;
 import com.aizong.ishtirak.bean.TransactionType;
 import com.aizong.ishtirak.common.misc.utils.BaseEntity;
 
@@ -32,6 +33,10 @@ public class Transaction extends BaseEntity {
 
     @Column(name = "id_contract")
     private long contractId;
+    
+    @Enumerated(EnumType.STRING)
+  	@Column(name = "selected_currency")
+    private SupportedCurrency selectedCurrency;
 
     public Transaction() {
 	super();
@@ -82,4 +87,11 @@ public class Transaction extends BaseEntity {
 	this.contractId = contractId;
     }
 
+	public SupportedCurrency getSelectedCurrency() {
+		return selectedCurrency;
+	}
+
+	public void setSelectedCurrency(SupportedCurrency selectedCurrency) {
+		this.selectedCurrency = selectedCurrency;
+	}
 }
