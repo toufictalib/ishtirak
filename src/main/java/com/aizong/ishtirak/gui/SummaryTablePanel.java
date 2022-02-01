@@ -120,9 +120,10 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	controlPanel.add(searchMonthPanel);
 	controlPanel.add(btnSearch);
+	controlPanel.add(btnPrint);
 	
 	
-	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,100dlu,p,110dlu,p,40dlu,p,40dlu,p,40dlu"));
+	FormLayout layout = new FormLayout(OrientationUtils.flipped(getLayoutSpecs()), RowSpec.decodeSpecs("p,90dlu,p,100dlu,p,30dlu,p,40dlu,p,30dlu"));
 	DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 	builder.setDefaultDialogBorder();
  	builder.setLeftToRight(false);
@@ -147,16 +148,11 @@ public class SummaryTablePanel extends BasicPanel implements ActionListener {
 	JScrollPane scrollPane = new JScrollPane();
 	scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 	scrollPane.setViewportView(panel2);
-	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(100, 88)));
+	scrollPane.setPreferredSize(new Dimension(ComponentUtils.getDimension(100, 90)));
 	
-	
-	JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-	panel.add(btnPrint);
-	builder.append(panel);
 	
 	add(controlPanel,BorderLayout.NORTH);
 	add(scrollPane,BorderLayout.CENTER);
-	add(panel, BorderLayout.SOUTH);
     }
 
     protected String getLayoutSpecs() {

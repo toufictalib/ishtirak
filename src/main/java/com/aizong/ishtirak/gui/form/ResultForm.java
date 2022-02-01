@@ -523,7 +523,7 @@ public class ResultForm extends BasicForm implements ActionListener {
 		    panels.add(expensesPanel, BorderLayout.LINE_END);
 		    panels.add(incomePanel, BorderLayout.LINE_START);
 		    if(subscriptionFeesResult.get(0).getValue()>0) {
-		    	panels.add(subscriptionFeesTotal, BorderLayout.CENTER);
+		    	panels.add(subscriptionFeesTotal, BorderLayout.PAGE_START);
 		    }
 
 		    panel.add(createTopPanel(getProfit()), BorderLayout.PAGE_START);
